@@ -1,0 +1,15 @@
+<MudChip OnClick="@OnClick" Label="true" Class="align-self-center"
+         Style=@($"color: {Color};border-color: {Color}")
+         Variant="Variant.Outlined" DisableRipple="true">
+    @ChildContent
+</MudChip>
+
+@code {
+
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string? Color { get; set; }
+
+}

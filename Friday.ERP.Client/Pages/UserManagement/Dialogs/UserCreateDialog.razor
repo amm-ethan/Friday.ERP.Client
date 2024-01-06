@@ -1,0 +1,246 @@
+﻿@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+@using System.Text
+
+@inject IHttpRepository HttpRepo
+
+@if (_isMainLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
+        </DialogContent>
+        <DialogActions>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Name">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Name" Required="true"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelsAndInput FirstText="Phone">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Phone"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelsAndInput FirstText="Email">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Email"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Username">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Username" Required="true"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Password">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Password" Required="true"
+                                          FullWidth="true"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined"
+                                          InputType="@_passwordInput"
+                                          Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
+                                          OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Role">
+                        <MudItem sm="7">
+                            <MudAutocomplete T="string?" Required="true"
+                                             Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"
+                                             Dense="true"
+                                             FullWidth="true"
+                                             SearchFunc="@RoleSearch"
+                                             ShowProgressIndicator="@_isRoleSearchLoading"
+                                             ValueChanged="@RoleChange">
+                            </MudAutocomplete>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            </MudForm>
+        </DialogContent>
+        <DialogActions>
+            <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    @("Cancel")
+                }
+            </CustomButton>
+            <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    @("Create")
+                }
+            </CustomButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    MudForm? _form;
+    bool _success;
+    string[] _errors = [];
+
+    bool _isMainLoading;
+    bool _isLoading;
+    bool _isRoleSearchLoading;
+
+    List<UserRoleViewDto> _roles = [];
+
+    string? Name { get; set; }
+    string? Phone { get; set; }
+    string? Email { get; set; }
+    string? Username { get; set; }
+    string? Password { get; set; }
+    Guid? RoleGuid { get; set; }
+
+    void RoleChange(string? value)
+    {
+        if (value is not null)
+            RoleGuid = _roles.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
+    }
+
+    async Task<IEnumerable<string>> RoleSearch(string? value)
+    {
+        await Task.Delay(5);
+        return await ReturnUserRoles(value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserRoles();
+    }
+
+    async Task GetUserRoles()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+        var result = await HttpRepo.GetAllUserRoles(null);
+        if (result.isSuccess)
+        {
+            _roles = result.userRoleViewDtos!;
+        }
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task<IEnumerable<string>> ReturnUserRoles(string? value)
+    {
+        _isRoleSearchLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.GetAllUserRoles(value);
+        if (!result.isSuccess)
+        {
+            _isRoleSearchLoading = false;
+            StateHasChanged();
+            return [];
+        }
+
+        _roles = result.userRoleViewDtos!;
+        _isRoleSearchLoading = false;
+        StateHasChanged();
+
+        return _roles.Select(c => c.Name);
+    }
+
+    void DialogCancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+    async Task DialogSubmit()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            var encryptedPassword = Encoding.UTF8.GetBytes(Password!);
+            var result = await HttpRepo.CreateUser(new UserCreateDto(
+                    Name!,
+                    Phone,
+                    Email,
+                    Username!,
+                    encryptedPassword,
+                    RoleGuid ?? Guid.Empty
+                )
+            );
+            if (result.isSuccess)
+            {
+                
+                MudDialog!.Close(DialogResult.Ok(true));
+            }
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    bool _isPasswordShow;
+    InputType _passwordInput = InputType.Password;
+    string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void ShowPassword()
+    {
+        @if (_isPasswordShow)
+        {
+            _isPasswordShow = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _isPasswordShow = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
+    }
+
+}

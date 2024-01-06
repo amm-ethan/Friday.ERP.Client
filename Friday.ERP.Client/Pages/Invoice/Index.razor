@@ -1,0 +1,539 @@
+@page "/invoice"
+
+@using Friday.ERP.Client.Pages.UserManagement.Components
+@using Friday.ERP.Client.Pages.Invoice.Dialogs
+@using Friday.ERP.Client.Pages.Sale.Components.Templates
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+
+@inject IHttpRepository HttpRepo
+@inject IDialogService DialogService
+@inject IJSRuntime Js
+
+@layout MainLayout
+@attribute [Authorize]
+
+<CustomPageContainer>
+    <MudItem sm="12" md="12" lg="5" Class="align-self-center">
+        @if (_isMainLoading)
+        {
+            <CustomPageCardWithSkeleton/>
+        }
+        else
+        {
+            <CustomPageCard>
+                <MudTabs Elevation="0" Rounded="true" Centered="true">
+                    <CustomTab TitleText="Sales" OnTabClick=@(() => ChangeTab(false))
+                               IsLoading="@_isLoading"
+                               Height="60vh">
+                        <CustomHeader>
+                            <MudItem sm="4">
+                                <MudDatePicker Label="Sold At" Date="@_selectedDate" Margin="Margin.Dense"
+                                               DateChanged="@ChangeDateValue"
+                                               Clearable="true"
+                                               MinDate="@(DateTime.Today.AddMonths(-6))"
+                                               MaxDate="@(DateTime.Today)"
+                                               Variant="Variant.Outlined"/>
+                            </MudItem>
+                            <MudItem sm="4">
+                                <MudAutocomplete T="string?"
+                                                 @ref="CustomerVendorAutoComplete"
+                                                 Clearable="true"
+                                                 Variant="Variant.Outlined"
+                                                 Margin="Margin.Dense"
+                                                 Dense="true"
+                                                 FullWidth="true"
+                                                 SearchFunc="@CustomerVendorSearch"
+                                                 ShowProgressIndicator="@_isLoading"
+                                                 ValueChanged="@CustomerVendorChange"
+                                                 OnClearButtonClick="@CustomerVendorClear"
+                                                 Label="Customer">
+                                </MudAutocomplete>
+                            </MudItem>
+                            <MudItem sm="4">
+                                <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search"
+                                                         BindValue="@_searchTerm"
+                                                         ValueChanged="@ChangeInvoiceSearchValue"
+                                                         Label="Search">
+                                </CustomTextFieldWithIcon>
+                            </MudItem>
+                        </CustomHeader>
+                        <CustomBody>
+                            @if (_invoiceSaleTableList.Count == 0)
+                            {
+                                <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
+                                    <div class="align-self-center">
+                                        <MudText Typo="Typo.caption">No Sale Invoices Yet!</MudText>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                @foreach (var invoice in _invoiceSaleTableList)
+                                {
+                                    <MudItem sm="12" md="12" lg="12">
+                                        <CustomCardRectangle OnClick="@(() => ShowSaleInvoiceDetails(invoice))"
+                                                             FirstMainText="@invoice.InvoiceNo"
+                                                             FirstSubText="@invoice.Total.ToString()"
+                                                             SecondMainText="@(invoice.CustomerName ?? "Walk-In")"
+                                                             SecondSubText="@invoice.PurchasedAt.ToString("d")">
+                                        </CustomCardRectangle>
+                                    </MudItem>
+                                }
+                            }
+                        </CustomBody>
+                    </CustomTab>
+                    <CustomTab TitleText="Purchases" OnTabClick=@(() => ChangeTab(true))
+                               IsLoading="@_isLoading"
+                               Height="60vh">
+                        <CustomHeader>
+                            <MudItem sm="4">
+                                <MudDatePicker Label="Purchased At" Date="@_selectedDate" Margin="Margin.Dense"
+                                               DateChanged="@ChangeDateValue"
+                                               Clearable="true"
+                                               MinDate="@(DateTime.Today.AddMonths(-6))"
+                                               MaxDate="@(DateTime.Today)"
+                                               a
+                                               Variant="Variant.Outlined"/>
+                            </MudItem>
+                            <MudItem sm="4">
+                                <MudAutocomplete T="string?"
+                                                 @ref="CustomerVendorAutoComplete"
+                                                 Clearable="true"
+                                                 Variant="Variant.Outlined"
+                                                 Margin="Margin.Dense"
+                                                 Dense="true"
+                                                 FullWidth="true"
+                                                 SearchFunc="@CustomerVendorSearch"
+                                                 ShowProgressIndicator="@_isLoading"
+                                                 ValueChanged="@CustomerVendorChange"
+                                                 OnClearButtonClick="@CustomerVendorClear"
+                                                 Label="Vendor">
+                                </MudAutocomplete>
+                            </MudItem>
+                            <MudItem sm="4">
+                                <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search"
+                                                         BindValue="@_searchTerm"
+                                                         ValueChanged="@ChangeInvoiceSearchValue"
+                                                         Label="Search">
+                                </CustomTextFieldWithIcon>
+                            </MudItem>
+                        </CustomHeader>
+                        <CustomBody>
+                            @if (_invoicePurchaseTableList.Count == 0)
+                            {
+                                <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
+                                    <div class="align-self-center">
+                                        <MudText Typo="Typo.caption">No Purchase Invoices Yet!</MudText>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                @foreach (var invoice in _invoicePurchaseTableList)
+                                {
+                                    <MudItem sm="12" md="12" lg="12">
+                                        <CustomCardRectangle OnClick="@(() => ShowPurchaseInvoiceDetails(invoice))"
+                                                             FirstMainText="@invoice.InvoiceNo"
+                                                             FirstSubText="@invoice.Total.ToString()"
+                                                             SecondMainText="@invoice.VendorName"
+                                                             SecondSubText="@invoice.PurchasedAt.ToString("d")">
+                                        </CustomCardRectangle>
+                                    </MudItem>
+                                }
+                            }
+                        </CustomBody>
+                    </CustomTab>
+                </MudTabs>
+            </CustomPageCard>
+        }
+    </MudItem >
+    <MudItem sm="12" md="12" lg="7" Class="align-self-center">
+        @if (_isMainLoading)
+        {
+            <CustomPageCardWithSkeleton/>
+        }
+        else
+        {
+            <CustomPageCard>
+                @if (_selectedInvoiceGuid is null)
+                {
+                    <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
+                        <div class="align-self-center">
+                            <MudText Typo="Typo.caption">No Sales Summary Yet!</MudText>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <MudGrid Spacing="2">
+                        <CustomRowWithTwoLabels FirstText="Invoice"
+                                                SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.InvoiceNo : _selectedInvoiceSale!.InvoiceNo)"
+                                                SecondTextAlign="Align.End">
+                        </CustomRowWithTwoLabels>
+                        <CustomRowWithTwoLabels FirstText="@(_isPurchaseInvoice ? "Purchased At" : "Sold At")"
+                                                SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.PurchasedAt.ToString("d") : _selectedInvoiceSale!.PurchasedAt.ToString("d"))"
+                                                SecondTextAlign="Align.End">
+                        </CustomRowWithTwoLabels>
+                        <CustomRowWithTwoLabels FirstText="@(_isPurchaseInvoice ? "Vendor" : "Customer")"
+                                                SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.Vendor.Name : _selectedInvoiceSale!.Customer is null ? "Walk-in" : _selectedInvoiceSale!.Customer.Name)"
+                                                SecondTextAlign="Align.End">
+                        </CustomRowWithTwoLabels>
+                    </MudGrid>
+                    <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                    <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
+                        @if (_isPurchaseInvoice)
+                        {
+                            @foreach (var product in _selectedInvoicePurchase!.PurchasedProducts)
+                            {
+                                <MudItem sm="12" md="12" lg="12">
+                                    <CustomCardRectangle OnClick="() => { }"
+                                                         FirstMainText="@product.ProductName"
+                                                         FirstSubText="@product.Quantity.ToString()"
+                                                         ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
+                                                         SecondMainText="@product.BuyPrice.ToString()"
+                                                         SecondSubText="@product.TotalPrice.ToString()">
+                                    </CustomCardRectangle>
+                                </MudItem>
+                            }
+                        }
+                        else
+                        {
+                            @foreach (var product in _selectedInvoiceSale!.SoldProducts)
+                            {
+                                <MudItem sm="12" md="12" lg="12">
+                                    <CustomCardRectangle OnClick="() => { }"
+                                                         FirstMainText="@product.ProductName"
+                                                         FirstSubText="@product.Quantity.ToString()"
+                                                         ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
+                                                         SecondMainText="@product.ProducePriceSalePrice.ToString()"
+                                                         SecondSubText="@product.TotalPrice.ToString()">
+                                    </CustomCardRectangle>
+                                </MudItem>
+                            }
+                        }
+
+                    </MudGrid>
+                    <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+
+                    <MudGrid Spacing="2">
+                        <CustomRowWithTwoLabels FirstText="Total"
+                                                SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.Total.ToString() : _selectedInvoiceSale!.Total.ToString())"
+                                                SecondTextAlign="Align.End">
+                        </CustomRowWithTwoLabels>
+                    </MudGrid>
+                    <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                    <MudGrid Spacing="2">
+                        @if (_isPurchaseInvoice)
+                        {
+                            <MudItem sm="12">
+                                <CustomButton OnClick="@(() => ShowInvoiceInfo(true))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
+                            </MudItem>
+                        }
+                        else
+                        {
+                            if (_selectedInvoiceSale!.DeliveryInfo is not null)
+                            {
+                                <MudItem sm="12">
+                                    <CustomButton OnClick="@ShowDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary">Show Delivery Info</CustomButton>
+                                </MudItem>
+                            }
+                            
+                            <MudItem sm="6">
+                                <CustomButton OnClick="@(() => ShowInvoiceInfo(false))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
+                            </MudItem>
+                            <MudItem sm="6">
+                                <CustomButton OnClick="@(() => DownloadInvoice())" Variant="Variant.Filled" Color="Color.Primary">Download</CustomButton>
+                            </MudItem>
+                        }
+
+                    </MudGrid>
+                }
+            </CustomPageCard>
+        }
+    </MudItem>
+</CustomPageContainer>
+<script>
+  window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+    const arrayBuffer = await contentStreamReference.arrayBuffer();
+    const blob = new Blob([arrayBuffer]);
+    const url = URL.createObjectURL(blob);
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    anchorElement.remove();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+@code {
+    bool _isMainLoading;
+    bool _isLoading;
+
+    Guid? _selectedInvoiceGuid;
+    bool _isPurchaseInvoice;
+    InvoicePurchaseViewDto? _selectedInvoicePurchase;
+    InvoiceSaleViewDto? _selectedInvoiceSale;
+
+    List<CustomerVendorViewDto> _customerVendorViewList = [];
+    List<InvoicePurchaseTableViewDto> _invoicePurchaseTableList = [];
+    List<InvoiceSaleTableViewDto> _invoiceSaleTableList = [];
+
+    Guid? _selectedCustomerVendorGuid;
+    string? _searchTerm;
+    DateTime? _selectedDate;
+    readonly int _pageSize = 50;
+
+    MudAutocomplete<string?> CustomerVendorAutoComplete { get; set; } = new();
+
+    async Task<IEnumerable<string>> CustomerVendorSearch(string? value)
+    {
+        await Task.Delay(5);
+        return await GetCustomerVendorData(value);
+    }
+
+    async Task CustomerVendorChange(string? value)
+    {
+        if (value is not null)
+            _selectedCustomerVendorGuid = _customerVendorViewList.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
+        else
+            _selectedCustomerVendorGuid = null;
+
+        await GetData();
+    }
+
+    async Task CustomerVendorClear()
+    {
+        _selectedCustomerVendorGuid = null;
+        await CustomerVendorAutoComplete.Clear();
+        await GetData();
+    }
+
+    async Task ChangeDateValue(DateTime? value)
+    {
+        _selectedDate = value;
+        await GetData();
+    }
+
+    async Task ChangeInvoiceSearchValue(string value)
+    {
+        _searchTerm = value;
+        await GetData();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        await GetInvoiceSalesData();
+        await GetCustomerVendorData(null);
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task<IEnumerable<string>> GetCustomerVendorData(string? search)
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        if (_isPurchaseInvoice)
+        {
+            var result = await HttpRepo.SearchVendors(search);
+            if (result.isSuccess)
+            {
+                _customerVendorViewList = result.CustomerVendorViewDtos!;
+            }
+        }
+        else
+        {
+            var result = await HttpRepo.SearchCustomers(search);
+            if (result.isSuccess)
+            {
+                _customerVendorViewList = result.CustomerVendorViewDtos!;
+            }
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+
+        return _customerVendorViewList.Select(c => c.Name);
+    }
+
+    async Task GetInvoiceSalesData()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var parameters = new InvoiceParameter
+        {
+            PageSize = _pageSize,
+            PageNumber = 1,
+            SearchTerm = _searchTerm,
+            CustomerVendorGuid = _selectedCustomerVendorGuid,
+            FromPurchasedDate = _selectedDate,
+            ToPurchasedDate = _selectedDate
+        };
+
+        var result = await HttpRepo.GetAllSalesInvoices(parameters);
+        if (result.isSuccess)
+        {
+            _invoiceSaleTableList = result.invoiceSaleViewDtos!.Items!;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task GetInvoicePurchasesData()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var parameters = new InvoiceParameter
+        {
+            PageSize = _pageSize,
+            PageNumber = 1,
+            SearchTerm = _searchTerm,
+            CustomerVendorGuid = _selectedCustomerVendorGuid,
+            FromPurchasedDate = _selectedDate,
+            ToPurchasedDate = _selectedDate
+        };
+
+        var result = await HttpRepo.GetAllPurchasesInvoices(parameters);
+        if (result.isSuccess)
+        {
+            _invoicePurchaseTableList = result.invoicePurchaseViewDtos!.Items!;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task ChangeTab(bool isPurchasedInvoice = false)
+    {
+        _isPurchaseInvoice = isPurchasedInvoice;
+
+        _selectedCustomerVendorGuid = null;
+        _searchTerm = null;
+        _selectedDate = null;
+        _selectedDate = null;
+
+        _selectedInvoiceGuid = null;
+        _selectedInvoicePurchase = null;
+        _selectedInvoiceSale = null;
+
+        await GetData();
+
+        StateHasChanged();
+    }
+
+    async Task ShowSaleInvoiceDetails(InvoiceSaleTableViewDto invoice)
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.GetSaleInvoice(invoice.Guid);
+        if (result.isSuccess)
+        {
+            _selectedInvoiceSale = result.invoiceSaleViewDto!;
+            _selectedInvoiceGuid = invoice.Guid;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task ShowPurchaseInvoiceDetails(InvoicePurchaseTableViewDto invoice)
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.GetPurchaseInvoice(invoice.Guid);
+        if (result.isSuccess)
+        {
+            _selectedInvoicePurchase = result.invoicePurchaseViewDto!;
+            _selectedInvoiceGuid = invoice.Guid;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task GetData()
+    {
+        if (_isPurchaseInvoice)
+        {
+            await GetInvoicePurchasesData();
+        }
+        else
+        {
+            await GetInvoiceSalesData();
+        }
+    }
+
+    async Task ShowDeliveryInfo()
+    {
+        var parameters = new DialogParameters<TransactionDeliveryDialog>
+        {
+            { x => x.Address, _selectedInvoiceSale!.DeliveryInfo!.Address },
+            { x => x.ContactPerson, _selectedInvoiceSale!.DeliveryInfo!.ContactPerson },
+            { x => x.ContactPhone, _selectedInvoiceSale!.DeliveryInfo!.ContactPhone },
+            { x => x.DeliveryServiceName, _selectedInvoiceSale!.DeliveryInfo!.DeliveryServiceName },
+            { x => x.DeliveryContactPerson, _selectedInvoiceSale!.DeliveryInfo!.DeliveryContactPerson },
+            { x => x.DeliveryContactPhone, _selectedInvoiceSale!.DeliveryInfo!.DeliveryContactPhone },
+            { x => x.Remark, _selectedInvoiceSale!.DeliveryInfo!.Remark },
+            { x => x.DeliveryFees, _selectedInvoiceSale!.DeliveryInfo!.DeliveryFees }
+        };
+        var options = new DialogOptions();
+        await DialogService.ShowAsync<TransactionDeliveryDialog>("Delivery Info", parameters, options);
+    }
+
+    private void ShowInvoiceInfo(bool isPurchaseInvoice)
+    {
+        var parameters = new DialogParameters<TransactionInfoDialog>();
+        if (isPurchaseInvoice)
+        {
+            parameters.Add("SubTotal", _selectedInvoicePurchase!.SubTotal);
+            parameters.Add("Discount", _selectedInvoicePurchase!.Discount);
+            parameters.Add("DiscountType", _selectedInvoicePurchase!.DiscountType!.ToString());
+            parameters.Add("Total", _selectedInvoicePurchase!.Total);
+            parameters.Add("PaidTotal", _selectedInvoicePurchase!.PaidTotal);
+            parameters.Add("CreditDebitLeft", _selectedInvoicePurchase!.CreditDebitLeft);
+            parameters.Add("Remark", _selectedInvoicePurchase!.Remark);
+            parameters.Add("IsPaid", _selectedInvoicePurchase!.IsPaid ? "Yes" : "No");
+        }
+        else
+        {
+            parameters.Add("SubTotal", _selectedInvoiceSale!.SubTotal);
+            parameters.Add("Discount", _selectedInvoiceSale!.Discount);
+            parameters.Add("DiscountType", _selectedInvoiceSale!.DiscountType!.ToString());
+            parameters.Add("Total", _selectedInvoiceSale!.Total);
+            parameters.Add("PaidTotal", _selectedInvoiceSale!.PaidTotal);
+            parameters.Add("CreditDebitLeft", _selectedInvoiceSale!.CreditDebitLeft);
+            parameters.Add("Remark", _selectedInvoiceSale!.Remark);
+            parameters.Add("IsPaid", null);
+        }
+        var options = new DialogOptions();
+        DialogService.Show<TransactionInfoDialog>("Transaction Info", parameters, options);
+    }
+
+    async Task DownloadInvoice()
+    {
+        var httpResult = await HttpRepo.DownloadSaleInvoice(_selectedInvoiceSale!.Guid);
+
+        _isLoading = false;
+        StateHasChanged();
+
+        if (httpResult.isSuccess)
+        {
+            var fileName = $"{_selectedInvoiceSale!.InvoiceNo}.pdf";
+
+            using var streamRef = new DotNetStreamReference(httpResult.stream!);
+            await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        }
+    }
+
+}

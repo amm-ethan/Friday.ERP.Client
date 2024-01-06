@@ -1,0 +1,161 @@
+﻿@page "/user-management"
+
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Shared.RequestFeatures
+@using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.UserManagement.Components
+@using Friday.ERP.Client.Pages.UserManagement.Dialogs
+
+@inject IHttpRepository HttpRepo
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+@layout MainLayout
+@attribute [Authorize]
+
+<CustomPageContainer>
+    <MudItem sm="12" md="12" lg="12" Class="align-self-center">
+        @if (_isMainLoading)
+        {
+            <CustomPageCardWithSkeleton/>
+        }
+        else
+        {
+            <CustomPageCard>
+                <MudTabs Elevation="0" Rounded="true" Centered="true">
+                    <CustomTab TitleText="User"
+                               IsLoading="@_isLoading"
+                               OnTabClick="() => { }">
+                        <CustomHeader>
+                            <MudItem sm="3" Class="align-self-center">
+                                <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search" Label="Search"
+                                                         BindValue="@_searchTerm" ValueChanged="ChangeSearchValue"/>
+                            </MudItem>
+                            <MudItem sm="7">
+                            </MudItem>
+                            <MudItem sm="2" Class="align-self-center">
+                                <CustomButton OnClick="@OpenUserCreateDialog">Create New</CustomButton>
+                            </MudItem>
+                        </CustomHeader>
+                        <CustomBody>
+                            <MudItem sm="12">
+                                <MudTable Elevation="0" Items="@_userList" RowsPerPage="10" Hover="true"
+                                          Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
+                                          FixedHeader="true" Height="54vh">
+                                    <HeaderContent>
+                                        <MudTh>Name</MudTh>
+                                        <MudTh>Phone</MudTh>
+                                        <MudTh>Email</MudTh>
+                                        <MudTh>Role Name</MudTh>
+                                        <MudTh>Action</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                                        <MudTd DataLabel="Phone">@(context.Phone ?? "N/A")</MudTd>
+                                        <MudTd DataLabel="Email">@(context.Email ?? "N/A")</MudTd>
+                                        <MudTd DataLabel="RoleName">@context.RoleName</MudTd>
+                                        <MudTd DataLabel="Action">
+                                            <CustomButton FullWidth="false" OnClick="@(() => OpenUserUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
+                                                Edit
+                                            </CustomButton>
+                                        </MudTd>
+                                    </RowTemplate>
+                                    <PagerContent>
+                                        <div class="d-flex justify-center">
+                                            <MudPagination ShowNextButton="true" ShowPreviousButton="true" SelectedChanged="ChangePage" Count="@_metaData.TotalPages" Class="pa-4"/>
+                                        </div>
+                                    </PagerContent>
+                                </MudTable>
+                            </MudItem>
+                        </CustomBody>
+                    </CustomTab>
+                </MudTabs>
+            </CustomPageCard>
+        }
+    </MudItem >
+</CustomPageContainer>
+
+@code {
+    bool _isMainLoading;
+    bool _isLoading;
+
+    List<UserViewDto> _userList = [];
+    MetaData _metaData = new();
+    string? _searchTerm;
+    readonly int _pageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        await GetUserData();
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task ChangeSearchValue(string value)
+    {
+        _searchTerm = value;
+        await GetUserData();
+    }
+
+    async Task ChangePage(int page)
+    {
+        _metaData.CurrentPage = page;
+        await GetUserData();
+    }
+
+    async Task GetUserData()
+    {
+        _isLoading = true;
+        StateHasChanged();
+        var result = await HttpRepo.GetAllUsers(
+            new UserParameter { PageSize = _pageSize, PageNumber = _metaData.CurrentPage, SearchTerm = _searchTerm });
+
+        if (result.isSuccess)
+        {
+            _userList = result.userViewDtos!.Items!;
+            _metaData = result.userViewDtos!.MetaData!;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task OpenUserCreateDialog()
+    {
+        var options = new DialogOptions();
+        var dialog = await DialogService.ShowAsync<UserCreateDialog>("Create New User", options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            Snackbar.Add("User Created!", Severity.Success);
+            await GetUserData();
+        }
+    }
+
+    async Task OpenUserUpdateDialog(UserViewDto userViewDto)
+    {
+        var options = new DialogOptions();
+        var parameters = new DialogParameters<UserUpdateDialog>
+        {
+            { x => x.UserGuid, userViewDto.Guid },
+            { x => x.Name, userViewDto.Name },
+            { x => x.Phone, userViewDto.Phone },
+            { x => x.Email, userViewDto.Email },
+            { x => x.Username, userViewDto.Username },
+            { x => x.RoleName, userViewDto.RoleName }
+        };
+        var dialog = await DialogService.ShowAsync<UserUpdateDialog>("Update User", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            Snackbar.Add("User Updated!", Severity.Success);
+            await GetUserData();
+        }
+    }
+
+
+}

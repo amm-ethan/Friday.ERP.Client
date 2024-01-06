@@ -1,0 +1,66 @@
+<MudButton OnClick="@OnClick" FullWidth="true"
+           Style="background-color: whitesmoke;border-radius: 5px;"
+           class="px-4 py-2" DisableElevation="true">
+    <div style="width: 100%;">
+        <div class="d-flex justify-space-between px-2">
+            @if (ImageSrc is not null)
+            {
+                <div class="d-flex">
+                    <MudImage Src="@ImageSrc" Width="50" Height="50" Alt="Burger" Elevation="0"/>
+                    <div class="d-flex flex-column ml-4 align-self-center">
+                        <MudText Typo="Typo.body2">
+                            @FirstMainText
+                        </MudText>
+                        <MudText Typo="Typo.body2" Align="Align.Start">
+                            <b>x @FirstSubText</b>
+                        </MudText>
+                    </div>
+                </div>
+                <div class="d-flex flex-column align-self-center">
+                    <MudText Typo="Typo.body2">
+                        @SecondMainText mmk
+                    </MudText>
+                    <MudText Typo="Typo.body2">
+                        <b>@SecondSubText mmk</b>
+                    </MudText>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex">
+                    <div class="d-flex flex-column align-self-center">
+                        <MudText Typo="Typo.body2">
+                            <b>@FirstMainText</b>
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mt-2" Align="Align.Start">
+                            @FirstSubText mmk
+                        </MudText>
+                    </div>
+                </div>
+                <div class="d-flex flex-column align-self-center">
+                    <MudText Typo="Typo.body2">
+                        <b> @SecondMainText</b>
+                    </MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2" Align="Align.Start">
+                        @SecondSubText
+                    </MudText>
+                </div>
+            }
+        </div>
+    </div>
+</MudButton>
+
+@code {
+
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter] public string? ImageSrc { get; set; }
+
+    [Parameter] public string? FirstMainText { get; set; }
+
+    [Parameter] public string? FirstSubText { get; set; }
+
+    [Parameter] public string? SecondMainText { get; set; }
+
+    [Parameter] public string? SecondSubText { get; set; }
+}

@@ -1,0 +1,325 @@
+﻿@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+@using System.Text
+
+@inject IHttpRepository HttpRepo
+
+@if (_isMainLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
+        </DialogContent>
+        <DialogActions>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Name">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Name" Required="true"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelsAndInput FirstText="Phone">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Phone"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelsAndInput FirstText="Email">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Email"
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <CustomRowWithTwoLabels FirstText="Username" SecondText="@Username"></CustomRowWithTwoLabels>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+
+                    <CustomRowWithLabelsAndInput FirstText="Change Password">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudCheckBox T="bool" ValueChanged="@OnCheckChangePassword"
+                                         Color="Color.Default">
+                            </MudCheckBox>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                    @if (IsChangePassword)
+                    {
+                        <CustomRowWithLabelsAndInput FirstText="Force Reset Password">
+                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                                <MudCheckBox T="bool" ValueChanged="@OnCheckForceResetPassword"
+                                             Color="Color.Default">
+                                </MudCheckBox>
+                            </MudItem>
+                        </CustomRowWithLabelsAndInput>
+                    }
+
+                    @if (IsChangePassword && !IsForceResetPassword)
+                    {
+                        <CustomRowWithLabelsAndInput FirstText="Old Password">
+                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                                <MudTextField T="string" @bind-Value="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
+                                              FullWidth="true"
+                                              Margin="Margin.Dense" Variant="Variant.Outlined"
+                                              InputType="@_oldPasswordInput"
+                                              Adornment="Adornment.End" AdornmentIcon="@_oldPasswordInputIcon"
+                                              OnAdornmentClick="ShowOldPassword" AdornmentAriaLabel="Show Password">
+                                </MudTextField>
+                            </MudItem>
+                        </CustomRowWithLabelsAndInput>
+                    }
+                    @if (IsChangePassword)
+                    {
+                        <CustomRowWithLabelsAndInput FirstText="New Password">
+                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                                <MudTextField T="string" @bind-Value="@NewPassword" Required="@(IsChangePassword)"
+                                              FullWidth="true"
+                                              Margin="Margin.Dense" Variant="Variant.Outlined"
+                                              InputType="@_passwordInput"
+                                              Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
+                                              OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password">
+                                </MudTextField>
+                            </MudItem>
+                        </CustomRowWithLabelsAndInput>
+                    }
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Role">
+                        <MudItem sm="7">
+                            <MudAutocomplete
+                                @ref="RoleAutoComplete"
+                                T="string?" Required="false"
+                                Variant="Variant.Outlined"
+                                Margin="Margin.Dense"
+                                Dense="true"
+                                FullWidth="true"
+                                SearchFunc="@RoleSearch"
+                                ShowProgressIndicator="@_isRoleSearchLoading"
+                                ValueChanged="@RoleChange">
+                            </MudAutocomplete>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            </MudForm>
+        </DialogContent>
+        <DialogActions>
+            <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    @("Cancel")
+                }
+            </CustomButton>
+            <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    @("Update")
+                }
+            </CustomButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public Guid UserGuid { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Phone { get; set; }
+    [Parameter] public string? Email { get; set; }
+    [Parameter] public string? Username { get; set; }
+    [Parameter] public string? RoleName { get; set; }
+
+    MudForm? _form;
+    bool _success;
+    string[] _errors = [];
+
+    bool _isMainLoading;
+    bool _isLoading;
+    bool _isRoleSearchLoading;
+
+    MudAutocomplete<string?> RoleAutoComplete { get; set; } = new();
+    List<UserRoleViewDto> _roles = [];
+
+    string? OldPassword { get; set; }
+    string? NewPassword { get; set; }
+    Guid RoleGuid { get; set; }
+
+    bool IsChangePassword { get; set; }
+    bool IsForceResetPassword { get; set; }
+
+    void RoleChange(string? value)
+    {
+        if (value is not null)
+            RoleGuid = _roles.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
+    }
+
+    async Task<IEnumerable<string>> RoleSearch(string? value)
+    {
+        await Task.Delay(5);
+        return await ReturnUserRoles(value);
+    }
+
+    void OnCheckChangePassword(bool isPasswordChange)
+    {
+        IsChangePassword = isPasswordChange;
+        StateHasChanged();
+    }
+
+    void OnCheckForceResetPassword(bool isForceReset)
+    {
+        IsForceResetPassword = isForceReset;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserRoles();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        RoleAutoComplete.Text = RoleName;
+        RoleAutoComplete.Value = RoleName!;
+        RoleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
+    }
+
+    async Task GetUserRoles()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+        var result = await HttpRepo.GetAllUserRoles(null);
+        if (result.isSuccess)
+        {
+            _roles = result.userRoleViewDtos!;
+        }
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task<IEnumerable<string>> ReturnUserRoles(string? value)
+    {
+        _isRoleSearchLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.GetAllUserRoles(value);
+        if (!result.isSuccess)
+        {
+            _isRoleSearchLoading = false;
+            StateHasChanged();
+            return [];
+        }
+
+        _roles = result.userRoleViewDtos!;
+        _isRoleSearchLoading = false;
+        StateHasChanged();
+
+        return _roles.Select(c => c.Name);
+    }
+
+    void DialogCancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+    async Task DialogSubmit()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            var result = await HttpRepo.UpdateUserByGuid(UserGuid,
+                new UserUpdateDto(
+                    Name,
+                    Phone,
+                    Email,
+                    IsForceResetPassword,
+                    OldPassword is not null ? Encoding.UTF8.GetBytes(OldPassword!) : null,
+                    NewPassword is not null ? Encoding.UTF8.GetBytes(NewPassword!) : null,
+                    RoleGuid
+                )
+            );
+            if (result.isSuccess)
+            {
+                MudDialog!.Close(DialogResult.Ok(true));
+            }
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    bool _isPasswordShow;
+    InputType _passwordInput = InputType.Password;
+    string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void ShowPassword()
+    {
+        @if (_isPasswordShow)
+        {
+            _isPasswordShow = false;
+            _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _passwordInput = InputType.Password;
+        }
+        else
+        {
+            _isPasswordShow = true;
+            _passwordInputIcon = Icons.Material.Filled.Visibility;
+            _passwordInput = InputType.Text;
+        }
+    }
+
+    bool _isOldPasswordShow;
+    InputType _oldPasswordInput = InputType.Password;
+    string _oldPasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void ShowOldPassword()
+    {
+        @if (_isOldPasswordShow)
+        {
+            _isOldPasswordShow = false;
+            _oldPasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            _oldPasswordInput = InputType.Password;
+        }
+        else
+        {
+            _isOldPasswordShow = true;
+            _oldPasswordInputIcon = Icons.Material.Filled.Visibility;
+            _oldPasswordInput = InputType.Text;
+        }
+    }
+
+}

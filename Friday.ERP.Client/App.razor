@@ -1,0 +1,35 @@
+﻿@using Friday.ERP.Client.Utilities
+@inject HttpInterceptorService Interceptor
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(EmptyLayout)">
+            <NotAuthorized>
+                <RedirectToLogin/>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Interceptor.RegisterEvent();
+    }
+
+    public void Dispose()
+    {
+        Interceptor.DisposeEvent();
+    }
+
+}

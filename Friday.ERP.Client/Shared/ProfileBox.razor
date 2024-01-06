@@ -1,0 +1,20 @@
+@inject AuthenticationStateProvider AuthProvider
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer Style="width:20vw;">
+            <MudPaper Elevation="0" class="d-flex flex-column align-center py-8 px-2 my-2" Style="background-color: whitesmoke;border-radius: 18px;">
+                <MudAvatar Color="Color.Primary">@(context.User.FindFirst("username")!.Value[0])</MudAvatar>
+                <MudText GutterBottom="true" Typo="Typo.body1" Class="mt-2">@context.User.FindFirst("username")!.Value</MudText>
+                <MudText Typo="Typo.caption">@context.User.FindFirst("role")!.Value</MudText>
+                <MudButton Style="border-radius: 18px;" Color="Color.Dark" OnClick="@OnClick" DisableElevation="true" Variant="Variant.Filled" FullWidth="false" Class="mt-4" Size="Size.Small">ထွက်ရန်</MudButton>
+            </MudPaper>
+        </MudContainer>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    
+}

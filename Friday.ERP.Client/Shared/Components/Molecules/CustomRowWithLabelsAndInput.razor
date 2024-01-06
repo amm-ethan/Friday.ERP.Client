@@ -1,0 +1,17 @@
+<MudItem sm="5" md="5" lg="5" Class="align-self-center">
+    <MudText Typo="Typo">
+        @FirstText
+    </MudText>
+</MudItem>
+@ChildContent
+
+
+@code {
+
+    [Parameter] public string? FirstText { get; set; }
+
+    [Parameter] public Typo Typo { get; set; } = Typo.body1;
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+}

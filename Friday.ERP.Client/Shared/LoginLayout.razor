@@ -1,0 +1,16 @@
+@inherits LayoutComponentBase
+@attribute [AllowAnonymous]
+
+<MudThemeProvider IsDarkMode="false" Theme="_theme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+    <div class="d-flex flex-column mud-width-full">
+        @Body
+    </div>
+</MudContainer>
+
+@code {
+    private readonly MudTheme _theme = new();
+}

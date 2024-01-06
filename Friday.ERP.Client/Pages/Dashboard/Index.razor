@@ -1,0 +1,284 @@
+﻿@page "/"
+
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.Dashboard.Components.Molecules
+@using Friday.ERP.Client.Pages.Dashboard.Components.Templates
+
+@inject IHttpRepository HttpRepo
+
+@layout MainLayout
+@attribute [Authorize]
+
+<CustomPageContainer>
+    <MudItem sm="12" style="padding: 6px;">
+    </MudItem>
+    <MudItem sm="12" md="8" lg="8">
+        @if (_isMainLoading)
+        {
+            <CustomCard StyleParameter="height: 40vh;">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="100%"/>
+            </CustomCard>
+        }
+        else
+        {
+            <CustomInfoCard HeaderText="Sales Figures">
+                <SubHeader>
+                    <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
+                        <b>Last 6 Months</b>
+                    </MudText>
+                </SubHeader>
+                <ChildContent>
+                    @if (_hasSummaryData)
+                    {
+                        <MudChart 
+                            ChartType="ChartType.Bar" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="100%"></MudChart>
+                    }
+                    else
+                    {
+                        <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
+                            <div class="align-self-center">
+                                <MudText Typo="Typo.caption">No Sales Summary Yet!</MudText>
+                            </div>
+                        </div>
+                    }
+                </ChildContent>
+            </CustomInfoCard>
+        }
+
+    </MudItem>
+    <MudItem sm="12" md="4" lg="4">
+        @if (_isMainLoading)
+        {
+            <CustomCard StyleParameter="height: 40vh;">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="100%"/>
+            </CustomCard>
+        }
+        else
+        {
+            <CustomInfoCard HeaderText="Debits From Customers">
+                <SubHeader>
+                    <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Error">
+                        <b>@_totalDebitOfCustomer</b>
+                    </MudText>
+                </SubHeader>
+                <ChildContent>
+                    @if (_customersWithDebits.Count != 0)
+                    {
+                        <div class="d-flex justify-space-between mt-4">
+                            <MudText Typo="Typo.caption">
+                                Customer
+                            </MudText>
+                            <MudText Typo="Typo.caption">
+                                Total Amount
+                            </MudText>
+                        </div>
+                        @foreach (var customer in _customersWithDebits)
+                        {
+                            <CustomRowWithAvaterAndLabel AvatarColor="Color.Dark" AvatarText="@customer.CustomerName[0].ToString()"
+                                                         MainText="@customer.CustomerName" SubText="@customer.TotalCreditDebitLeft.ToString()">
+                            </CustomRowWithAvaterAndLabel>
+                        }
+                    }
+                    else
+                    {
+                        <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
+                            <div class="align-self-center">
+                                <MudText Typo="Typo.caption">No Data Yet!</MudText>
+                            </div>
+                        </div>
+                    }
+                </ChildContent>
+            </CustomInfoCard>
+        }
+    </MudItem>
+    <MudItem sm="12" md="6" lg="6">
+        @if (_isMainLoading)
+        {
+            <CustomCard StyleParameter="height: 40vh;">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="100%"/>
+            </CustomCard>
+        }
+        else
+        {
+            <CustomInfoCard HeaderText="Top Selling Products">
+                <SubHeader>
+                    <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
+                        <b>Last 30 Days</b>
+                    </MudText>
+                </SubHeader>
+                <ChildContent>
+                    @if (_topSellingProducts.Count != 0)
+                    {
+                        <div class="d-flex justify-space-between mt-4">
+                            <MudText Typo="Typo.caption">
+                                Product
+                            </MudText>
+                            <MudText Typo="Typo.caption">
+                                Sales
+                            </MudText>
+                        </div>
+                        @foreach (var product in _topSellingProducts)
+                        {
+                            <CustomRowWithAvaterAndLabel AvatarColor="Color.Primary" AvatarText="@product.ProductName[0].ToString()"
+                                                         MainText="@product.ProductName" SubText="@product.PurchaseCount.ToString()"
+                                                         ExtraColor="@product.CategoryColor" ExtraText="@product.CategoryName">
+                            </CustomRowWithAvaterAndLabel>
+                        }
+                    }
+                    else
+                    {
+                        <div class="d-flex d-column justify-center flex-grow-1" style="height: 10vh;">
+                            <div class="align-self-center">
+                                <MudText Typo="Typo.caption">No Data Yet!</MudText>
+                            </div>
+                        </div>
+                    }
+
+                </ChildContent>
+            </CustomInfoCard>
+        }
+    </MudItem>
+    <MudItem sm="12" md="6" lg="6">
+        @if (_isMainLoading)
+        {
+            <CustomCard StyleParameter="height: 40vh;">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="100%"/>
+            </CustomCard>
+        }
+        else
+        {
+            <CustomInfoCard HeaderText="Frequent Customers">
+                <SubHeader>
+                    <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
+                        <b>Last 30 Days</b>
+                    </MudText>
+                </SubHeader>
+                <ChildContent>
+                    @if (_frequentCustomer.Count != 0)
+                    {
+                        <div class="d-flex justify-space-between mt-4">
+                            <MudText Typo="Typo.caption">
+                                Customer
+                            </MudText>
+                            <MudText Typo="Typo.caption">
+                                Total Amount
+                            </MudText>
+                        </div>
+                        @foreach (var customer in _frequentCustomer)
+                        {
+                            <CustomRowWithAvaterAndLabel AvatarColor="Color.Dark" AvatarText="@customer.CustomerName![0].ToString()"
+                                                         MainText="@customer.CustomerName" SubText="@customer.Total.ToString()">
+                            </CustomRowWithAvaterAndLabel>
+                        }
+                    }
+                    else
+                    {
+                        <div class="d-flex d-column justify-center flex-grow-1" style="height: 10vh;">
+                            <div class="align-self-center">
+                                <MudText Typo="Typo.caption">No Data Yet!</MudText>
+                            </div>
+                        </div>
+                    }
+                </ChildContent>
+            </CustomInfoCard>
+        }
+    </MudItem>
+    <MudItem sm="12" style="padding: 6px;">
+    </MudItem>
+</CustomPageContainer>
+
+
+@code {
+    int _index = -1;
+
+    readonly List<ChartSeries> _series = [];
+    string[] _xAxisLabels = [];
+    bool _hasSummaryData;
+
+    bool _isMainLoading;
+
+    long _totalDebitOfCustomer;
+    List<CustomerWithDebitViewDto> _customersWithDebits = [];
+    List<InvoiceSaleForFrequentCustomerViewDto> _frequentCustomer = [];
+    List<TopSellingProductsViewDto> _topSellingProducts = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        await GetMonthlySummary();
+        await GetCustomersWithDebit();
+        await GetFrequentCustomers();
+        await GetTopSellingProducts();
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task GetMonthlySummary()
+    {
+        var result = await HttpRepo.GetMonthlySummary();
+        if (result.isSuccess)
+        {
+            var xAxisLabels = new List<string>();
+            var purchaseSeries = new ChartSeries { Name = "Purchase", Data = [] };
+            var purchaseData = new List<double>();
+            var saleSeries = new ChartSeries { Name = "Sale", Data = [] };
+            var saleData = new List<double>();
+            var profitSeries = new ChartSeries { Name = "Profit", Data = [] };
+            var profitData = new List<double>();
+            foreach (var monthDetail in result.monthlySaleFigureViewDtos!)
+            {
+                xAxisLabels.Add(monthDetail.Month!);
+                purchaseData.Add(monthDetail.TotalPurchaseAmount);
+                saleData.Add(monthDetail.TotalSaleAmount);
+                profitData.Add(monthDetail.TotalProfitAmount);
+
+                if (monthDetail.TotalPurchaseAmount != 0 ||
+                    monthDetail.TotalSaleAmount != 0 ||
+                    monthDetail.TotalProfitAmount != 0)
+                    _hasSummaryData = true;
+            }
+
+            _xAxisLabels = xAxisLabels.ToArray();
+            purchaseSeries.Data = purchaseData.ToArray();
+            saleSeries.Data = saleData.ToArray();
+            profitSeries.Data = profitData.ToArray();
+
+            _series.Add(purchaseSeries);
+            _series.Add(saleSeries);
+            _series.Add(profitSeries);
+        }
+    }
+
+    async Task GetCustomersWithDebit()
+    {
+        var result = await HttpRepo.GetCustomersWithDebit();
+        if (result.isSuccess)
+        {
+            _totalDebitOfCustomer = result.customerDebitSummaryViewDto!.TotalDebits;
+            _customersWithDebits = result.customerDebitSummaryViewDto.CustomersWithDebits;
+        }
+    }
+
+    async Task GetFrequentCustomers()
+    {
+        var result = await HttpRepo.GetFrequentCustomers();
+        if (result.isSuccess)
+        {
+            _frequentCustomer = result.invoiceSaleForFrequentCustomerViewDtos!;
+        }
+    }
+
+    async Task GetTopSellingProducts()
+    {
+        var result = await HttpRepo.GetTopSellingProducts();
+        if (result.isSuccess)
+        {
+            _topSellingProducts = result.topSellingProductsViewDtos!;
+        }
+    }
+
+}

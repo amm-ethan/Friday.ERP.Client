@@ -1,0 +1,113 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Newtonsoft.Json
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+
+@inject IHttpRepository HttpRepo
+@inject IConfiguration Configuration
+@inject AuthenticationStateProvider AuthProvider
+@inject ISnackbar Snackbar
+
+@inherits LayoutComponentBase
+
+<MudThemeProvider/>
+<MudDialogProvider
+    FullWidth="true"
+    MaxWidth="MaxWidth.Small"
+    CloseButton="true"
+    DisableBackdropClick="true"
+    Position="DialogPosition.Center"
+    CloseOnEscapeKey="true"/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="0" Color="Color.Transparent">
+        <MudIconButton Icon="@Icons.Material.TwoTone.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="@DrawerToggle"/>
+        <MudSpacer/>
+        <MudBadge Color="Color.Primary" Overlap="true" Dot="true" Visible="@_hasNewNotification">
+            <MudMenu AnchorOrigin="Origin.BottomRight">
+                <ActivatorContent>
+                    <MudIconButton Icon="@Icons.Material.TwoTone.Notifications" Color="Color.Primary" Size="Size.Medium"/>
+                </ActivatorContent>
+                <ChildContent>
+                    <NotificationBox NotificationList="_notificationList"></NotificationBox>
+                </ChildContent>
+            </MudMenu>
+        </MudBadge>
+        <MudMenu Class="ml-4" AnchorOrigin="Origin.BottomRight">
+            <ActivatorContent>
+                <MudIconButton Icon="@Icons.Material.TwoTone.AccountCircle" Color="Color.Primary" Size="Size.Medium"/>
+            </ActivatorContent>
+            <ChildContent>
+                <ProfileBox OnClick="@Logout"></ProfileBox>
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Variant="DrawerVariant.Mini">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6"></MudText>
+        </MudDrawerHeader >
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            <MudPaper Elevation="0" class="d-flex px-6"
+                      Style="border-radius: 18px;background-color: whitesmoke;height: 90vh;overflow-X: hidden;overflow-y: scroll">
+                @Body
+            </MudPaper>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+    bool _hasNewNotification;
+
+    List<NotificationViewDto> _notificationList = [];
+    HubConnection? _hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await HttpRepo.GetAllNotifications();
+        if (result.isSuccess)
+        {
+            _notificationList = result.notificationViewDtos!;
+            StateHasChanged();
+        }
+
+        // WebSocket.
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var id = user.FindFirst(c => c.Type.Equals("id"));
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{Configuration["NotificationUrl"]!}notification-hub?userId={id}")
+            .Build();
+
+        _hubConnection.On<string>("ReceiveNotification", message =>
+        {
+            var messageObject = JsonConvert.DeserializeObject<NotificationViewDto>(message);
+            _hasNewNotification = true;
+            _notificationList.Add(messageObject!);
+            _ = _notificationList.OrderByDescending(c => c.SentAt);
+            Snackbar.Add($"{messageObject!.Heading}", Severity.Info);
+            StateHasChanged();
+        });
+
+        await _hubConnection.StartAsync();
+        await _hubConnection.InvokeAsync("GetConnectionId");
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    async Task Logout()
+    {
+        var result = await HttpRepo.Logout();
+        if (result)
+            Snackbar.Add("Logout Successful", Severity.Success);
+    }
+
+}

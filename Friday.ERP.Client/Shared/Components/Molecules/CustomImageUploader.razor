@@ -1,0 +1,22 @@
+<div class="d-flex flex-column">
+    <MudButton Variant="Variant.Outlined">
+        @if (ImageSrc == "")
+        {
+            <div style="width: 100px;height: 100px" class="d-flex align-center">
+                <MudText Typo="Typo.body2">
+                    Click to upload image
+                </MudText>
+            </div>
+        }
+        else
+        {
+            <MudImage Src="@ImageSrc" Width="100" Height="100" Elevation="0"/>
+        }
+    </MudButton>
+</div>
+
+@code {
+
+    [Parameter] public string? ImageSrc { get; set; }
+
+}

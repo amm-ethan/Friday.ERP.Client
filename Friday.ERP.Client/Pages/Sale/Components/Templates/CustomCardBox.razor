@@ -1,0 +1,42 @@
+<MudButton OnClick="@OnClick" FullWidth="true" Class="pa-4"
+           Style="background-color: whitesmoke;border-radius: 5px;"
+           DisableElevation="true">
+    <div style="width: 100%">
+        <div class="d-flex justify-space-between">
+            <MudText Typo="Typo.body2" Color="Color.Dark">@ProductCode</MudText>
+            <MudText Typo="Typo.body2" Color="ProductTotalStock < 10 ? Color.Error : Color.Primary">
+                @ProductTotalStock left
+            </MudText>
+        </div>
+        <div class="d-flex justify-center my-6">
+            <MudImage Src="@ProductImageSrc" Width="75" Height="75" Alt="Product" Elevation="0"/>
+        </div>
+        <div class="d-flex @(ProductPrice is not null ? "justify-space-between" : "justify-center") ">
+            <MudText Typo="Typo.body2" Color="Color.Dark">
+                @ProductName
+            </MudText>
+            @if (ProductPrice is not null)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Dark">
+                    @ProductPrice ks
+                </MudText>
+            }
+        </div>
+    </div>
+</MudButton>
+
+@code {
+
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter] public string? ProductCode { get; set; }
+
+    [Parameter] public int ProductTotalStock { get; set; }
+
+    [Parameter] public string? ProductImageSrc { get; set; }
+
+    [Parameter] public string? ProductName { get; set; }
+
+    [Parameter] public string? ProductPrice { get; set; }
+
+}

@@ -1,0 +1,28 @@
+<div class="d-flex flex-row justify-center">
+    <div class="align-self-center ">
+        <MudImage Src="@ImageSrc" Width="75" Height="75" Alt="Product Image" Elevation="0"/>
+    </div>
+    <div class="d-flex flex-column align-self-center ml-6">
+        <MudText Typo="Typo.subtitle1">
+            @ProductCode
+        </MudText>
+        <MudText Typo="Typo.caption">
+            @ProductName
+        </MudText>
+        <MudText Typo="Typo.caption">
+            @ProductTotalStock Stocks
+        </MudText>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public string? ImageSrc { get; set; }
+
+    [Parameter] public string? ProductCode { get; set; }
+
+    [Parameter] public string? ProductName { get; set; }
+
+    [Parameter] public string? ProductTotalStock { get; set; }
+
+}

@@ -1,0 +1,22 @@
+<CustomRowWithLabelsAndInput FirstText="@FirstText" Typo="@Typo">
+    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+        <MudText Typo="Typo.subtitle1" Align="@SecondTextAlign" Color="@SecondTextColor">
+            @SecondText
+        </MudText>
+    </MudItem>
+</CustomRowWithLabelsAndInput>
+
+
+@code {
+
+    [Parameter] public string? FirstText { get; set; }
+
+    [Parameter] public string? SecondText { get; set; }
+
+    [Parameter] public Typo Typo { get; set; } = Typo.body1;
+
+    [Parameter] public Align SecondTextAlign { get; set; } = Align.Start;
+
+    [Parameter] public Color SecondTextColor { get; set; } = Color.Dark;
+
+}

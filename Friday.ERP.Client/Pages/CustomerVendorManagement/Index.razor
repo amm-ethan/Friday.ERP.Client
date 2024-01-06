@@ -1,0 +1,262 @@
+﻿@page "/cv-management"
+
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Shared.RequestFeatures
+@using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.CustomerVendorManagement.Dialogs
+@using Friday.ERP.Client.Pages.UserManagement.Components
+
+@inject IHttpRepository HttpRepo
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+@layout MainLayout
+@attribute [Authorize]
+
+<CustomPageContainer>
+    <MudItem sm="12" md="12" lg="12" Class="align-self-center">
+        @if (_isMainLoading)
+        {
+            <CustomPageCardWithSkeleton/>
+        }
+        else
+        {
+            <CustomPageCard>
+                <MudTabs Elevation="0" Rounded="true" Centered="true">
+                    <CustomTab TitleText="Customer"
+                               IsLoading="@_isLoading"
+                               OnTabClick="@(() => ChangeTab(true))">
+                        <CustomHeader>
+                            <MudItem sm="3" Class="align-self-center">
+                                <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search"
+                                                         Label="Search" BindValue="@_searchTerm" ValueChanged="ChangeSearchValue"/>
+                            </MudItem>
+                            <MudItem sm="7">
+                            </MudItem>
+                            <MudItem sm="2" Class="align-self-center">
+                                <CustomButton OnClick="@OpenCustomerVendorCreateDialog">Create New</CustomButton>
+                            </MudItem>
+                        </CustomHeader>
+                        <CustomBody>
+                            <MudItem sm="12">
+                                @if (_customerVendorList.Count == 0)
+                                {
+                                    <MudItem sm="12">
+                                        <div class="d-flex d-column justify-center flex-grow-1" style="height: 54vh;">
+                                            <div class="align-self-center">
+                                                <MudText Typo="Typo.caption">No Customers Yet!</MudText>
+                                            </div>
+                                        </div>
+                                    </MudItem>
+                                }
+                                else
+                                {
+                                    <MudTable Elevation="0" Items="@_customerVendorList" RowsPerPage="10" Hover="true"
+                                              Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
+                                              FixedHeader="true" Height="54vh">
+                                        <HeaderContent>
+                                            <MudTh>#</MudTh>
+                                            <MudTh>Name</MudTh>
+                                            <MudTh>Phone</MudTh>
+                                            <MudTh>Email</MudTh>
+                                            <MudTh>Address</MudTh>
+                                            <MudTh>Total Credit Debit Left</MudTh>
+                                            <MudTh>Action</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd DataLabel="Name">@context.Code</MudTd>
+                                            <MudTd DataLabel="Name">@context.Name</MudTd>
+                                            <MudTd DataLabel="Phone">@(context.Phone ?? "N/A")</MudTd>
+                                            <MudTd DataLabel="Email">@(context.Email ?? "N/A")</MudTd>
+                                            <MudTd DataLabel="Address">@context.Address</MudTd>
+                                            <MudTd DataLabel="Total Credit Debit Left">@context.TotalCreditDebitLeft</MudTd>
+                                            <MudTd DataLabel="Action">
+                                                <CustomButton FullWidth="false" OnClick="@(() => OpenCustomerVendorUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
+                                                    Edit
+                                                </CustomButton>
+                                            </MudTd>
+                                        </RowTemplate>
+                                        <PagerContent>
+                                            <div class="d-flex justify-center">
+                                                <MudPagination ShowNextButton="true" ShowPreviousButton="true" SelectedChanged="ChangePage" Count="@_metaData.TotalPages" Class="pa-4"/>
+                                            </div>
+                                        </PagerContent>
+                                    </MudTable>
+                                }
+                            </MudItem>
+                        </CustomBody>
+                    </CustomTab>
+                    <CustomTab TitleText="Vendor"
+                               IsLoading="@_isLoading"
+                               OnTabClick="@(() => ChangeTab(false))">
+                        <CustomHeader>
+                            <MudItem sm="3" Class="align-self-center">
+                                <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search"
+                                                         Label="Search" BindValue="@_searchTerm" ValueChanged="ChangeSearchValue"/>
+                            </MudItem>
+                            <MudItem sm="7">
+                            </MudItem>
+                            <MudItem sm="2" Class="align-self-center">
+                                <CustomButton OnClick="@OpenCustomerVendorCreateDialog">Create New</CustomButton>
+                            </MudItem>
+                        </CustomHeader>
+                        <CustomBody>
+                            <MudItem sm="12">
+                                @if (_customerVendorList.Count == 0)
+                                {
+                                    <MudItem sm="12">
+                                        <div class="d-flex d-column justify-center flex-grow-1" style="height: 54vh;">
+                                            <div class="align-self-center">
+                                                <MudText Typo="Typo.caption">No Vendors Yet!</MudText>
+                                            </div>
+                                        </div>
+                                    </MudItem>
+                                }
+                                else
+                                {
+                                    <MudTable Elevation="0" Items="@_customerVendorList" RowsPerPage="10" Hover="true"
+                                              Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info"
+                                              FixedHeader="true" Height="54vh">
+                                        <HeaderContent>
+                                            <MudTh>#</MudTh>
+                                            <MudTh>Name</MudTh>
+                                            <MudTh>Phone</MudTh>
+                                            <MudTh>Email</MudTh>
+                                            <MudTh>Address</MudTh>
+                                            <MudTh>Total Credit Debit Left</MudTh>
+                                            <MudTh>Action</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd DataLabel="Name">@context.Code</MudTd>
+                                            <MudTd DataLabel="Name">@context.Name</MudTd>
+                                            <MudTd DataLabel="Phone">@(context.Phone ?? "N/A")</MudTd>
+                                            <MudTd DataLabel="Email">@(context.Email ?? "N/A")</MudTd>
+                                            <MudTd DataLabel="Address">@context.Address</MudTd>
+                                            <MudTd DataLabel="Total Credit Debit Left">@context.TotalCreditDebitLeft</MudTd>
+                                            <MudTd DataLabel="Action">
+                                                <CustomButton FullWidth="false" OnClick="@(() => OpenCustomerVendorUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
+                                                    Edit
+                                                </CustomButton>
+                                            </MudTd>
+                                        </RowTemplate>
+                                        <PagerContent>
+                                            <div class="d-flex justify-center">
+                                                <MudPagination ShowNextButton="true" ShowPreviousButton="true" SelectedChanged="ChangePage" Count="@_metaData.TotalPages" Class="pa-4"/>
+                                            </div>
+                                        </PagerContent>
+                                    </MudTable>
+                                }
+                            </MudItem>
+                        </CustomBody>
+                    </CustomTab>
+                </MudTabs>
+            </CustomPageCard>
+        }
+    </MudItem >
+</CustomPageContainer>
+
+@code {
+    bool _isMainLoading;
+    bool _isLoading;
+
+    List<CustomerVendorViewDto> _customerVendorList = [];
+    MetaData _metaData = new();
+    string? _searchTerm;
+    readonly int _pageSize = 10;
+
+    bool _isCustomer = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        await GetCustomerVendorData();
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task ChangeSearchValue(string value)
+    {
+        _searchTerm = value;
+        await GetCustomerVendorData();
+    }
+
+    async Task ChangePage(int page)
+    {
+        _metaData.CurrentPage = page;
+        await GetCustomerVendorData();
+    }
+
+    async Task GetCustomerVendorData(bool isCustomer = true)
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var result = isCustomer
+            ? await HttpRepo.GetAllCustomers(
+                new CustomerVendorParameter { PageSize = _pageSize, PageNumber = _metaData.CurrentPage, SearchTerm = _searchTerm })
+            : await HttpRepo.GetAllVendors(
+                new CustomerVendorParameter { PageSize = _pageSize, PageNumber = _metaData.CurrentPage, SearchTerm = _searchTerm });
+
+        if (result.isSuccess)
+        {
+            _customerVendorList = result.customerVendorViewDtos!.Items!;
+            _metaData = result.customerVendorViewDtos!.MetaData!;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task ChangeTab(bool isCustomer = true)
+    {
+        _isCustomer = isCustomer;
+        _searchTerm = null;
+        await GetCustomerVendorData(isCustomer);
+    }
+
+    async Task OpenCustomerVendorCreateDialog()
+    {
+        var options = new DialogOptions();
+        var parameters = new DialogParameters<CustomerVendorCreateDialog>
+        {
+            { x => x.IsCustomer, _isCustomer }
+        };
+        var dialog = await DialogService.ShowAsync<CustomerVendorCreateDialog>(
+            _isCustomer ? "Create New Customer" : "Create New Vendor", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            Snackbar.Add(_isCustomer ? "Customer Created!" : "Vendor Created!", Severity.Success);
+            await GetCustomerVendorData(_isCustomer);
+        }
+    }
+
+    async Task OpenCustomerVendorUpdateDialog(CustomerVendorViewDto customerVendorView)
+    {
+        var options = new DialogOptions();
+        var parameters = new DialogParameters<CustomerVendorUpdateDialog>
+        {
+            { x => x.IsCustomer, _isCustomer },
+            { x => x.Guid, customerVendorView.Guid },
+            { x => x.Code, customerVendorView.Code },
+            { x => x.Name, customerVendorView.Name },
+            { x => x.Phone, customerVendorView.Phone },
+            { x => x.Email, customerVendorView.Email },
+            { x => x.Address, customerVendorView.Address },
+            { x => x.TotalCreditDebit, customerVendorView.TotalCreditDebitLeft }
+        };
+        var dialog = await DialogService.ShowAsync<CustomerVendorUpdateDialog>(
+            _isCustomer ? "Update Customer" : "Update Vendor",
+            parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            Snackbar.Add(_isCustomer ? "Customer Updated!" : "Vendor Updated!", Severity.Success);
+            await GetCustomerVendorData(_isCustomer);
+        }
+    }
+
+}

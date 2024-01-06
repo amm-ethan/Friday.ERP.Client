@@ -1,0 +1,24 @@
+﻿<MudTabPanel Text="@TitleText" OnClick="@OnTabClick">
+    <MudProgressLinear Color="Color.Primary" Class="mt-6 mb-4" Indeterminate="@IsLoading"/>
+    <MudGrid Spacing="2">
+        @CustomHeader
+    </MudGrid>
+    <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" 
+             Style=@($"overflow-y: auto;height: {Height}; align-content: baseline;")>
+        @CustomBody
+    </MudGrid>
+</MudTabPanel>
+
+@code {
+    [Parameter] public RenderFragment? CustomHeader { get; set; }
+
+    [Parameter] public RenderFragment? CustomBody { get; set; }
+
+    [Parameter] public EventCallback<MouseEventArgs> OnTabClick { get; set; }
+
+    [Parameter] public string? TitleText { get; set; }
+
+    [Parameter] public bool IsLoading { get; set; }
+
+    [Parameter] public string? Height { get; set; } = "auto";
+}

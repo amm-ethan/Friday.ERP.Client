@@ -1,0 +1,242 @@
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+
+@inject IHttpRepository HttpRepo
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+@if (_isMainLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
+        </DialogContent>
+        <DialogActions>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <MudText Typo="Typo.subtitle1">
+                <b>Remove Old Prices</b>
+            </MudText>
+            <MudGrid Spacing="2" Class="mt-4">
+                <CustomRowWithLabelsAndInput FirstText="Price">
+                    <MudItem sm="6" Class="align-self-center">
+                        <MudSelect
+                            @bind-Value="SelectedPrice"
+                            Margin="Margin.Dense" Dense="true"
+                            Variant="Variant.Outlined">
+                            @foreach (var price in _oldPrices)
+                            {
+                                var label = $"{price.SalePrice} mmk";
+                                if (price.IsWholeSale is true)
+                                {
+                                    label += " (Wholesale)";
+                                }
+
+                                <MudSelectItem Value="@(price.SalePrice.ToString())">
+                                    @label
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem sm="1" Class="align-self-center">
+                        <MudIconButton Disabled="@_isLoading" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined"
+                                       OnClick="@DeletePrice" Color="Color.Error" Size="Size.Medium"/>
+                    </MudItem>
+                </CustomRowWithLabelsAndInput>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudText Typo="Typo.subtitle1">
+                <b>Create New Price</b>
+            </MudText>
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudGrid Spacing="2" Class="mt-4">
+                    <CustomRowWithLabelsAndInput FirstText="Is Wholesale">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudCheckBox T="bool" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"></MudCheckBox>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <MudItem sm="5" md="5" lg="5" Class="align-self-start">
+                        <MudText Class="mt-3" Typo="@Typo.body1">
+                            New Price
+                        </MudText>
+                    </MudItem>
+                    <MudItem sm="6" Class="align-self-center">
+                        <MudTextField T="long?" @bind-Value="@NewPrice"
+                                      HelperText="@_priceHelperText"
+                                      FullWidth="true" InputType="InputType.Number"
+                                      Margin="Margin.Dense" Variant="Variant.Outlined">
+                        </MudTextField>
+                    </MudItem>
+                    <MudItem sm="1" Class="align-self-start">
+                        <MudIconButton Class="mt-1" Disabled="@_isLoading" Icon="@Icons.Material.Filled.Save" Variant="Variant.Outlined"
+                                       OnClick="@CreatePrice" Color="Color.Primary" Size="Size.Medium"/>
+                    </MudItem>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+            </MudForm>
+        </DialogContent>
+        <DialogActions>
+            <CustomButton Color="Color.Default" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    @("Cancel")
+                }
+            </CustomButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public Guid Guid { get; set; }
+    [Parameter] public string? RawImage { get; set; }
+    [Parameter] public string? Code { get; set; }
+    [Parameter] public int Stock { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? CategoryName { get; set; }
+
+    MudForm? _form;
+    bool _success;
+    string[] _errors = [];
+
+    List<ProductPriceViewDto> _oldPrices = [];
+    SuggestedProductPriceViewDto? _suggestPrice;
+    string _priceHelperText = "No Suggestion Yet!";
+
+    string? SelectedPrice { get; set; }
+    bool IsWholesale { get; set; }
+    long? NewPrice { get; set; }
+
+    bool _isMainLoading;
+    bool _isLoading;
+
+    void IsWholeSaleValueChanged(bool value)
+    {
+        IsWholesale = value;
+        if (IsWholesale)
+            _priceHelperText = _suggestPrice!.SalePriceForWholeSale != -1 ? $"Suggested Price is {_suggestPrice.SalePriceForWholeSale}" : "No Suggestion Yet!";
+        else
+            _priceHelperText = _suggestPrice!.SalePrice != -1 ? $"Suggested Price is {_suggestPrice.SalePrice}" : "No Suggestion Yet!";
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        await GetProductPrices();
+
+        var result = await HttpRepo.SuggestProductPrice(Guid);
+        if (result.isSuccess)
+        {
+            _suggestPrice = result.suggestedProductPriceViewDto!;
+            _priceHelperText = _suggestPrice.SalePrice != -1 ? $"Suggested Price is {_suggestPrice.SalePrice}" : "No Suggestion Yet!";
+        }
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    async Task GetProductPrices()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.GetProductPriceHistory(Guid);
+        if (result.isSuccess)
+        {
+            _oldPrices = result.productPriceViewDtos!;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task DialogCancel()
+    {
+        MudDialog!.Cancel();
+
+        var parameters = new DialogParameters<InventoryProductDialog>
+        {
+            {x => x.IsUpdate ,true},
+            { x => x.Guid, Guid },
+            { x => x.RawImage, RawImage },
+            { x => x.Code, Code },
+            { x => x.Stock, Stock },
+            { x => x.Name, Name },
+            { x => x.CategoryName, CategoryName }
+        };
+        var options = new DialogOptions();
+        await DialogService.ShowAsync<InventoryProductDialog>("Update Product", parameters, options);
+    }
+
+    async Task CreatePrice()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            var result = await HttpRepo.UpdateProductPrice(
+                Guid,
+                new ProductPriceCreateDto(
+                    IsWholesale,
+                    NewPrice ?? 0
+                )
+            );
+            if (result.isSuccess)
+            {
+                Snackbar.Add("Price Created!", Severity.Success);
+                NewPrice = null;
+                await GetProductPrices();
+            }
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task DeletePrice()
+    {
+        _isLoading = true;
+        StateHasChanged();
+        var selectedPriceGuid = _oldPrices
+            .Where(c => c.SalePrice == long.Parse(SelectedPrice!))
+            .Select(c => c.Guid)
+            .FirstOrDefault();
+        var result = await HttpRepo.DisableProductPrice(
+            Guid, selectedPriceGuid
+        );
+        if (result)
+        {
+            SelectedPrice = null;
+            Snackbar.Add("Price Deleted!", Severity.Success);
+
+            await GetProductPrices();
+        }
+
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+
+}

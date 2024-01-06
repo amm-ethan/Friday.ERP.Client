@@ -1,0 +1,19 @@
+<MudPaper Class="@ClassParameter" Elevation="0" Height="100%" Style="@StyleParameter">
+    @ChildContent
+</MudPaper>
+
+@code {
+
+    [Parameter] public string? ClassParameter { get; set; }
+
+    [Parameter] public string? StyleParameter { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ClassParameter += " d-flex flex-column pa-8";
+        StyleParameter += "border-radius: 18px;";
+    }
+
+}

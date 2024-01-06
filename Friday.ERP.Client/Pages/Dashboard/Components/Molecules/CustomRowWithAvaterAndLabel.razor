@@ -1,0 +1,29 @@
+<MudPaper Elevation="0" class="d-flex justify-space-between mt-2 pa-2" Style="border-radius: 10px;background-color: whitesmoke">
+    <div class="d-flex">
+        <MudAvatar Class="align-self-center mr-2" Size="Size.Medium" Color="@AvatarColor">@AvatarText</MudAvatar>
+        @if (ExtraText is not null)
+        {
+            <MudChip Class="align-self-center mr-2" Variant="Variant.Outlined" Label="true" DisableRipple="true" Size="Size.Small" Style=@($"color: {ExtraColor};border-color: {ExtraColor}")>@ExtraText</MudChip>
+        }
+        <MudText Class="align-self-center" Typo="Typo.body1">@MainText</MudText>
+    </div>
+    <MudText Class="align-self-center" Typo="Typo.body1">
+        @SubText
+    </MudText>
+</MudPaper>
+
+@code {
+
+    [Parameter] public string? AvatarText { get; set; }
+
+    [Parameter] public Color AvatarColor { get; set; } = Color.Primary;
+
+    [Parameter] public string? MainText { get; set; }
+
+    [Parameter] public string? SubText { get; set; }
+
+    [Parameter] public string? ExtraText { get; set; }
+
+    [Parameter] public string? ExtraColor { get; set; }
+
+}

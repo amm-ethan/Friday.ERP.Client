@@ -1,0 +1,18 @@
+<MudTextField T="string" Value="BindValue" ValueChanged="@ValueChanged" Immediate="true"
+              Class="@ClassParameter" AdornmentIcon="@Icon" Label="@Label" Adornment="Adornment.End"
+              Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="true">
+</MudTextField>
+
+@code {
+
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter] public string? BindValue { get; set; }
+
+    [Parameter] public string Icon { get; set; } = Icons.Material.TwoTone.Search;
+
+    [Parameter] public string? Label { get; set; }
+
+    [Parameter] public string? ClassParameter { get; set; }
+
+}

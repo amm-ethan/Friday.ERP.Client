@@ -1,0 +1,178 @@
+@using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.Sale.Dialogs.Components.Molecules
+@using Friday.ERP.Shared.DataTransferObjects
+
+@inject IHttpRepository HttpRepo
+@inject ISnackbar Snackbar
+
+@if (_isMainLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
+        </DialogContent>
+        <DialogActions>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <MudGrid Spacing="2">
+                <MudItem sm="12" md="12" lg="12">
+                    <ImageHolder ImageSrc="@(Image is not null ? $"data:image/png;base64, {Image!}" : "product_png/placeholder.png")"
+                                 ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()">
+                    </ImageHolder>
+                </MudItem>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4 mb-4"></MudDivider>
+            <MudGrid Spacing="2">
+                <CustomRowWithTwoLabels FirstText="Last Purchase Price" SecondText="@($"{_lastPrice.ToString()} mmk")"></CustomRowWithTwoLabels>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudGrid Spacing="2">
+                <CustomRowWithLabelsAndInput FirstText="Purchase Price">
+                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                        <MudTextField
+                            @ref="PurchasePriceTextField"
+                            T="long?" Required="true"
+                            ValueChanged="@ValueChangedPrice"
+                            Immediate="true"
+                            FullWidth="true" InputType="InputType.Number"
+                            Margin="Margin.Dense" Variant="Variant.Outlined">
+                        </MudTextField>
+                    </MudItem>
+                </CustomRowWithLabelsAndInput>
+                <CustomRowWithLabelsAndInput FirstText="Quantity">
+                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                        <MudTextField
+                            @ref="QuantityTextField"
+                            T="int" Required="true"
+                            ValueChanged="@ValueChangedQuantity"
+                            Immediate="true"
+                            FullWidth="true" InputType="InputType.Number"
+                            Margin="Margin.Dense" Variant="Variant.Outlined">
+                        </MudTextField>
+                    </MudItem>
+                </CustomRowWithLabelsAndInput>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudGrid Spacing="2">
+                <CustomRowWithTwoLabels FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomRowWithTwoLabels>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+        </DialogContent>
+        <DialogActions>
+            <CustomButton Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton>
+            @if (IsUpdate)
+            {
+                <CustomButton Color="Color.Error" OnClick="@Delete" Variant="Variant.Text" FullWidth="false">Remove</CustomButton>
+            }
+            <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">
+                @(IsUpdate ? "Update" : "Add to Cart")
+            </CustomButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public bool IsUpdate { get; set; }
+
+    [Parameter] public Guid Guid { get; set; }
+    [Parameter] public string? Image { get; set; }
+    [Parameter] public string? Code { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public int Stock { get; set; }
+
+    [Parameter] public long Price { get; set; }
+    [Parameter] public int Quantity { get; set; } = 1;
+    [Parameter] public long TotalPrice { get; set; }
+
+    bool _isMainLoading;
+    long? _lastPrice;
+
+    MudTextField<long?> PurchasePriceTextField { get; set; } = new();
+    MudTextField<int> QuantityTextField { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.GetLastPurchasedPriceOfProduct(Guid);
+        if (result.isSuccess)
+        {
+            _lastPrice = result!.productPurchasePriceViewDto!.BuyPrice;
+        }
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        QuantityTextField.Text = Quantity.ToString();
+        QuantityTextField.Value = Quantity;
+        
+        if (IsUpdate)
+        {
+            PurchasePriceTextField.Text = Price.ToString();
+            PurchasePriceTextField.Value = Price;
+            
+        }
+    }
+
+    void ValueChangedQuantity(int value)
+    {
+        Quantity = value;
+        TotalPrice = Quantity * Price;
+        StateHasChanged();
+    }
+
+    void ValueChangedPrice(long? value)
+    {
+        Price = value ?? 0;
+        TotalPrice = Quantity * Price;
+        StateHasChanged();
+    }
+
+    void Submit()
+    {
+        if (TotalPrice == 0)
+        {
+            Snackbar.Add("Total Price Must Not Be 0 !", Severity.Error);
+            return;
+        }
+
+        MudDialog!.Close(DialogResult.Ok(new ProductPurchaseAddToCartViewDto
+        {
+            ProductGuid = Guid,
+            Image = Image,
+            Code = Code,
+            Name = Name,
+            Stock = Stock,
+            BuyPrice = Price,
+            Quantity = Quantity,
+            TotalPrice = TotalPrice
+        }));
+    }
+
+    void Delete()
+    {
+        MudDialog!.Close(DialogResult.Ok(Guid));
+    }
+
+    void Cancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+}

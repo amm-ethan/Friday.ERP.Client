@@ -1,0 +1,323 @@
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+
+@inject IHttpRepository HttpRepo
+@inject IDialogService DialogService
+
+@if (_isMainLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
+        </DialogContent>
+        <DialogActions>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                <MudGrid Spacing="2">
+                    <MudItem sm="12" md="12" lg="12" Class="d-flex justify-center">
+                        <div class="d-flex flex-column">
+                            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+                                <ButtonTemplate>
+                                    <MudButton Variant="Variant.Outlined"
+                                               HtmlTag="label"
+                                               for="@context.Id">
+                                        @if (_image is null)
+                                        {
+                                            <div style="width: 100px;height: 100px" class="d-flex align-center">
+                                                <MudText Typo="Typo.body2">
+                                                    Click to upload image
+                                                </MudText>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <MudImage Src="@_image" Width="100" Height="100" Elevation="0"/>
+                                        }
+                                    </MudButton>
+                                </ButtonTemplate>
+                            </MudFileUpload>
+                        </div>
+                    </MudItem>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    @if (IsUpdate)
+                    {
+                        <CustomRowWithTwoLabels FirstText="Code" SecondText="@Code"/>
+                    }
+                    else
+                    {
+                        <CustomRowWithLabelsAndInput FirstText="Code">
+                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                                <MudTextField T="string" @bind-Value="@Code" Required="true"
+                                              FullWidth="true" InputType="InputType.Text"
+                                              Margin="Margin.Dense" Variant="Variant.Outlined">
+                                </MudTextField>
+                            </MudItem>
+                        </CustomRowWithLabelsAndInput>
+                    }
+                    <CustomRowWithLabelsAndInput FirstText="Category">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudAutocomplete T="string?"
+                                             @ref="CategoryAutoComplete"
+                                             Required=@(!IsUpdate)
+                                             Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"
+                                             Dense="true"
+                                             FullWidth="true"
+                                             SearchFunc="@CategorySearch"
+                                             ShowProgressIndicator="@_isCategorySearchLoading"
+                                             ValueChanged="@CategoryChange"
+                                             Clearable="true"
+                                             OnClearButtonClick="@CategoryClear">
+                            </MudAutocomplete>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelsAndInput FirstText="Name">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="string" @bind-Value="@Name" Required=@(!IsUpdate)
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudGrid Spacing="2">
+                    <CustomRowWithLabelsAndInput FirstText="Stock">
+                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                            <MudTextField T="int" @bind-Value="@Stock" Required=@(!IsUpdate)
+                                          FullWidth="true" InputType="InputType.Text"
+                                          Margin="Margin.Dense" Variant="Variant.Outlined">
+                            </MudTextField>
+                        </MudItem>
+                    </CustomRowWithLabelsAndInput>
+                </MudGrid>
+                <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+            </MudForm>
+        </DialogContent>
+        <DialogActions>
+            <CustomButton Color="Color.Default" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    @("Cancel")
+                }
+            </CustomButton>
+            @if (IsUpdate)
+            {
+                <CustomButton Color="Color.Info" OnClick="@DialogSubmitPrice" Variant="Variant.Text" FullWidth="false">
+                    @if (_isLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                    }
+                    else
+                    {
+                        @("Manage Price")
+                    }
+                </CustomButton>
+            }
+            <CustomButton Color="Color.Primary" OnClick=@(IsUpdate ? DialogUpdate : DialogSubmit) Variant="Variant.Text" FullWidth="false">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                }
+                else
+                {
+                    if (IsUpdate)
+                    {
+                        @("Update")
+                    }
+                    else
+                    {
+                        @("Create")
+                    }
+                }
+            </CustomButton>
+        </DialogActions>
+    </MudDialog>
+}
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public bool IsUpdate { get; set; }
+    [Parameter] public Guid Guid { get; set; }
+
+    [Parameter] public string? RawImage { get; set; }
+    [Parameter] public string? Code { get; set; }
+    [Parameter] public int Stock { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? CategoryName { get; set; }
+
+    Guid? CategoryGuid { get; set; }
+    MudAutocomplete<string?> CategoryAutoComplete { get; set; } = new();
+
+    MudForm? _form;
+    bool _success;
+    string[] _errors = [];
+
+    bool _isMainLoading;
+    bool _isLoading;
+    bool _isCategorySearchLoading;
+    string? _image;
+
+    List<CategoryViewDto> _categories = [];
+
+    void CategoryChange(string? value)
+    {
+        if (value is not null)
+            CategoryGuid = _categories.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
+    }
+
+    async Task<IEnumerable<string>> CategorySearch(string? value)
+    {
+        await Task.Delay(5);
+        return await GetCategoryProductData(value);
+    }
+
+    async Task<IEnumerable<string>> GetCategoryProductData(string? value)
+    {
+        _isCategorySearchLoading = true;
+        StateHasChanged();
+
+        var result = await HttpRepo.SearchCategories(value);
+        if (result.isSuccess)
+        {
+            _categories = result.categoryViewDtos!;
+        }
+
+        _isCategorySearchLoading = false;
+        StateHasChanged();
+        return _categories.Select(c => c.Name);
+    }
+
+    async Task CategoryClear()
+    {
+        CategoryGuid = null;
+        await CategoryAutoComplete.Clear();
+    }
+
+    async Task UploadFiles(IBrowserFile file)
+    {
+        using var memoryStream = new MemoryStream();
+        await file.OpenReadStream().CopyToAsync(memoryStream);
+        var imageBytes = memoryStream.ToArray();
+        RawImage = Convert.ToBase64String(imageBytes);
+        _image = $"data:image/png;base64, {RawImage}";
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isMainLoading = true;
+        StateHasChanged();
+
+        await GetCategoryProductData(null);
+
+        _isMainLoading = false;
+        StateHasChanged();
+    }
+
+    void DialogCancel()
+    {
+        MudDialog!.Cancel();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (IsUpdate)
+        {
+            CategoryGuid = _categories.Where(x => x.Name == CategoryName).Select(c => c.Guid).SingleOrDefault();
+            CategoryAutoComplete.Text = CategoryName;
+            CategoryAutoComplete.Value = CategoryName!;
+            if (RawImage is not null)
+            {
+                _image = $"data:image/png;base64, {RawImage}";
+            }
+        }
+    }
+
+    async Task DialogUpdate()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            var result = await HttpRepo.UpdateProduct(Guid, new ProductUpdateDto(
+                    CategoryGuid,
+                    Name!,
+                    Stock,
+                    RawImage
+                )
+            );
+            if (result.isSuccess)
+            {
+                MudDialog!.Close(DialogResult.Ok(true));
+            }
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task DialogSubmit()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            var result = await HttpRepo.CreateProduct(new ProductCreateDto(
+                    Code!,
+                    CategoryGuid ?? Guid.Empty,
+                    Name!,
+                    Stock,
+                    RawImage
+                )
+            );
+            if (result.isSuccess)
+            {
+                MudDialog!.Close(DialogResult.Ok(true));
+            }
+        }
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    async Task DialogSubmitPrice()
+    {
+        MudDialog!.Cancel();
+
+        var parameters = new DialogParameters<InventoryPriceCreateDialog>
+        {
+            { x => x.Guid, Guid },
+            { x => x.RawImage, RawImage },
+            { x => x.Code, Code },
+            { x => x.Stock, Stock },
+            { x => x.Name, Name },
+            { x => x.CategoryName, CategoryName }
+        };
+        var options = new DialogOptions();
+        await DialogService.ShowAsync<InventoryPriceCreateDialog>("Management Price", parameters, options);
+    }
+
+}

@@ -1,0 +1,44 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudGrid Spacing="2">
+            <CustomRowWithTwoLabels FirstText="Address" SecondText="@Address"></CustomRowWithTwoLabels>
+            <CustomRowWithTwoLabels FirstText="Contact Person" SecondText="@ContactPerson"></CustomRowWithTwoLabels>
+            <CustomRowWithTwoLabels FirstText="Contact Phone" SecondText="@ContactPhone"></CustomRowWithTwoLabels>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2">
+            <CustomRowWithTwoLabels FirstText="Delivery Service Name" SecondText="@DeliveryServiceName"></CustomRowWithTwoLabels>
+            <CustomRowWithTwoLabels FirstText="Contact Person" SecondText="@DeliveryContactPerson"></CustomRowWithTwoLabels>
+            <CustomRowWithTwoLabels FirstText="Contact Phone" SecondText="@DeliveryContactPhone"></CustomRowWithTwoLabels>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2">
+            <CustomRowWithTwoLabels FirstText="Remark" SecondText="@Remark"></CustomRowWithTwoLabels>
+              <CustomRowWithTwoLabels FirstText="Delivery Fees" SecondText="@DeliveryFees.ToString()"></CustomRowWithTwoLabels>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+    </DialogContent>
+    <DialogActions>
+        <CustomButton OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false">Back</CustomButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public bool IsUpdate { get; set; }
+    [Parameter] public string? Address { get; set; }
+    [Parameter] public string? ContactPerson { get; set; }
+    [Parameter] public string? ContactPhone { get; set; }
+    [Parameter] public string? DeliveryServiceName { get; set; }
+    [Parameter] public string? DeliveryContactPerson { get; set; }
+    [Parameter] public string? DeliveryContactPhone { get; set; }
+    [Parameter] public string? Remark { get; set; }
+    [Parameter] public long? DeliveryFees { get; set; }
+
+    void Back()
+    {
+        MudDialog!.Cancel();
+    }
+}
