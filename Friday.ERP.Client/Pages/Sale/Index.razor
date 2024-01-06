@@ -1,5 +1,4 @@
 ﻿@page "/sale"
-
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Sale.Components.Templates
@@ -397,7 +396,7 @@
             { x => x.SelectedPrice, productSaleAddToCart.SalePrice },
             { x => x.SelectedPriceIsWholeSale, productSaleAddToCart.SalePriceIsWholeSale },
             { x => x.Quantity, productSaleAddToCart.Quantity },
-            { x => x.TotalPrice, productSaleAddToCart.TotalPrice },
+            { x => x.TotalPrice, productSaleAddToCart.TotalPrice }
         };
 
         var options = new DialogOptions();

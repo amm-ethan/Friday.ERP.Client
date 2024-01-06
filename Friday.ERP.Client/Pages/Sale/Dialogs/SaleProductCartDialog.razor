@@ -1,7 +1,6 @@
-@using Friday.ERP.Client.Pages.Sale.Dialogs.Components.Molecules
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
-
+@using Friday.ERP.Client.Pages.Sale.Dialogs.Components.Molecules
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
 
@@ -35,7 +34,7 @@ else
                         <MudSelect
                             T="long"
                             @ref="PriceSelect"
-                            ValueChanged="@((e) => ValueChangedPrice(e))"
+                            ValueChanged="@(e => ValueChangedPrice(e))"
                             Margin="Margin.Dense" Dense="true"
                             Variant="Variant.Outlined">
                             @foreach (var price in _oldPrices)
@@ -113,10 +112,10 @@ else
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        
+
         QuantityTextField.Text = Quantity.ToString();
         QuantityTextField.Value = Quantity;
-        
+
         if (IsUpdate)
         {
             var label = $"{SelectedPrice} mmk";
@@ -130,7 +129,7 @@ else
         }
         else
         {
-           await PriceSelect.Clear();
+            await PriceSelect.Clear();
         }
     }
 
@@ -147,12 +146,12 @@ else
             .Where(c => c.SalePrice == value)
             .Select(c => c.Guid)
             .SingleOrDefault();
-        
-        SelectedPriceIsWholeSale= _oldPrices
+
+        SelectedPriceIsWholeSale = _oldPrices
             .Where(c => c.SalePrice == value)
             .Select(c => c.IsWholeSale)
             .SingleOrDefault() ?? false;
-        
+
         SelectedPrice = value;
         TotalPrice = Quantity * SelectedPrice;
         StateHasChanged();

@@ -569,7 +569,7 @@ public class HttpRepository(
         try
         {
             var response =
-                await client.PostAsJsonAsync($"invoice-management/sales", invoiceSaleCreateDto);
+                await client.PostAsJsonAsync("invoice-management/sales", invoiceSaleCreateDto);
             return response.IsSuccessStatusCode ? (true, await response.Content.ReadAsStreamAsync()) : (false, null);
         }
         catch (Exception)

@@ -155,9 +155,9 @@ public interface IHttpRepository
 
     public Task<(bool isSuccess, Stream? stream)>
         CreateSaleInvoice(InvoiceSaleCreateDto invoiceSaleCreateDto);
-    
+
     public Task<(bool isSuccess, Stream? stream)>
         DownloadSaleInvoice(Guid guid);
-    
+
     #endregion
 }

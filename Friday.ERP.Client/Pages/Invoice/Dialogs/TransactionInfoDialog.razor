@@ -12,9 +12,10 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
             <CustomRowWithTwoLabels FirstText="Paid Total" SecondText="@PaidTotal.ToString()"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Credit / Debit Left" 
+            <CustomRowWithTwoLabels FirstText="Credit / Debit Left"
                                     SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Dark)"
-                                    SecondText="@CreditDebitLeft.ToString()"></CustomRowWithTwoLabels>
+                                    SecondText="@CreditDebitLeft.ToString()">
+            </CustomRowWithTwoLabels>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
@@ -25,7 +26,8 @@
         {
             <MudGrid Spacing="2">
                 <CustomRowWithTwoLabels FirstText="IsPaid"
-                                        SecondText="@(IsPaid)"></CustomRowWithTwoLabels>
+                                        SecondText="@(IsPaid)">
+                </CustomRowWithTwoLabels>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
         }
@@ -47,7 +49,7 @@
     [Parameter] public long? CreditDebitLeft { get; set; }
     [Parameter] public string? Remark { get; set; }
     [Parameter] public string? IsPaid { get; set; }
-    
+
 
     void Back()
     {

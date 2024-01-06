@@ -1,13 +1,12 @@
-﻿@using Microsoft.AspNetCore.SignalR.Client
-@using Newtonsoft.Json
-@using Friday.ERP.Shared.DataTransferObjects
-@using Friday.ERP.Client.Data
-
-@inject IHttpRepository HttpRepo
+﻿@inject IHttpRepository HttpRepo
 @inject IConfiguration Configuration
 @inject AuthenticationStateProvider AuthProvider
 @inject ISnackbar Snackbar
 
+@using Microsoft.AspNetCore.SignalR.Client
+@using Newtonsoft.Json
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
 @inherits LayoutComponentBase
 
 <MudThemeProvider/>

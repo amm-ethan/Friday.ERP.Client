@@ -1,5 +1,4 @@
 ﻿@page "/purchase"
-
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Purchase.Dialogs
@@ -314,7 +313,7 @@
             { x => x.Stock, productPurchaseAddToCart.Stock },
             { x => x.Price, productPurchaseAddToCart.BuyPrice },
             { x => x.Quantity, productPurchaseAddToCart.Quantity },
-            { x => x.TotalPrice, productPurchaseAddToCart.TotalPrice },
+            { x => x.TotalPrice, productPurchaseAddToCart.TotalPrice }
         };
 
         var options = new DialogOptions();

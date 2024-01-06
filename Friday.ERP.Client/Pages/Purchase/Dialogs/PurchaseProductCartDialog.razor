@@ -1,7 +1,6 @@
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Sale.Dialogs.Components.Molecules
 @using Friday.ERP.Shared.DataTransferObjects
-
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
 
@@ -118,15 +117,14 @@ else
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        
+
         QuantityTextField.Text = Quantity.ToString();
         QuantityTextField.Value = Quantity;
-        
+
         if (IsUpdate)
         {
             PurchasePriceTextField.Text = Price.ToString();
             PurchasePriceTextField.Value = Price;
-            
         }
     }
 

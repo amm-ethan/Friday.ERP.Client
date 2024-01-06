@@ -1,6 +1,5 @@
 ﻿@using Friday.ERP.Client.Data
 @using Friday.ERP.Shared.DataTransferObjects
-
 @inject IHttpRepository HttpRepo
 
 <MudDialog>
@@ -12,13 +11,12 @@
                         <MudPaper Elevation="0" Style="@($"border: {CategoryColor}; background-color: {CategoryColor}")" Class="pa-2">&nbsp;</MudPaper>
                     </MudItem>
                     <MudItem sm="5" md="5" lg="5">
-                        <MudColorPicker Required=@(!IsUpdate) 
-                                        @bind-Text="CategoryColor" Margin="Margin.Dense" Variant="Variant.Outlined" ColorPickerView="ColorPickerView.Palette"/>
+                        <MudColorPicker Required="@(!IsUpdate)"@bind-Text="CategoryColor" Margin="Margin.Dense" Variant="Variant.Outlined" ColorPickerView="ColorPickerView.Palette"/>
                     </MudItem>
                 </CustomRowWithLabelsAndInput>
                 <CustomRowWithLabelsAndInput FirstText="Category Name">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@CategoryName" Required=@(!IsUpdate)
+                        <MudTextField T="string" @bind-Value="@CategoryName" Required="@(!IsUpdate)"
                                       FullWidth="true" InputType="InputType.Text"
                                       Margin="Margin.Dense" Variant="Variant.Outlined">
                         </MudTextField>
@@ -52,7 +50,7 @@
                 }
             </CustomButton>
         }
-        <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick=@(IsUpdate ? DialogUpdate : DialogSubmit) Variant="Variant.Text" FullWidth="false">
+        <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@(IsUpdate ? DialogUpdate : DialogSubmit)" Variant="Variant.Text" FullWidth="false">
             @if (_isLoading)
             {
                 <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>

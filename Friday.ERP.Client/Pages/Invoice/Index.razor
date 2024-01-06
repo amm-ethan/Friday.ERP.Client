@@ -1,10 +1,9 @@
 @page "/invoice"
-
-@using Friday.ERP.Client.Pages.UserManagement.Components
-@using Friday.ERP.Client.Pages.Invoice.Dialogs
-@using Friday.ERP.Client.Pages.Sale.Components.Templates
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.Invoice.Dialogs
+@using Friday.ERP.Client.Pages.Sale.Components.Templates
+@using Friday.ERP.Client.Pages.UserManagement.Components
 
 @inject IHttpRepository HttpRepo
 @inject IDialogService DialogService
@@ -238,7 +237,7 @@
                                     <CustomButton OnClick="@ShowDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary">Show Delivery Info</CustomButton>
                                 </MudItem>
                             }
-                            
+
                             <MudItem sm="6">
                                 <CustomButton OnClick="@(() => ShowInvoiceInfo(false))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
                             </MudItem>
@@ -516,6 +515,7 @@
             parameters.Add("Remark", _selectedInvoiceSale!.Remark);
             parameters.Add("IsPaid", null);
         }
+
         var options = new DialogOptions();
         DialogService.Show<TransactionInfoDialog>("Transaction Info", parameters, options);
     }
