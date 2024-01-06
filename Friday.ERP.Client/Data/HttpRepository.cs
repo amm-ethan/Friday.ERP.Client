@@ -140,7 +140,9 @@ public class HttpRepository(
         var expiredDateTime = DateTime.Parse(expired);
         if (DateTime.Now > expiredDateTime)
         {
+            // RefreshToken Expired
             await DeleteLocalStorageAndLogout();
+            snackbar.Add("Login Expired.", Severity.Error);
             return null;
         }
 

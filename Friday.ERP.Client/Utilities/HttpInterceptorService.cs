@@ -27,7 +27,6 @@ public class HttpInterceptorService(HttpClientInterceptor interceptor, TokenServ
             }
             else
             {
-                snackbar.Add("Session Timeout", Severity.Warning);
                 args.Cancel = true;
             }
         }

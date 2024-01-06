@@ -15,9 +15,8 @@ public class TokenService(
         var user = authState.User;
         var exp = user.FindFirst(c => c.Type.Equals("exp"))!.Value;
         var expTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(exp)).LocalDateTime;
-        var timeNow = DateTime.Now;
-        if (expTime > timeNow) return await localStorage.GetItemAsync<string>("accessToken");
-        var accessToken = await httpRepo.GetRefreshToken();
-        return accessToken;
+        if (DateTime.Now > expTime)
+            return await httpRepo.GetRefreshToken();
+        return await localStorage.GetItemAsync<string>("accessToken");
     }
 }
