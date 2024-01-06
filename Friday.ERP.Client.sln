@@ -2,12 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friday.ERP.Client", "Friday.ERP.Client\Friday.ERP.Client.csproj", "{CC0ED59B-7B05-484B-9AC5-6086C7A17E72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friday.ERP.Shared", "..\Friday.ERP.Shared\Friday.ERP.Shared\Friday.ERP.Shared.csproj", "{A46AB037-D6B9-4BD5-8949-66D52BC231F7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{F46613E1-094A-43B4-B432-2011E1314A96}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friday.ERP.Shared", "..\Friday.ERP.Server\Friday.ERP.Shared\Friday.ERP.Shared.csproj", "{669B117E-6132-495F-A8C2-8C60DD8CEC16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,9 +19,9 @@ Global
 		{CC0ED59B-7B05-484B-9AC5-6086C7A17E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC0ED59B-7B05-484B-9AC5-6086C7A17E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC0ED59B-7B05-484B-9AC5-6086C7A17E72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A46AB037-D6B9-4BD5-8949-66D52BC231F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A46AB037-D6B9-4BD5-8949-66D52BC231F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A46AB037-D6B9-4BD5-8949-66D52BC231F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A46AB037-D6B9-4BD5-8949-66D52BC231F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{669B117E-6132-495F-A8C2-8C60DD8CEC16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{669B117E-6132-495F-A8C2-8C60DD8CEC16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{669B117E-6132-495F-A8C2-8C60DD8CEC16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{669B117E-6132-495F-A8C2-8C60DD8CEC16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
