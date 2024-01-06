@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Net.Http.Json;
 using Blazored.LocalStorage;
+using Friday.ERP.Client.Data.DataTransferObjects;
+using Friday.ERP.Client.Data.RequestFeatures;
 using Friday.ERP.Client.Utilities;
-using Friday.ERP.Shared.DataTransferObjects;
-using Friday.ERP.Shared.RequestFeatures;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
 using MudBlazor;

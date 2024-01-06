@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Friday.ERP.Shared;
+using Friday.ERP.Client.Data;
 using MudBlazor;
 using Newtonsoft.Json;
 using Toolbelt.Blazor;
@@ -45,33 +45,41 @@ public class HttpInterceptorService(HttpClientInterceptor interceptor, TokenServ
             }
             else if (!args.Response!.IsSuccessStatusCode)
             {
+                if (statusCode == HttpStatusCode.InternalServerError)
+                {
+                    snackbar.Add("Unhandled Error. Contact Your System Admin.", Severity.Error);
+                    return;
+                }
+
                 var content = await args.Response?.Content.ReadAsStringAsync()!;
                 var responseObject = JsonConvert.DeserializeObject<ErrorResponseDto<string>>(content);
 
                 switch (statusCode)
                 {
                     case HttpStatusCode.UnprocessableEntity:
+                    {
                         snackbar.Add(responseObject!.ErrorType, Severity.Warning);
                         foreach (var error in responseObject.ErrorDetail!)
                             snackbar.Add(error, Severity.Warning);
                         break;
-
+                    }
                     case HttpStatusCode.BadRequest:
+                    {
                         snackbar.Add(responseObject!.ErrorType, Severity.Warning);
                         foreach (var error in responseObject.ErrorDetail!)
                             snackbar.Add(error, Severity.Warning);
                         break;
-
+                    }
                     case HttpStatusCode.NotFound:
+                    {
                         snackbar.Add(responseObject!.ErrorType, Severity.Warning);
                         foreach (var error in responseObject.ErrorDetail!)
                             snackbar.Add(error, Severity.Info);
                         break;
-
+                    }
                     case HttpStatusCode.Unauthorized:
                         snackbar.Add("Unauthorized.", Severity.Info);
                         break;
-
                     default:
                         snackbar.Add("Unhandled Error. Contact Your System Admin.", Severity.Error);
                         break;
