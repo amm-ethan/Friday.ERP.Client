@@ -33,6 +33,9 @@
                 <MudGrid Spacing="2">
                     <CustomRowWithTwoLabels FirstText="Shop Name" SecondText="@ShopName"></CustomRowWithTwoLabels>
                 </MudGrid>
+                <MudGrid Spacing="2">
+                    <CustomRowWithTwoLabels FirstText="Shop Description" SecondText="@ShopDescription"></CustomRowWithTwoLabels>
+                </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
                     <CustomRowWithTwoLabels FirstText="Address One" SecondText="@AddressOne"></CustomRowWithTwoLabels>
@@ -133,6 +136,7 @@
 
     string? ShopImage { get; set; }
     string? ShopName { get; set; }
+    string? ShopDescription { get; set; }
     string? AddressOne { get; set; }
     string? AddressTwo { get; set; }
     string? PhoneOne { get; set; }
@@ -192,6 +196,7 @@
             ShopImage = $"data:image/png;base64, {settingViewDto.ShopImage!}";
 
         ShopName = settingViewDto.ShopName;
+        ShopDescription = settingViewDto.ShopDescription;
         AddressOne = settingViewDto.AddressOne;
         AddressTwo = settingViewDto.AddressTwo;
         PhoneOne = settingViewDto.PhoneOne;

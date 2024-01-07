@@ -16,6 +16,7 @@ public record NotificationViewDto(
 public record SettingViewDto(
     string? ShopImage,
     string ShopName,
+    string? ShopDescription,
     string? AddressOne,
     string? AddressTwo,
     string? PhoneOne,
