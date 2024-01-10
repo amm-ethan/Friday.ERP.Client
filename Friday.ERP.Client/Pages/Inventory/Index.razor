@@ -44,17 +44,18 @@
                     </MudItem>
                     <MudItem sm="12" md="3" lg="2">
                         <MudAutocomplete T="string?"
-                                         @ref="CategoryAutoComplete"
+                                         Label="Category"
                                          Clearable="true"
-                                         Variant="Variant.Outlined"
-                                         Margin="Margin.Dense"
+                                         ResetValueOnEmptyText="true"
                                          Dense="true"
                                          FullWidth="true"
-                                         SearchFunc="@CategorySearch"
+                                         Variant="Variant.Outlined"
+                                         Margin="Margin.Dense"
                                          ShowProgressIndicator="@_isLoading"
+                                         SearchFunc="@CategorySearch"
                                          ValueChanged="@CategoryChange"
                                          OnClearButtonClick="@CategoryClear"
-                                         Label="Category">
+                                         >
                         </MudAutocomplete>
                     </MudItem>
                     <MudItem sm="12" md="3" lg="2">
@@ -108,8 +109,6 @@
     List<CategoryViewDto> _categoryList = [];
     List<ProductViewDto> _productList = [];
     List<CategoryViewDto> _categoryProductList = [];
-
-    MudAutocomplete<string?> CategoryAutoComplete { get; set; } = new();
 
     string? _searchTerm;
     Guid? _categoryGuid;
@@ -192,7 +191,7 @@
     async Task CategoryClear()
     {
         _categoryGuid = null;
-        await CategoryAutoComplete.Clear();
+        // await CategoryAutoComplete.Clear();
         await GetProductData();
     }
 

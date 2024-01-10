@@ -32,6 +32,7 @@
                         <MudAutocomplete T="string?"
                                          @ref="CategoryAutoComplete"
                                          Clearable="true"
+                                         ResetValueOnEmptyText="true"
                                          Variant="Variant.Outlined"
                                          Margin="Margin.Dense"
                                          Dense="true"
@@ -126,6 +127,7 @@
                             <MudAutocomplete T="string?"
                                              @ref="CustomerVendorAutoComplete"
                                              Clearable="true"
+                                             ResetValueOnEmptyText="true"
                                              Variant="Variant.Outlined"
                                              Margin="Margin.Dense"
                                              Dense="true"
@@ -302,6 +304,7 @@
 
     void CustomerVendorChange(string? value)
     {
+        Console.WriteLine("here");
         if (value is not null)
         {
             var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == value);
@@ -331,6 +334,7 @@
 
     async Task<IEnumerable<string>> CustomerVendorSearch(string? value)
     {
+        Console.WriteLine("here2");
         await Task.Delay(5);
         return await GetCustomerVendorSearchData(value);
     }

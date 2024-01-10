@@ -66,16 +66,17 @@ else
                     <CustomRowWithLabelsAndInput FirstText="Category">
                         <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                             <MudAutocomplete T="string?"
-                                             @ref="CategoryAutoComplete"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Dense="true"
+                                             FullWidth="true"
+                                             Value="CategoryName"
                                              Required=@(!IsUpdate)
                                              Variant="Variant.Outlined"
                                              Margin="Margin.Dense"
-                                             Dense="true"
-                                             FullWidth="true"
-                                             SearchFunc="@CategorySearch"
                                              ShowProgressIndicator="@_isCategorySearchLoading"
+                                             SearchFunc="@CategorySearch"
                                              ValueChanged="@CategoryChange"
-                                             Clearable="true"
                                              OnClearButtonClick="@CategoryClear">
                             </MudAutocomplete>
                         </MudItem>
@@ -162,7 +163,6 @@ else
     [Parameter] public string? CategoryName { get; set; }
 
     Guid? CategoryGuid { get; set; }
-    MudAutocomplete<string?> CategoryAutoComplete { get; set; } = new();
 
     MudForm? _form;
     bool _success;
@@ -203,10 +203,10 @@ else
         return _categories.Select(c => c.Name);
     }
 
-    async Task CategoryClear()
+    void CategoryClear()
     {
         CategoryGuid = null;
-        await CategoryAutoComplete.Clear();
+        CategoryName = null;
     }
 
     async Task UploadFiles(IBrowserFile file)
@@ -242,8 +242,6 @@ else
         if (IsUpdate)
         {
             CategoryGuid = _categories.Where(x => x.Name == CategoryName).Select(c => c.Guid).SingleOrDefault();
-            CategoryAutoComplete.Text = CategoryName;
-            CategoryAutoComplete.Value = CategoryName!;
             if (RawImage is not null)
             {
                 _image = $"data:image/png;base64, {RawImage}";

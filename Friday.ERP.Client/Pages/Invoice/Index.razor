@@ -38,6 +38,7 @@
                                 <MudAutocomplete T="string?"
                                                  @ref="CustomerVendorAutoComplete"
                                                  Clearable="true"
+                                                 ResetValueOnEmptyText="true"
                                                  Variant="Variant.Outlined"
                                                  Margin="Margin.Dense"
                                                  Dense="true"
@@ -92,13 +93,13 @@
                                                Clearable="true"
                                                MinDate="@(DateTime.Today.AddMonths(-6))"
                                                MaxDate="@(DateTime.Today)"
-                                               a
                                                Variant="Variant.Outlined"/>
                             </MudItem>
                             <MudItem sm="4">
                                 <MudAutocomplete T="string?"
                                                  @ref="CustomerVendorAutoComplete"
                                                  Clearable="true"
+                                                 ResetValueOnEmptyText="true"
                                                  Variant="Variant.Outlined"
                                                  Margin="Margin.Dense"
                                                  Dense="true"

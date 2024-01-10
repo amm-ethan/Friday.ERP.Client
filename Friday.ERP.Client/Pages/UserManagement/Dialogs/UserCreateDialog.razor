@@ -75,13 +75,14 @@ else
                 <MudGrid Spacing="2">
                     <CustomRowWithLabelsAndInput FirstText="Role">
                         <MudItem sm="7">
-                            <MudAutocomplete T="string?" Required="true"
-                                             Variant="Variant.Outlined"
-                                             Margin="Margin.Dense"
+                            <MudAutocomplete T="string?" 
+                                             Required="true"
                                              Dense="true"
                                              FullWidth="true"
-                                             SearchFunc="@RoleSearch"
+                                             Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"
                                              ShowProgressIndicator="@_isRoleSearchLoading"
+                                             SearchFunc="@RoleSearch"
                                              ValueChanged="@RoleChange">
                             </MudAutocomplete>
                         </MudItem>
