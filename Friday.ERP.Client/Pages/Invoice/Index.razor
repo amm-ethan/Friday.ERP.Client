@@ -226,7 +226,7 @@
                         @if (_isPurchaseInvoice)
                         {
                             <MudItem sm="12">
-                                <CustomButton OnClick="@(() => ShowInvoiceInfo(true))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
+                                <CustomButton Disabled="_isLoading" OnClick="@(() => ShowInvoiceInfo(true))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
                             </MudItem>
                         }
                         else
@@ -234,15 +234,24 @@
                             if (_selectedInvoiceSale!.DeliveryInfo is not null)
                             {
                                 <MudItem sm="12">
-                                    <CustomButton OnClick="@ShowDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary">Show Delivery Info</CustomButton>
+                                    <CustomButton Disabled="_isLoading" OnClick="@ShowDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary">Show Delivery Info</CustomButton>
                                 </MudItem>
                             }
 
                             <MudItem sm="6">
-                                <CustomButton OnClick="@(() => ShowInvoiceInfo(false))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
+                                <CustomButton Disabled="_isLoading" OnClick="@(() => ShowInvoiceInfo(false))" Variant="Variant.Filled" Color="Color.Info">Show Invoice Info</CustomButton>
                             </MudItem>
                             <MudItem sm="6">
-                                <CustomButton OnClick="@(() => DownloadInvoice())" Variant="Variant.Filled" Color="Color.Primary">Download</CustomButton>
+                                <CustomButton Disabled="_isLoading" OnClick="@(() => DownloadInvoice())" Variant="Variant.Filled" Color="Color.Primary">
+                                    @if (_isLoading)
+                                    {
+                                        <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+                                    }
+                                    else
+                                    {
+                                        @("Download")
+                                    }
+                                </CustomButton>
                             </MudItem>
                         }
 

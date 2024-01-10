@@ -146,7 +146,7 @@
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
                     <MudItem sm="12" md="12" lg="12">
-                        <CustomButton OnClick="@OpenTransactionCreateDialog" Color="Color.Primary">
+                        <CustomButton Disabled="@_isLoading" OnClick="@OpenTransactionCreateDialog" Color="Color.Primary">
                             @if (_isLoading)
                             {
                                 <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>

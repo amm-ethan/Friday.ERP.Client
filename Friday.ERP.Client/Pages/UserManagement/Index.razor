@@ -33,7 +33,7 @@
                             <MudItem sm="7">
                             </MudItem>
                             <MudItem sm="2" Class="align-self-center">
-                                <CustomButton OnClick="@OpenUserCreateDialog">Create New</CustomButton>
+                                <CustomButton Disabled="_isLoading" OnClick="@OpenUserCreateDialog">Create New</CustomButton>
                             </MudItem>
                         </CustomHeader>
                         <CustomBody>
@@ -54,7 +54,7 @@
                                         <MudTd DataLabel="Email">@(context.Email ?? "N/A")</MudTd>
                                         <MudTd DataLabel="RoleName">@context.RoleName</MudTd>
                                         <MudTd DataLabel="Action">
-                                            <CustomButton FullWidth="false" OnClick="@(() => OpenUserUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
+                                            <CustomButton Disabled="_isLoading" FullWidth="false" OnClick="@(() => OpenUserUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
                                                 Edit
                                             </CustomButton>
                                         </MudTd>

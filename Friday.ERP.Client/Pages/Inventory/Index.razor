@@ -33,7 +33,7 @@
                             {
                                 <CustomChip OnClick="@(() => OpenCategoryUpdateDialog(category))" Color="@category.Color">@category.Name</CustomChip>
                             }
-                            <MudIconButton OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"></MudIconButton>
+                            <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"></MudIconButton>
                         </div>
                     </MudItem>
                 </MudGrid>
@@ -65,7 +65,7 @@
                         </CustomTextFieldWithIcon>
                     </MudItem>
                     <MudItem sm="12" md="3" lg="2" Class="align-self-center">
-                        <CustomButton OnClick="@OpenProductCreateDialog" Variant="Variant.Filled">Create New</CustomButton>
+                        <CustomButton Disabled="_isLoading" OnClick="@OpenProductCreateDialog" Variant="Variant.Filled">Create New</CustomButton>
                     </MudItem>
                 </MudGrid>
                 <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto;">
