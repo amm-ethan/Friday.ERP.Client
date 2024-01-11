@@ -151,7 +151,7 @@
                     @if (_customerVendorGuid is not null)
                     {
                         <MudItem sm="6" md="6" lg="6">
-                            <CustomButton OnClick="@AddDeliveryInfo" Color="Color.Secondary">
+                            <CustomButton Disabled="@_isLoading" OnClick="@AddDeliveryInfo" Color="Color.Secondary">
                                 @if (_isLoading)
                                 {
                                     <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
@@ -164,7 +164,7 @@
                         </MudItem>
                     }
                     <MudItem sm="@(_customerVendorGuid is not null ? 6 : 12)">
-                        <CustomButton OnClick="@OpenTransactionCreateDialog" Color="Color.Primary">
+                        <CustomButton Disabled="@_isLoading" OnClick="@OpenTransactionCreateDialog" Color="Color.Primary">
                             @if (_isLoading)
                             {
                                 <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
@@ -458,7 +458,14 @@
         }
         else
         {
-            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", options);
+            var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Guid == _customerVendorGuid);
+            var parameters = new DialogParameters<SaleTransactionDeliveryDialog>
+            {
+                { x => x.Address, selectedCustomerVendor!.Address },
+                { x => x.ContactPhone, selectedCustomerVendor.Phone },
+                { x => x.ContactPerson, selectedCustomerVendor.Name }
+            };
+            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
             result = await dialog.Result;
         }
 
@@ -473,7 +480,7 @@
     {
         if (_productsInCartTemp.Count == 0)
         {
-            Snackbar.Add("Add Items To Proceed To Sale!", Severity.Success);
+            Snackbar.Add("Add Items To Proceed To Sale!", Severity.Error);
             return;
         }
 

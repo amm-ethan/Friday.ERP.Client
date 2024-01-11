@@ -82,8 +82,8 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
     </DialogContent>
     <DialogActions>
-        <CustomButton Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton>
-        <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Make Sale</CustomButton>
+        <CustomButton Disabled="_isLoading" Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton>
+        <CustomButton Disabled="_isLoading" Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Make Sale</CustomButton>
     </DialogActions>
 </MudDialog>
 
@@ -96,6 +96,8 @@
     [Parameter] public long CustomerExistingCreditDebit { get; set; }
     [Parameter] public long SubTotal { get; set; }
 
+    bool _isLoading;
+    
     string? _customerExistingCreditDebitString;
     string? _creditDebitLeftTransactionString = "0 mmk";
     string? _creditDebitLeftString = "0 mmk";
@@ -187,6 +189,8 @@
 
     void Submit()
     {
+        _isLoading = true;
+        StateHasChanged();
         InvoiceSalePreCreateDto? dataToReturn;
         if (CustomerName is not null)
         {
@@ -211,6 +215,9 @@
             );
         }
 
+        _isLoading = false;
+        StateHasChanged();
+        
         MudDialog!.Close(DialogResult.Ok(dataToReturn));
     }
 

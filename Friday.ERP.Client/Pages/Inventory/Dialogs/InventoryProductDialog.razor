@@ -25,7 +25,7 @@ else
                         <div class="d-flex flex-column">
                             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
                                 <ButtonTemplate>
-                                    <MudButton Variant="Variant.Outlined"
+                                    <MudButton Variant="Variant.Outlined" Disabled="_isLoading"
                                                HtmlTag="label"
                                                for="@context.Id">
                                         @if (_image is null)
@@ -105,7 +105,7 @@ else
             </MudForm>
         </DialogContent>
         <DialogActions>
-            <CustomButton Color="Color.Default" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
+            <CustomButton Disabled="_isLoading" Color="Color.Default" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
                 @if (_isLoading)
                 {
                     <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
@@ -117,7 +117,7 @@ else
             </CustomButton>
             @if (IsUpdate)
             {
-                <CustomButton Color="Color.Info" OnClick="@DialogSubmitPrice" Variant="Variant.Text" FullWidth="false">
+                <CustomButton Disabled="_isLoading" Color="Color.Info" OnClick="@DialogSubmitPrice" Variant="Variant.Text" FullWidth="false">
                     @if (_isLoading)
                     {
                         <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
@@ -128,7 +128,7 @@ else
                     }
                 </CustomButton>
             }
-            <CustomButton Color="Color.Primary" OnClick=@(IsUpdate ? DialogUpdate : DialogSubmit) Variant="Variant.Text" FullWidth="false">
+            <CustomButton Disabled="_isLoading" Color="Color.Primary" OnClick=@(IsUpdate ? DialogUpdate : DialogSubmit) Variant="Variant.Text" FullWidth="false">
                 @if (_isLoading)
                 {
                     <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>

@@ -3,30 +3,9 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomRowWithLabelsAndInput FirstText="Address">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@Address" Required="true"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
-                <CustomRowWithLabelsAndInput FirstText="Contact Person">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@ContactPerson" Required="true"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
-                <CustomRowWithLabelsAndInput FirstText="Contact Phone">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@ContactPhone" Required="true"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
+                <CustomRowWithTwoLabels FirstText="Address" SecondText="@Address"></CustomRowWithTwoLabels>
+                <CustomRowWithTwoLabels FirstText="Contact Person" SecondText="@ContactPerson"></CustomRowWithTwoLabels>
+                <CustomRowWithTwoLabels FirstText="Contact Phone" SecondText="@ContactPhone"></CustomRowWithTwoLabels>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">

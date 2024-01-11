@@ -85,7 +85,7 @@ else
             </MudForm>
         </DialogContent>
         <DialogActions>
-            <CustomButton Color="Color.Default" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
+            <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
                 @if (_isLoading)
                 {
                     <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
