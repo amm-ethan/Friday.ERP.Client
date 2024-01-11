@@ -22,13 +22,9 @@ public class HttpInterceptorService(HttpClientInterceptor interceptor, TokenServ
         {
             var token = await tokenService.GetAccessToken();
             if (!string.IsNullOrEmpty(token))
-            {
                 args.Request.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
-            }
             else
-            {
                 args.Cancel = true;
-            }
         }
     }
 

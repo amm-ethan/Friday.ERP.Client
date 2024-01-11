@@ -4,6 +4,7 @@
 @using Friday.ERP.Client.Pages.Inventory.Dialogs
 @using Friday.ERP.Client.Pages.Sale.Components.Templates
 @using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Shared.Layouts
 
 @inject IHttpRepository HttpRepo
 @inject IDialogService DialogService
@@ -54,8 +55,7 @@
                                          ShowProgressIndicator="@_isLoading"
                                          SearchFunc="@CategorySearch"
                                          ValueChanged="@CategoryChange"
-                                         OnClearButtonClick="@CategoryClear"
-                                         >
+                                         OnClearButtonClick="@CategoryClear">
                         </MudAutocomplete>
                     </MudItem>
                     <MudItem sm="12" md="3" lg="2">
