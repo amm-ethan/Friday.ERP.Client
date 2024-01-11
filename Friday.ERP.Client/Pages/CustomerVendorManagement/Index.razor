@@ -28,7 +28,7 @@
                         <MudItem sm="7">
                         </MudItem>
                         <MudItem sm="2" Class="align-self-center">
-                            <CustomButton OnClick="@OpenCustomerVendorCreateDialog">Create New</CustomButton>
+                            <CustomButton Disabled="_isLoading" OnClick="@OpenCustomerVendorCreateDialog">Create New</CustomButton>
                         </MudItem>
                     </CustomHeader>
                     <CustomBody>
@@ -65,7 +65,7 @@
                                         <MudTd DataLabel="Address">@context.Address</MudTd>
                                         <MudTd DataLabel="Total Credit Debit Left">@context.TotalCreditDebitLeft</MudTd>
                                         <MudTd DataLabel="Action">
-                                            <CustomButton FullWidth="false" OnClick="@(() => OpenCustomerVendorUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
+                                            <CustomButton Disabled="_isLoading" FullWidth="false" OnClick="@(() => OpenCustomerVendorUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
                                                 Edit
                                             </CustomButton>
                                         </MudTd>
@@ -91,7 +91,7 @@
                         <MudItem sm="7">
                         </MudItem>
                         <MudItem sm="2" Class="align-self-center">
-                            <CustomButton OnClick="@OpenCustomerVendorCreateDialog">Create New</CustomButton>
+                            <CustomButton Disabled="_isLoading" OnClick="@OpenCustomerVendorCreateDialog">Create New</CustomButton>
                         </MudItem>
                     </CustomHeader>
                     <CustomBody>
@@ -128,7 +128,7 @@
                                         <MudTd DataLabel="Address">@context.Address</MudTd>
                                         <MudTd DataLabel="Total Credit Debit Left">@context.TotalCreditDebitLeft</MudTd>
                                         <MudTd DataLabel="Action">
-                                            <CustomButton FullWidth="false" OnClick="@(() => OpenCustomerVendorUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
+                                            <CustomButton Disabled="_isLoading" FullWidth="false" OnClick="@(() => OpenCustomerVendorUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
                                                 Edit
                                             </CustomButton>
                                         </MudTd>
