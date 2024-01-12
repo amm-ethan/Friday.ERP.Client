@@ -1,281 +1,281 @@
-﻿@page "/inventory"
-@using Friday.ERP.Client.Data.DataTransferObjects
-@using Friday.ERP.Client.Pages.Inventory.Components.Moledules
-@using Friday.ERP.Client.Pages.Inventory.Dialogs
-@using Friday.ERP.Client.Pages.Sale.Components.Templates
-@using Friday.ERP.Client.Data
-@using Friday.ERP.Client.Shared.Layouts
-
-@inject IHttpRepository HttpRepo
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
-
-@layout MainLayout
-@attribute [Authorize]
-
-<CustomPageContainer>
-    <MudItem sm="12" md="12" lg="12" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard>
-                <MudGrid Spacing="2">
-                    <MudItem sm="12" Class="align-self-center">
-                        <MudText Typo="Typo.h6">Categories</MudText>
-                    </MudItem>
-                </MudGrid>
-                <MudGrid Spacing="2">
-                    <MudItem sm="12">
-                        <div class="d-flex flex-row flex-wrap">
-                            @foreach (var category in _categoryList)
-                            {
-                                <CustomChip OnClick="@(() => OpenCategoryUpdateDialog(category))" Color="@category.Color">@category.Name</CustomChip>
-                            }
-                            <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"></MudIconButton>
-                        </div>
-                    </MudItem>
-                </MudGrid>
-                <MudProgressLinear Color="Color.Primary" Class="mt-2 mb-4" Indeterminate="@_isLoading"/>
-                <MudGrid Spacing="2">
-                    <MudItem sm="12" md="3" lg="6" Class="align-self-center">
-                        <MudText Typo="Typo.h6">Products</MudText>
-                    </MudItem>
-                    <MudItem sm="12" md="3" lg="2">
-                        <MudAutocomplete T="string?"
-                                         Label="Category"
-                                         Clearable="true"
-                                         ResetValueOnEmptyText="true"
-                                         Dense="true"
-                                         FullWidth="true"
-                                         Variant="Variant.Outlined"
-                                         Margin="Margin.Dense"
-                                         ShowProgressIndicator="@_isLoading"
-                                         SearchFunc="@CategorySearch"
-                                         ValueChanged="@CategoryChange"
-                                         OnClearButtonClick="@CategoryClear">
-                        </MudAutocomplete>
-                    </MudItem>
-                    <MudItem sm="12" md="3" lg="2">
-                        <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search"
-                                                 BindValue="@_searchTerm"
-                                                 ValueChanged="@ChangeProductSearchValue"
-                                                 Label="Search">
-                        </CustomTextFieldWithIcon>
-                    </MudItem>
-                    <MudItem sm="12" md="3" lg="2" Class="align-self-center">
-                        <CustomButton Disabled="_isLoading" OnClick="@OpenProductCreateDialog" Variant="Variant.Filled">Create New</CustomButton>
-                    </MudItem>
-                </MudGrid>
-                <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto;">
-                    @if (_productList.Count == 0)
-                    {
-                        <MudItem sm="12">
-                            <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
-                                <div class="align-self-center">
-                                    <MudText Typo="Typo.caption">No Product Yet!</MudText>
-                                </div>
-                            </div>
-                        </MudItem>
-                    }
-                    else
-                    {
-                        @foreach (var product in _productList)
-                        {
-                            <MudItem sm="4" md="3" lg="2">
-                                <CustomCardBox OnClick="@(() => OpenProductUpdateDialog(product))"
-                                               ProductCode="@product.Code"
-                                               ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
-                                               ProductTotalStock="@product.TotalStockLeft"
-                                               ProductName="@product.Name">
-                                </CustomCardBox>
-                            </MudItem>
-                        }
-                    }
-                </MudGrid>
-            </CustomPageCard>
-        }
-    </MudItem>
-</CustomPageContainer>
-
-
-@code {
-
-    bool _isMainLoading;
-    bool _isLoading;
-
-    List<CategoryViewDto> _categoryList = [];
-    List<ProductViewDto> _productList = [];
-    List<CategoryViewDto> _categoryProductList = [];
-
-    string? _searchTerm;
-    Guid? _categoryGuid;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _isMainLoading = true;
-        StateHasChanged();
-
-        await GetCategoryData();
-        await GetProductData();
-        await GetCategoryProductData(null);
-
-        _isMainLoading = false;
-        StateHasChanged();
-    }
-
-    async Task GetCategoryData()
-    {
-        _isLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.GetAllCategories(new CategoryParameter
-        {
-            PageNumber = 1,
-            PageSize = 20,
-            SearchTerm = null
-        });
-        if (result.isSuccess)
-        {
-            _categoryList = result.categoryViewDtos!.Items!;
-        }
-
-        _isLoading = false;
-        StateHasChanged();
-    }
-
-    async Task OpenCategoryCreateDialog()
-    {
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<InventoryCategoryDialog>("Create New Category", options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            Snackbar.Add("Category Created!", Severity.Success);
-            await GetCategoryData();
-        }
-    }
-
-    async Task OpenCategoryUpdateDialog(CategoryViewDto categoryViewDto)
-    {
-        var options = new DialogOptions();
-        var parameters = new DialogParameters<InventoryCategoryDialog>
-        {
-            { x => x.IsUpdate, true },
-            { x => x.CategoryGuid, categoryViewDto.Guid },
-            { x => x.CategoryName, categoryViewDto.Name },
-            { x => x.CategoryColor, categoryViewDto.Color }
-        };
-        var dialog = await DialogService.ShowAsync<InventoryCategoryDialog>("Update Category", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            var isUpdate = (bool)result.Data;
-            Snackbar.Add(isUpdate ? "Category Updated!" : "Category Removed!", Severity.Success);
-            await GetCategoryData();
-        }
-    }
-
-    async Task CategoryChange(string? value)
-    {
-        if (value is not null)
-            _categoryGuid = _categoryProductList.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
-        else
-            _categoryGuid = null;
-
-        await GetProductData();
-    }
-
-    async Task CategoryClear()
-    {
-        _categoryGuid = null;
-        // await CategoryAutoComplete.Clear();
-        await GetProductData();
-    }
-
-    async Task<IEnumerable<string>> CategorySearch(string? value)
-    {
-        await Task.Delay(5);
-        return await GetCategoryProductData(value);
-    }
-
-    async Task<IEnumerable<string>> GetCategoryProductData(string? value)
-    {
-        _isLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.SearchCategories(value);
-        if (result.isSuccess)
-        {
-            _categoryProductList = result.categoryViewDtos!;
-        }
-
-        _isLoading = false;
-        StateHasChanged();
-        return _categoryProductList.Select(c => c.Name);
-    }
-
-    async Task GetProductData()
-    {
-        _isLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.GetAllProducts(new ProductParameter
-        {
-            PageNumber = 1,
-            PageSize = 20,
-            SearchTerm = _searchTerm,
-            CategoryGuid = _categoryGuid
-        });
-        if (result.isSuccess)
-        {
-            _productList = result!.productViewDtos!.Items!;
-        }
-
-        _isLoading = false;
-        StateHasChanged();
-    }
-
-    async Task ChangeProductSearchValue(string value)
-    {
-        _searchTerm = value;
-        await GetProductData();
-    }
-
-    async Task OpenProductCreateDialog()
-    {
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<InventoryProductDialog>("Create New Product", options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            Snackbar.Add("Product Created!", Severity.Success);
-            await GetProductData();
-        }
-    }
-
-    async Task OpenProductUpdateDialog(ProductViewDto productViewDto)
-    {
-        var parameters = new DialogParameters<InventoryProductDialog>
-        {
-            { x => x.IsUpdate, true },
-            { x => x.Guid, productViewDto.Guid },
-            { x => x.RawImage, productViewDto.Image },
-            { x => x.Code, productViewDto.Code },
-            { x => x.Stock, productViewDto.TotalStockLeft },
-            { x => x.Name, productViewDto.Name },
-            { x => x.CategoryName, productViewDto.CategoryName }
-        };
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<InventoryProductDialog>("Update Product", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            Snackbar.Add("Product Updated!", Severity.Success);
-            await GetProductData();
-        }
-    }
-
-}
+﻿@* @page "/inventory" *@
+@* @using Friday.ERP.Client.Data.DataTransferObjects *@
+@* @using Friday.ERP.Client.Pages.Inventory.Components.Moledules *@
+@* @using Friday.ERP.Client.Pages.Inventory.Dialogs *@
+@* @using Friday.ERP.Client.Pages.Sale.Components.Templates *@
+@* @using Friday.ERP.Client.Data *@
+@* @using Friday.ERP.Client.Shared.Layouts *@
+@* *@
+@* @inject IHttpRepository HttpRepo *@
+@* @inject IDialogService DialogService *@
+@* @inject ISnackbar Snackbar *@
+@* *@
+@* @layout MainLayout *@
+@* @attribute [Authorize] *@
+@* *@
+@* <CustomPageContainer> *@
+@*     <MudItem sm="12" md="12" lg="12" Class="align-self-center"> *@
+@*         @if (_isMainLoading) *@
+@*         { *@
+@*             <CustomPageCardWithSkeleton/> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <CustomPageCard> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12" Class="align-self-center"> *@
+@*                         <MudText Typo="Typo.h6">Categories</MudText> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12"> *@
+@*                         <div class="d-flex flex-row flex-wrap"> *@
+@*                             @foreach (var category in _categoryList) *@
+@*                             { *@
+@*                                 <CustomChip OnClick="@(() => OpenCategoryUpdateDialog(category))" Color="@category.Color">@category.Name</CustomChip> *@
+@*                             } *@
+@*                             <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"></MudIconButton> *@
+@*                         </div> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudProgressLinear Color="Color.Primary" Class="mt-2 mb-4" Indeterminate="@_isLoading"/> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12" md="3" lg="6" Class="align-self-center"> *@
+@*                         <MudText Typo="Typo.h6">Products</MudText> *@
+@*                     </MudItem> *@
+@*                     <MudItem sm="12" md="3" lg="2"> *@
+@*                         <MudAutocomplete T="string?" *@
+@*                                          Label="Category" *@
+@*                                          Clearable="true" *@
+@*                                          ResetValueOnEmptyText="true" *@
+@*                                          Dense="true" *@
+@*                                          FullWidth="true" *@
+@*                                          Variant="Variant.Outlined" *@
+@*                                          Margin="Margin.Dense" *@
+@*                                          ShowProgressIndicator="@_isLoading" *@
+@*                                          SearchFunc="@CategorySearch" *@
+@*                                          ValueChanged="@CategoryChange" *@
+@*                                          OnClearButtonClick="@CategoryClear"> *@
+@*                         </MudAutocomplete> *@
+@*                     </MudItem> *@
+@*                     <MudItem sm="12" md="3" lg="2"> *@
+@*                         <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search" *@
+@*                                                  BindValue="@_searchTerm" *@
+@*                                                  ValueChanged="@ChangeProductSearchValue" *@
+@*                                                  Label="Search"> *@
+@*                         </CustomTextFieldWithIcon> *@
+@*                     </MudItem> *@
+@*                     <MudItem sm="12" md="3" lg="2" Class="align-self-center"> *@
+@*                         <CustomButton Disabled="_isLoading" OnClick="@OpenProductCreateDialog" Variant="Variant.Filled">Create New</CustomButton> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto;"> *@
+@*                     @if (_productList.Count == 0) *@
+@*                     { *@
+@*                         <MudItem sm="12"> *@
+@*                             <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;"> *@
+@*                                 <div class="align-self-center"> *@
+@*                                     <MudText Typo="Typo.caption">No Product Yet!</MudText> *@
+@*                                 </div> *@
+@*                             </div> *@
+@*                         </MudItem> *@
+@*                     } *@
+@*                     else *@
+@*                     { *@
+@*                         @foreach (var product in _productList) *@
+@*                         { *@
+@*                             <MudItem sm="4" md="3" lg="2"> *@
+@*                                 <CustomCardBox OnClick="@(() => OpenProductUpdateDialog(product))" *@
+@*                                                ProductCode="@product.Code" *@
+@*                                                ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")" *@
+@*                                                ProductTotalStock="@product.TotalStockLeft" *@
+@*                                                ProductName="@product.Name"> *@
+@*                                 </CustomCardBox> *@
+@*                             </MudItem> *@
+@*                         } *@
+@*                     } *@
+@*                 </MudGrid> *@
+@*             </CustomPageCard> *@
+@*         } *@
+@*     </MudItem> *@
+@* </CustomPageContainer> *@
+@* *@
+@* *@
+@* @code { *@
+@* *@
+@*     bool _isMainLoading; *@
+@*     bool _isLoading; *@
+@* *@
+@*     List<CategoryViewDto> _categoryList = []; *@
+@*     List<ProductViewDto> _productList = []; *@
+@*     List<CategoryViewDto> _categoryProductList = []; *@
+@* *@
+@*     string? _searchTerm; *@
+@*     Guid? _categoryGuid; *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         _isMainLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         await GetCategoryData(); *@
+@*         await GetProductData(); *@
+@*         await GetCategoryProductData(null); *@
+@* *@
+@*         _isMainLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task GetCategoryData() *@
+@*     { *@
+@*         _isLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.GetAllCategories(new CategoryParameter *@
+@*         { *@
+@*             PageNumber = 1, *@
+@*             PageSize = 20, *@
+@*             SearchTerm = null *@
+@*         }); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _categoryList = result.categoryViewDtos!.Items!; *@
+@*         } *@
+@* *@
+@*         _isLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task OpenCategoryCreateDialog() *@
+@*     { *@
+@*         var options = new DialogOptions(); *@
+@*         var dialog = await DialogService.ShowAsync<InventoryCategoryDialog>("Create New Category", options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             Snackbar.Add("Category Created!", Severity.Success); *@
+@*             await GetCategoryData(); *@
+@*         } *@
+@*     } *@
+@* *@
+@*     async Task OpenCategoryUpdateDialog(CategoryViewDto categoryViewDto) *@
+@*     { *@
+@*         var options = new DialogOptions(); *@
+@*         var parameters = new DialogParameters<InventoryCategoryDialog> *@
+@*         { *@
+@*             { x => x.IsUpdate, true }, *@
+@*             { x => x.CategoryGuid, categoryViewDto.Guid }, *@
+@*             { x => x.CategoryName, categoryViewDto.Name }, *@
+@*             { x => x.CategoryColor, categoryViewDto.Color } *@
+@*         }; *@
+@*         var dialog = await DialogService.ShowAsync<InventoryCategoryDialog>("Update Category", parameters, options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             var isUpdate = (bool)result.Data; *@
+@*             Snackbar.Add(isUpdate ? "Category Updated!" : "Category Removed!", Severity.Success); *@
+@*             await GetCategoryData(); *@
+@*         } *@
+@*     } *@
+@* *@
+@*     async Task CategoryChange(string? value) *@
+@*     { *@
+@*         if (value is not null) *@
+@*             _categoryGuid = _categoryProductList.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault(); *@
+@*         else *@
+@*             _categoryGuid = null; *@
+@* *@
+@*         await GetProductData(); *@
+@*     } *@
+@* *@
+@*     async Task CategoryClear() *@
+@*     { *@
+@*         _categoryGuid = null; *@
+@*         // await CategoryAutoComplete.Clear(); *@
+@*         await GetProductData(); *@
+@*     } *@
+@* *@
+@*     async Task<IEnumerable<string>> CategorySearch(string? value) *@
+@*     { *@
+@*         await Task.Delay(5); *@
+@*         return await GetCategoryProductData(value); *@
+@*     } *@
+@* *@
+@*     async Task<IEnumerable<string>> GetCategoryProductData(string? value) *@
+@*     { *@
+@*         _isLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.SearchCategories(value); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _categoryProductList = result.categoryViewDtos!; *@
+@*         } *@
+@* *@
+@*         _isLoading = false; *@
+@*         StateHasChanged(); *@
+@*         return _categoryProductList.Select(c => c.Name); *@
+@*     } *@
+@* *@
+@*     async Task GetProductData() *@
+@*     { *@
+@*         _isLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.GetAllProducts(new ProductParameter *@
+@*         { *@
+@*             PageNumber = 1, *@
+@*             PageSize = 20, *@
+@*             SearchTerm = _searchTerm, *@
+@*             CategoryGuid = _categoryGuid *@
+@*         }); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _productList = result!.productViewDtos!.Items!; *@
+@*         } *@
+@* *@
+@*         _isLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task ChangeProductSearchValue(string value) *@
+@*     { *@
+@*         _searchTerm = value; *@
+@*         await GetProductData(); *@
+@*     } *@
+@* *@
+@*     async Task OpenProductCreateDialog() *@
+@*     { *@
+@*         var options = new DialogOptions(); *@
+@*         var dialog = await DialogService.ShowAsync<InventoryProductDialog>("Create New Product", options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             Snackbar.Add("Product Created!", Severity.Success); *@
+@*             await GetProductData(); *@
+@*         } *@
+@*     } *@
+@* *@
+@*     async Task OpenProductUpdateDialog(ProductViewDto productViewDto) *@
+@*     { *@
+@*         var parameters = new DialogParameters<InventoryProductDialog> *@
+@*         { *@
+@*             { x => x.IsUpdate, true }, *@
+@*             { x => x.Guid, productViewDto.Guid }, *@
+@*             { x => x.RawImage, productViewDto.Image }, *@
+@*             { x => x.Code, productViewDto.Code }, *@
+@*             { x => x.Stock, productViewDto.TotalStockLeft }, *@
+@*             { x => x.Name, productViewDto.Name }, *@
+@*             { x => x.CategoryName, productViewDto.CategoryName } *@
+@*         }; *@
+@*         var options = new DialogOptions(); *@
+@*         var dialog = await DialogService.ShowAsync<InventoryProductDialog>("Update Product", parameters, options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             Snackbar.Add("Product Updated!", Severity.Success); *@
+@*             await GetProductData(); *@
+@*         } *@
+@*     } *@
+@* *@
+@* } *@

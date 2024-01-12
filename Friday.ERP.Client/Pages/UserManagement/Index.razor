@@ -1,6 +1,6 @@
 ﻿@page "/user-management"
-@using Friday.ERP.Client.Data.DataTransferObjects
-@using Friday.ERP.Client.Data.RequestFeatures
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Shared.RequestFeatures
 @using Friday.ERP.Client.Pages.UserManagement.Components
 @using Friday.ERP.Client.Pages.UserManagement.Dialogs
 @using Friday.ERP.Client.Data
@@ -14,65 +14,62 @@
 @attribute [Authorize]
 
 <CustomPageContainer>
-    <MudItem sm="12" md="12" lg="12" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard>
-                <MudTabs Elevation="0" Rounded="true" Centered="true">
-                    <CustomTab TitleText="User"
-                               IsLoading="@_isLoading"
-                               OnTabClick="() => { }">
-                        <CustomHeader>
-                            <MudItem sm="3" Class="align-self-center">
-                                <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search" Label="Search"
-                                                         BindValue="@_searchTerm" ValueChanged="ChangeSearchValue"/>
-                            </MudItem>
-                            <MudItem sm="7">
-                            </MudItem>
-                            <MudItem sm="2" Class="align-self-center">
-                                <CustomButton Disabled="_isLoading" OnClick="@OpenUserCreateDialog">Create New</CustomButton>
-                            </MudItem>
-                        </CustomHeader>
-                        <CustomBody>
-                            <MudItem sm="12">
-                                <MudTable Elevation="0" Items="@_userList" RowsPerPage="10" Hover="true"
-                                          Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
-                                          FixedHeader="true" Height="54vh">
-                                    <HeaderContent>
-                                        <MudTh>Name</MudTh>
-                                        <MudTh>Phone</MudTh>
-                                        <MudTh>Email</MudTh>
-                                        <MudTh>Role Name</MudTh>
-                                        <MudTh>Action</MudTh>
-                                    </HeaderContent>
-                                    <RowTemplate>
-                                        <MudTd DataLabel="Name">@context.Name</MudTd>
-                                        <MudTd DataLabel="Phone">@(context.Phone ?? "N/A")</MudTd>
-                                        <MudTd DataLabel="Email">@(context.Email ?? "N/A")</MudTd>
-                                        <MudTd DataLabel="RoleName">@context.RoleName</MudTd>
-                                        <MudTd DataLabel="Action">
-                                            <CustomButton Disabled="_isLoading" FullWidth="false" OnClick="@(() => OpenUserUpdateDialog(context))" Color="Color.Primary" Variant="Variant.Outlined">
-                                                Edit
-                                            </CustomButton>
-                                        </MudTd>
-                                    </RowTemplate>
-                                    <PagerContent>
-                                        <div class="d-flex justify-center">
-                                            <MudPagination ShowNextButton="true" ShowPreviousButton="true" SelectedChanged="ChangePage" Count="@_metaData.TotalPages" Class="pa-4"/>
-                                        </div>
-                                    </PagerContent>
-                                </MudTable>
-                            </MudItem>
-                        </CustomBody>
-                    </CustomTab>
-                </MudTabs>
-            </CustomPageCard>
-        }
-    </MudItem >
+    <CustomPageItem Md="12" Lg="12" IsLoading="@_isMainLoading">
+        <CustomPageCard>
+            <MudTabs Elevation="0" Rounded="true" Centered="true">
+                <CustomTab TitleText="User"
+                           IsLoading="@_isLoading"
+                           OnTabClick="() => { }">
+                    <CustomHeader>
+                        <MudItem sm="3" Class="align-self-center">
+                            <CustomTextFieldWithIcon BindValue="@_searchTerm" ValueChanged="ChangeSearchValue" ClassParameter="mr-2"/>
+                        </MudItem>
+                        <MudItem sm="7">
+                        </MudItem>
+                        <MudItem sm="2" Class="align-self-center">
+                            <CustomButton
+                                Label="Create New"
+                                IsLoading="_isLoading"
+                                OnClick="@OpenUserCreateDialog"
+                                Variant="Variant.Filled"/>
+                        </MudItem>
+                    </CustomHeader>
+                    <CustomBody>
+                        <MudItem sm="12">
+                            <MudTable Elevation="0" Items="@_userList" RowsPerPage="10" Hover="true"
+                                      Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
+                                      FixedHeader="true" Height="54vh">
+                                <HeaderContent>
+                                    <MudTh>Name</MudTh>
+                                    <MudTh>Phone</MudTh>
+                                    <MudTh>Email</MudTh>
+                                    <MudTh>Role Name</MudTh>
+                                    <MudTh>Action</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                                    <MudTd DataLabel="Phone">@(context.Phone ?? "N/A")</MudTd>
+                                    <MudTd DataLabel="Email">@(context.Email ?? "N/A")</MudTd>
+                                    <MudTd DataLabel="RoleName">@context.RoleName</MudTd>
+                                    <MudTd DataLabel="Action">
+                                        <CustomButton
+                                            Label="Edit"
+                                            IsLoading="_isLoading" FullWidth="false"
+                                            OnClick="@(() => OpenUserUpdateDialog(context))"/>
+                                    </MudTd>
+                                </RowTemplate>
+                                <PagerContent>
+                                    <div class="d-flex justify-center">
+                                        <MudPagination ShowNextButton="true" ShowPreviousButton="true" SelectedChanged="ChangePage" Count="@_metaData.TotalPages" Class="pa-4"/>
+                                    </div>
+                                </PagerContent>
+                            </MudTable>
+                        </MudItem>
+                    </CustomBody>
+                </CustomTab>
+            </MudTabs>
+        </CustomPageCard>
+    </CustomPageItem>
 </CustomPageContainer>
 
 @code {

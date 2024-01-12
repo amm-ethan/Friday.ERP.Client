@@ -1,5 +1,5 @@
-using Friday.ERP.Client.Data.DataTransferObjects;
-using Friday.ERP.Client.Data.RequestFeatures;
+using Friday.ERP.Shared.DataTransferObjects;
+using Friday.ERP.Shared.RequestFeatures;
 
 namespace Friday.ERP.Client.Data;
 

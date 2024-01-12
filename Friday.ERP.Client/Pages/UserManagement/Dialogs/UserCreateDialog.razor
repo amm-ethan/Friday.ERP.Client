@@ -1,75 +1,25 @@
-﻿@using Friday.ERP.Client.Data.DataTransferObjects
+﻿@using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using System.Text
 @inject IHttpRepository HttpRepo
 
-@if (_isMainLoading)
-{
-    <MudDialog>
-        <DialogContent>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
-        </DialogContent>
-        <DialogActions>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-        </DialogActions>
-    </MudDialog>
-}
-else
-{
+<CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
         <DialogContent>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Name">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Name" Required="true"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
-                    <CustomRowWithLabelsAndInput FirstText="Phone">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Phone"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
-                    <CustomRowWithLabelsAndInput FirstText="Email">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Email"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelAndFieldString FirstText="Name" @bind-BindValue="@Name" Required="true"/>
+                    <CustomRowWithLabelAndFieldString FirstText="Phone" @bind-BindValue="@Phone" Required="true" KeyboardInputType="InputType.Telephone"/>
+                    <CustomRowWithLabelAndFieldString FirstText="Email" @bind-BindValue="@Email" Required="true" KeyboardInputType="InputType.Email"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Username">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Username" Required="true"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelAndFieldString FirstText="Username" @bind-BindValue="@Username" Required="true"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Password">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Password" Required="true"
-                                          FullWidth="true"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined"
-                                          InputType="@_passwordInput"
-                                          Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
-                                          OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelAndFieldPassword FirstText="Password" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
+                                                        AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
@@ -92,29 +42,13 @@ else
             </MudForm>
         </DialogContent>
         <DialogActions>
-            <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
-                @if (_isLoading)
-                {
-                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                }
-                else
-                {
-                    @("Cancel")
-                }
-            </CustomButton>
-            <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false">
-                @if (_isLoading)
-                {
-                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                }
-                else
-                {
-                    @("Create")
-                }
-            </CustomButton>
+            <CustomButton
+                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            <CustomButton
+                Label="Create" IsLoading="_isLoading" OnClick="@DialogSubmit" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
-}
+</CustomDialog>
 
 
 @code {

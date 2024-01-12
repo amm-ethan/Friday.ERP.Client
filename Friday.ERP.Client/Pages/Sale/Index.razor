@@ -1,544 +1,544 @@
-﻿@page "/sale"
-@using Friday.ERP.Client.Data.DataTransferObjects
-@using Friday.ERP.Client.Pages.Sale.Components.Templates
-@using Friday.ERP.Client.Pages.Sale.Dialogs
-@using Friday.ERP.Client.Data
-@using Friday.ERP.Client.Shared.Layouts
-
-@inject NavigationManager NavManager
-@inject IHttpRepository HttpRepo
-@inject IDialogService DialogService
-@inject ISnackbar Snackbar
-@inject IJSRuntime Js
-
-@layout MainLayout
-@attribute [Authorize]
-
-<CustomPageContainer>
-
-    <MudItem sm="12" md="12" lg="7" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard>
-                <MudProgressLinear Color="Color.Primary" Class="mb-4" Indeterminate="@_isLoading"/>
-                <MudGrid Spacing="2">
-                    <MudItem sm="12" md="6" Class="align-self-center">
-                        <MudText Typo="Typo.h6">Sales</MudText>
-                    </MudItem>
-                    <MudItem sm="12" md="3" Class="align-self-center">
-                        <MudAutocomplete T="string?"
-                                         @ref="CategoryAutoComplete"
-                                         Clearable="true"
-                                         ResetValueOnEmptyText="true"
-                                         Variant="Variant.Outlined"
-                                         Margin="Margin.Dense"
-                                         Dense="true"
-                                         FullWidth="true"
-                                         SearchFunc="@CategorySearch"
-                                         ShowProgressIndicator="@_isLoading"
-                                         ValueChanged="@CategoryChange"
-                                         OnClearButtonClick="@CategoryClear"
-                                         Label="Category">
-                        </MudAutocomplete>
-                    </MudItem>
-                    <MudItem sm="12" md="3" Class="align-self-center">
-                        <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search"
-                                                 BindValue="@_searchTerm"
-                                                 ValueChanged="@ChangeProductSearchValue"
-                                                 Label="Search">
-                        </CustomTextFieldWithIcon>
-                    </MudItem>
-                </MudGrid>
-                <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto">
-                    @if (_productList.Count == 0)
-                    {
-                        <MudItem sm="12">
-                            <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
-                                <div class="align-self-center">
-                                    <MudText Typo="Typo.caption">No Products Yet!</MudText>
-                                </div>
-                            </div>
-                        </MudItem>
-                    }
-                    else
-                    {
-                        @foreach (var product in _productList)
-                        {
-                            <MudItem sm="6" md="4">
-                                <CustomCardBox OnClick="@(() => OpenCreateProductPurchaseAddToCartDialog(product))"
-                                               ProductCode="@product.Code"
-                                               ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
-                                               ProductTotalStock="@product.TotalStockLeft"
-                                               ProductName="@product.Name">
-                                </CustomCardBox>
-                            </MudItem>
-                        }
-                    }
-                </MudGrid>
-            </CustomPageCard>
-        }
-    </MudItem>
-    <MudItem sm="12" md="12" lg="5" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"></CustomRowWithTwoLabels>
-                    <CustomRowWithTwoLabels FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
-                    @if (_productsInCartTemp.Count == 0)
-                    {
-                        <MudItem sm="12">
-                            <div class="d-flex d-column justify-center flex-grow-1" style="height: 40vh;">
-                                <div class="align-self-center">
-                                    <MudText Typo="Typo.caption">No Product In Cart!</MudText>
-                                </div>
-                            </div>
-                        </MudItem>
-                    }
-                    else
-                    {
-                        @foreach (var product in _productsInCartTemp)
-                        {
-                            <MudItem sm="12" md="12" lg="12">
-                                <CustomCardRectangle OnClick="@(() => OpenUpdateProductPurchaseAddToCartDialog(product))"
-                                                     FirstMainText="@product.Name" FirstSubText="@product.Quantity.ToString()"
-                                                     ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
-                                                     SecondMainText="@product.SalePrice.ToString()"
-                                                     SecondSubText="@(product.TotalPrice.ToString())">
-                                </CustomCardRectangle>
-                            </MudItem>
-                        }
-                    }
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Customer">
-                        <MudItem sm="7" md="7" lg="7">
-                            <MudAutocomplete T="string?"
-                                             @ref="CustomerVendorAutoComplete"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Variant="Variant.Outlined"
-                                             Margin="Margin.Dense"
-                                             Dense="true"
-                                             FullWidth="true"
-                                             SearchFunc="@CustomerVendorSearch"
-                                             ShowProgressIndicator="@_isCustomerVendorLoading"
-                                             ValueChanged="@CustomerVendorChange"
-                                             OnClearButtonClick="@CustomerVendorClear"
-                                             RequiredError="Choose Customer!">
-                            </MudAutocomplete>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    @if (_customerVendorGuid is not null)
-                    {
-                        <MudItem sm="6" md="6" lg="6">
-                            <CustomButton Disabled="@_isLoading" OnClick="@AddDeliveryInfo" Color="Color.Secondary">
-                                @if (_isLoading)
-                                {
-                                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                                }
-                                else
-                                {
-                                    @("Add Delivery Info")
-                                }
-                            </CustomButton>
-                        </MudItem>
-                    }
-                    <MudItem sm="@(_customerVendorGuid is not null ? 6 : 12)">
-                        <CustomButton Disabled="@_isLoading" OnClick="@OpenTransactionCreateDialog" Color="Color.Primary">
-                            @if (_isLoading)
-                            {
-                                <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                            }
-                            else
-                            {
-                                @("Proceed to Sale")
-                            }
-                        </CustomButton>
-                    </MudItem>
-                </MudGrid>
-            </CustomPageCard>
-        }
-    </MudItem>
-</CustomPageContainer>
-<script>
-  window.downloadFileFromStream = async (fileName, contentStreamReference) => {
-    const arrayBuffer = await contentStreamReference.arrayBuffer();
-    const blob = new Blob([arrayBuffer]);
-    const url = URL.createObjectURL(blob);
-    const anchorElement = document.createElement('a');
-    anchorElement.href = url;
-    anchorElement.download = fileName ?? '';
-    anchorElement.click();
-    anchorElement.remove();
-    URL.revokeObjectURL(url);
-  }
-</script>
-
-@code {
-    bool _isMainLoading;
-    bool _isLoading;
-    bool _isCustomerVendorLoading;
-
-    List<ProductViewDto> _productList = [];
-    List<CategoryViewDto> _categoryProductList = [];
-    List<CustomerVendorViewDto> _customerVendorList = [];
-    string? _invoiceNo;
-
-    MudAutocomplete<string?> CategoryAutoComplete { get; set; } = new();
-    MudAutocomplete<string?> CustomerVendorAutoComplete { get; set; } = new();
-
-    string? _searchTerm;
-    Guid? _categoryGuid;
-    Guid? _customerVendorGuid;
-    string? _customerVendorName;
-    long? _customerVendorCreditDebitLeft;
-    InvoiceSaleDeliveryCreateDto? _deliveryInfo;
-
-    readonly List<ProductSaleAddToCartViewDto> _productsInCartTemp = [];
-
-    InvoiceSalePreCreateDto? _invoiceSalePreCreateDto;
-    long SubTotal { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _isMainLoading = true;
-        StateHasChanged();
-
-        await GetProductData();
-        await GetCategoryProductData(null);
-
-        var result = await HttpRepo.GetNextSaleInvoiceNumber();
-        if (result.isSuccess)
-        {
-            _invoiceNo = result!.invoiceIdViewDto!.InvoiceNo;
-        }
-
-        _isMainLoading = false;
-        StateHasChanged();
-    }
-
-    async Task CategoryChange(string? value)
-    {
-        if (value is not null)
-            _categoryGuid = _categoryProductList.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
-        else
-            _categoryGuid = null;
-
-        await GetProductData();
-    }
-
-    async Task CategoryClear()
-    {
-        _categoryGuid = null;
-        await CategoryAutoComplete.Clear();
-        await GetProductData();
-    }
-
-    async Task<IEnumerable<string>> CategorySearch(string? value)
-    {
-        await Task.Delay(5);
-        return await GetCategoryProductData(value);
-    }
-
-    async Task<IEnumerable<string>> GetCategoryProductData(string? value)
-    {
-        _isLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.SearchCategories(value);
-        if (result.isSuccess)
-        {
-            _categoryProductList = result.categoryViewDtos!;
-        }
-
-        _isLoading = false;
-        StateHasChanged();
-        return _categoryProductList.Select(c => c.Name);
-    }
-
-    async Task GetProductData()
-    {
-        _isLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.GetAllProducts(new ProductParameter
-        {
-            PageNumber = 1,
-            PageSize = 20,
-            SearchTerm = _searchTerm,
-            CategoryGuid = _categoryGuid
-        });
-        if (result.isSuccess)
-        {
-            _productList = result!.productViewDtos!.Items!;
-        }
-
-        _isLoading = false;
-        StateHasChanged();
-    }
-
-    async Task ChangeProductSearchValue(string value)
-    {
-        _searchTerm = value;
-        await GetProductData();
-    }
-
-    void CustomerVendorChange(string? value)
-    {
-        Console.WriteLine("here");
-        if (value is not null)
-        {
-            var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == value);
-            _customerVendorGuid = selectedCustomerVendor!.Guid;
-            _customerVendorName = selectedCustomerVendor.Name;
-            _customerVendorCreditDebitLeft = selectedCustomerVendor.TotalCreditDebitLeft;
-        }
-        else
-        {
-            _customerVendorGuid = null;
-            _customerVendorName = null;
-            _customerVendorCreditDebitLeft = null;
-            CustomerVendorAutoComplete.Clear();
-        }
-
-        StateHasChanged();
-    }
-
-    void CustomerVendorClear()
-    {
-        _customerVendorGuid = null;
-        _customerVendorName = null;
-        _customerVendorCreditDebitLeft = null;
-        CustomerVendorAutoComplete.Clear();
-        StateHasChanged();
-    }
-
-    async Task<IEnumerable<string>> CustomerVendorSearch(string? value)
-    {
-        Console.WriteLine("here2");
-        await Task.Delay(5);
-        return await GetCustomerVendorSearchData(value);
-    }
-
-    async Task<IEnumerable<string>> GetCustomerVendorSearchData(string? value)
-    {
-        _isCustomerVendorLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.SearchCustomers(value);
-        if (result.isSuccess)
-        {
-            _customerVendorList = result.CustomerVendorViewDtos!;
-        }
-
-        _isCustomerVendorLoading = false;
-        StateHasChanged();
-        return _customerVendorList.Select(c => c.Name);
-    }
-
-    async Task OpenCreateProductPurchaseAddToCartDialog(ProductViewDto productViewDto)
-    {
-        if (_productsInCartTemp.Select(c => c.ProductGuid).ToList().Contains(productViewDto.Guid))
-        {
-            Snackbar.Add("Product Already In Cart!", Severity.Error);
-            return;
-        }
-
-        var options = new DialogOptions();
-        var parameters = new DialogParameters<SaleProductCartDialog>
-        {
-            { x => x.IsUpdate, false },
-            { x => x.Guid, productViewDto.Guid },
-            { x => x.Image, productViewDto.Image },
-            { x => x.Code, productViewDto.Code },
-            { x => x.Name, productViewDto.Name },
-            { x => x.Stock, productViewDto.TotalStockLeft }
-        };
-        var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("Add to Cart", parameters, options);
-
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            var addedProduct = (ProductSaleAddToCartViewDto)result.Data;
-            _productsInCartTemp.Add(addedProduct);
-
-            Snackbar.Add("Product Added To Cart!", Severity.Success);
-            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
-        }
-    }
-
-    async Task OpenUpdateProductPurchaseAddToCartDialog(ProductSaleAddToCartViewDto productSaleAddToCart)
-    {
-        var parameters = new DialogParameters<SaleProductCartDialog>
-        {
-            { x => x.IsUpdate, true },
-            { x => x.Guid, productSaleAddToCart.ProductGuid },
-            { x => x.Image, productSaleAddToCart.Image },
-            { x => x.Code, productSaleAddToCart.Code },
-            { x => x.Name, productSaleAddToCart.Name },
-            { x => x.Stock, productSaleAddToCart.Stock },
-            { x => x.SelectedPriceGuid, productSaleAddToCart.SalePriceGuid },
-            { x => x.SelectedPrice, productSaleAddToCart.SalePrice },
-            { x => x.SelectedPriceIsWholeSale, productSaleAddToCart.SalePriceIsWholeSale },
-            { x => x.Quantity, productSaleAddToCart.Quantity },
-            { x => x.TotalPrice, productSaleAddToCart.TotalPrice }
-        };
-
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("Update Cart", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            var isGuid = Guid.TryParse(result.Data.ToString(), out var removedProduct);
-            if (isGuid)
-            {
-                var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == removedProduct);
-                if (productToRemove is not null)
-                    _productsInCartTemp.Remove(productToRemove);
-
-                Snackbar.Add("Product Removed From Cart!", Severity.Success);
-            }
-            else
-            {
-                var addedProduct = (ProductSaleAddToCartViewDto)result.Data;
-                var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == addedProduct.ProductGuid);
-                if (productToRemove is not null)
-                {
-                    _productsInCartTemp.Remove(productToRemove);
-                    _productsInCartTemp.Add(addedProduct);
-                }
-
-                Snackbar.Add("Product Updated To Cart!", Severity.Success);
-            }
-
-            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
-        }
-    }
-
-    async Task AddDeliveryInfo()
-    {
-        var options = new DialogOptions();
-        DialogResult? result;
-
-        if (_deliveryInfo is not null)
-        {
-            var parameters = new DialogParameters<SaleTransactionDeliveryDialog>
-            {
-                { x => x.Address, _deliveryInfo.Address },
-                { x => x.ContactPhone, _deliveryInfo.ContactPhone },
-                { x => x.ContactPerson, _deliveryInfo.ContactPerson },
-                { x => x.DeliveryServiceName, _deliveryInfo.DeliveryServiceName },
-                { x => x.DeliveryServiceContactPerson, _deliveryInfo.DeliveryContactPerson },
-                { x => x.DeliveryServiceContactPhone, _deliveryInfo.DeliveryContactPhone },
-                { x => x.Remark, _deliveryInfo.Remark },
-                { x => x.DeliveryFees, _deliveryInfo.DeliveryFees }
-            };
-            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
-            result = await dialog.Result;
-        }
-        else
-        {
-            var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Guid == _customerVendorGuid);
-            var parameters = new DialogParameters<SaleTransactionDeliveryDialog>
-            {
-                { x => x.Address, selectedCustomerVendor!.Address },
-                { x => x.ContactPhone, selectedCustomerVendor.Phone },
-                { x => x.ContactPerson, selectedCustomerVendor.Name }
-            };
-            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
-            result = await dialog.Result;
-        }
-
-        if (!result.Canceled)
-        {
-            _deliveryInfo = (InvoiceSaleDeliveryCreateDto)result.Data;
-            Snackbar.Add("Delivery Info Added!", Severity.Success);
-        }
-    }
-
-    async Task OpenTransactionCreateDialog()
-    {
-        if (_productsInCartTemp.Count == 0)
-        {
-            Snackbar.Add("Add Items To Proceed To Sale!", Severity.Error);
-            return;
-        }
-
-        var parameters = new DialogParameters<SaleTransactionDialog>
-        {
-            { x => x.InvoiceNo, _invoiceNo },
-            { x => x.CustomerName, _customerVendorName },
-            { x => x.CustomerExistingCreditDebit, _customerVendorCreditDebitLeft ?? 0 },
-            { x => x.SubTotal, SubTotal }
-        };
-
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<SaleTransactionDialog>("Make Sale", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            _isLoading = true;
-            StateHasChanged();
-
-            _invoiceSalePreCreateDto = (InvoiceSalePreCreateDto)result.Data;
-
-            List<InvoiceSaleProductCreateDto> productsInCart = [];
-            productsInCart.AddRange(_productsInCartTemp
-                .Select(product =>
-                    new InvoiceSaleProductCreateDto(
-                        product.ProductGuid, product.Quantity, product.TotalPrice, product.SalePriceGuid
-                    )
-                )
-            );
-
-            var invoiceToCreate = new InvoiceSaleCreateDto(
-                SubTotal,
-                _invoiceSalePreCreateDto.Discount,
-                _invoiceSalePreCreateDto.DiscountType,
-                _invoiceSalePreCreateDto.Total,
-                _invoiceSalePreCreateDto.PaidTotal,
-                _invoiceSalePreCreateDto.CreditDebitLeft,
-                _invoiceSalePreCreateDto.Remark,
-                _customerVendorGuid,
-                productsInCart,
-                _deliveryInfo
-            );
-
-            var httpResult = await HttpRepo.CreateSaleInvoice(invoiceToCreate);
-
-            _isLoading = false;
-            StateHasChanged();
-
-            if (httpResult.isSuccess)
-            {
-                Snackbar.Add("Sale Completed!", Severity.Success);
-                var fileName = $"{_invoiceNo}.pdf";
-
-                using var streamRef = new DotNetStreamReference(httpResult.stream!);
-                await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-                NavManager.NavigateTo("/loading/sale");
-            }
-        }
-    }
-
-}
+﻿@* @page "/sale" *@
+@* @using Friday.ERP.Client.Data.DataTransferObjects *@
+@* @using Friday.ERP.Client.Pages.Sale.Components.Templates *@
+@* @using Friday.ERP.Client.Pages.Sale.Dialogs *@
+@* @using Friday.ERP.Client.Data *@
+@* @using Friday.ERP.Client.Shared.Layouts *@
+@* *@
+@* @inject NavigationManager NavManager *@
+@* @inject IHttpRepository HttpRepo *@
+@* @inject IDialogService DialogService *@
+@* @inject ISnackbar Snackbar *@
+@* @inject IJSRuntime Js *@
+@* *@
+@* @layout MainLayout *@
+@* @attribute [Authorize] *@
+@* *@
+@* <CustomPageContainer> *@
+@* *@
+@*     <MudItem sm="12" md="12" lg="7" Class="align-self-center"> *@
+@*         @if (_isMainLoading) *@
+@*         { *@
+@*             <CustomPageCardWithSkeleton/> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <CustomPageCard> *@
+@*                 <MudProgressLinear Color="Color.Primary" Class="mb-4" Indeterminate="@_isLoading"/> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12" md="6" Class="align-self-center"> *@
+@*                         <MudText Typo="Typo.h6">Sales</MudText> *@
+@*                     </MudItem> *@
+@*                     <MudItem sm="12" md="3" Class="align-self-center"> *@
+@*                         <MudAutocomplete T="string?" *@
+@*                                          @ref="CategoryAutoComplete" *@
+@*                                          Clearable="true" *@
+@*                                          ResetValueOnEmptyText="true" *@
+@*                                          Variant="Variant.Outlined" *@
+@*                                          Margin="Margin.Dense" *@
+@*                                          Dense="true" *@
+@*                                          FullWidth="true" *@
+@*                                          SearchFunc="@CategorySearch" *@
+@*                                          ShowProgressIndicator="@_isLoading" *@
+@*                                          ValueChanged="@CategoryChange" *@
+@*                                          OnClearButtonClick="@CategoryClear" *@
+@*                                          Label="Category"> *@
+@*                         </MudAutocomplete> *@
+@*                     </MudItem> *@
+@*                     <MudItem sm="12" md="3" Class="align-self-center"> *@
+@*                         <CustomTextFieldWithIcon ClassParameter="mr-2" Icon="@Icons.Material.TwoTone.Search" *@
+@*                                                  BindValue="@_searchTerm" *@
+@*                                                  ValueChanged="@ChangeProductSearchValue" *@
+@*                                                  Label="Search"> *@
+@*                         </CustomTextFieldWithIcon> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto"> *@
+@*                     @if (_productList.Count == 0) *@
+@*                     { *@
+@*                         <MudItem sm="12"> *@
+@*                             <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;"> *@
+@*                                 <div class="align-self-center"> *@
+@*                                     <MudText Typo="Typo.caption">No Products Yet!</MudText> *@
+@*                                 </div> *@
+@*                             </div> *@
+@*                         </MudItem> *@
+@*                     } *@
+@*                     else *@
+@*                     { *@
+@*                         @foreach (var product in _productList) *@
+@*                         { *@
+@*                             <MudItem sm="6" md="4"> *@
+@*                                 <CustomCardBox OnClick="@(() => OpenCreateProductPurchaseAddToCartDialog(product))" *@
+@*                                                ProductCode="@product.Code" *@
+@*                                                ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")" *@
+@*                                                ProductTotalStock="@product.TotalStockLeft" *@
+@*                                                ProductName="@product.Name"> *@
+@*                                 </CustomCardBox> *@
+@*                             </MudItem> *@
+@*                         } *@
+@*                     } *@
+@*                 </MudGrid> *@
+@*             </CustomPageCard> *@
+@*         } *@
+@*     </MudItem> *@
+@*     <MudItem sm="12" md="12" lg="5" Class="align-self-center"> *@
+@*         @if (_isMainLoading) *@
+@*         { *@
+@*             <CustomPageCardWithSkeleton/> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <CustomPageCard> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithTwoLabels FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"></CustomRowWithTwoLabels> *@
+@*                     <CustomRowWithTwoLabels FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"></CustomRowWithTwoLabels> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;"> *@
+@*                     @if (_productsInCartTemp.Count == 0) *@
+@*                     { *@
+@*                         <MudItem sm="12"> *@
+@*                             <div class="d-flex d-column justify-center flex-grow-1" style="height: 40vh;"> *@
+@*                                 <div class="align-self-center"> *@
+@*                                     <MudText Typo="Typo.caption">No Product In Cart!</MudText> *@
+@*                                 </div> *@
+@*                             </div> *@
+@*                         </MudItem> *@
+@*                     } *@
+@*                     else *@
+@*                     { *@
+@*                         @foreach (var product in _productsInCartTemp) *@
+@*                         { *@
+@*                             <MudItem sm="12" md="12" lg="12"> *@
+@*                                 <CustomCardRectangle OnClick="@(() => OpenUpdateProductPurchaseAddToCartDialog(product))" *@
+@*                                                      FirstMainText="@product.Name" FirstSubText="@product.Quantity.ToString()" *@
+@*                                                      ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")" *@
+@*                                                      SecondMainText="@product.SalePrice.ToString()" *@
+@*                                                      SecondSubText="@(product.TotalPrice.ToString())"> *@
+@*                                 </CustomCardRectangle> *@
+@*                             </MudItem> *@
+@*                         } *@
+@*                     } *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithLabelsAndInput FirstText="Customer"> *@
+@*                         <MudItem sm="7" md="7" lg="7"> *@
+@*                             <MudAutocomplete T="string?" *@
+@*                                              @ref="CustomerVendorAutoComplete" *@
+@*                                              Clearable="true" *@
+@*                                              ResetValueOnEmptyText="true" *@
+@*                                              Variant="Variant.Outlined" *@
+@*                                              Margin="Margin.Dense" *@
+@*                                              Dense="true" *@
+@*                                              FullWidth="true" *@
+@*                                              SearchFunc="@CustomerVendorSearch" *@
+@*                                              ShowProgressIndicator="@_isCustomerVendorLoading" *@
+@*                                              ValueChanged="@CustomerVendorChange" *@
+@*                                              OnClearButtonClick="@CustomerVendorClear" *@
+@*                                              RequiredError="Choose Customer!"> *@
+@*                             </MudAutocomplete> *@
+@*                         </MudItem> *@
+@*                     </CustomRowWithLabelsAndInput> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithTwoLabels FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"></CustomRowWithTwoLabels> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     @if (_customerVendorGuid is not null) *@
+@*                     { *@
+@*                         <MudItem sm="6" md="6" lg="6"> *@
+@*                             <CustomButton Disabled="@_isLoading" OnClick="@AddDeliveryInfo" Color="Color.Secondary"> *@
+@*                                 @if (_isLoading) *@
+@*                                 { *@
+@*                                     <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/> *@
+@*                                 } *@
+@*                                 else *@
+@*                                 { *@
+@*                                     @("Add Delivery Info") *@
+@*                                 } *@
+@*                             </CustomButton> *@
+@*                         </MudItem> *@
+@*                     } *@
+@*                     <MudItem sm="@(_customerVendorGuid is not null ? 6 : 12)"> *@
+@*                         <CustomButton Disabled="@_isLoading" OnClick="@OpenTransactionCreateDialog" Color="Color.Primary"> *@
+@*                             @if (_isLoading) *@
+@*                             { *@
+@*                                 <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/> *@
+@*                             } *@
+@*                             else *@
+@*                             { *@
+@*                                 @("Proceed to Sale") *@
+@*                             } *@
+@*                         </CustomButton> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*             </CustomPageCard> *@
+@*         } *@
+@*     </MudItem> *@
+@* </CustomPageContainer> *@
+@* <script> *@
+@*   window.downloadFileFromStream = async (fileName, contentStreamReference) => { *@
+@*     const arrayBuffer = await contentStreamReference.arrayBuffer(); *@
+@*     const blob = new Blob([arrayBuffer]); *@
+@*     const url = URL.createObjectURL(blob); *@
+@*     const anchorElement = document.createElement('a'); *@
+@*     anchorElement.href = url; *@
+@*     anchorElement.download = fileName ?? ''; *@
+@*     anchorElement.click(); *@
+@*     anchorElement.remove(); *@
+@*     URL.revokeObjectURL(url); *@
+@*   } *@
+@* </script> *@
+@* *@
+@* @code { *@
+@*     bool _isMainLoading; *@
+@*     bool _isLoading; *@
+@*     bool _isCustomerVendorLoading; *@
+@* *@
+@*     List<ProductViewDto> _productList = []; *@
+@*     List<CategoryViewDto> _categoryProductList = []; *@
+@*     List<CustomerVendorViewDto> _customerVendorList = []; *@
+@*     string? _invoiceNo; *@
+@* *@
+@*     MudAutocomplete<string?> CategoryAutoComplete { get; set; } = new(); *@
+@*     MudAutocomplete<string?> CustomerVendorAutoComplete { get; set; } = new(); *@
+@* *@
+@*     string? _searchTerm; *@
+@*     Guid? _categoryGuid; *@
+@*     Guid? _customerVendorGuid; *@
+@*     string? _customerVendorName; *@
+@*     long? _customerVendorCreditDebitLeft; *@
+@*     InvoiceSaleDeliveryCreateDto? _deliveryInfo; *@
+@* *@
+@*     readonly List<ProductSaleAddToCartViewDto> _productsInCartTemp = []; *@
+@* *@
+@*     InvoiceSalePreCreateDto? _invoiceSalePreCreateDto; *@
+@*     long SubTotal { get; set; } *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         _isMainLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         await GetProductData(); *@
+@*         await GetCategoryProductData(null); *@
+@* *@
+@*         var result = await HttpRepo.GetNextSaleInvoiceNumber(); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _invoiceNo = result!.invoiceIdViewDto!.InvoiceNo; *@
+@*         } *@
+@* *@
+@*         _isMainLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task CategoryChange(string? value) *@
+@*     { *@
+@*         if (value is not null) *@
+@*             _categoryGuid = _categoryProductList.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault(); *@
+@*         else *@
+@*             _categoryGuid = null; *@
+@* *@
+@*         await GetProductData(); *@
+@*     } *@
+@* *@
+@*     async Task CategoryClear() *@
+@*     { *@
+@*         _categoryGuid = null; *@
+@*         await CategoryAutoComplete.Clear(); *@
+@*         await GetProductData(); *@
+@*     } *@
+@* *@
+@*     async Task<IEnumerable<string>> CategorySearch(string? value) *@
+@*     { *@
+@*         await Task.Delay(5); *@
+@*         return await GetCategoryProductData(value); *@
+@*     } *@
+@* *@
+@*     async Task<IEnumerable<string>> GetCategoryProductData(string? value) *@
+@*     { *@
+@*         _isLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.SearchCategories(value); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _categoryProductList = result.categoryViewDtos!; *@
+@*         } *@
+@* *@
+@*         _isLoading = false; *@
+@*         StateHasChanged(); *@
+@*         return _categoryProductList.Select(c => c.Name); *@
+@*     } *@
+@* *@
+@*     async Task GetProductData() *@
+@*     { *@
+@*         _isLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.GetAllProducts(new ProductParameter *@
+@*         { *@
+@*             PageNumber = 1, *@
+@*             PageSize = 20, *@
+@*             SearchTerm = _searchTerm, *@
+@*             CategoryGuid = _categoryGuid *@
+@*         }); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _productList = result!.productViewDtos!.Items!; *@
+@*         } *@
+@* *@
+@*         _isLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task ChangeProductSearchValue(string value) *@
+@*     { *@
+@*         _searchTerm = value; *@
+@*         await GetProductData(); *@
+@*     } *@
+@* *@
+@*     void CustomerVendorChange(string? value) *@
+@*     { *@
+@*         Console.WriteLine("here"); *@
+@*         if (value is not null) *@
+@*         { *@
+@*             var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == value); *@
+@*             _customerVendorGuid = selectedCustomerVendor!.Guid; *@
+@*             _customerVendorName = selectedCustomerVendor.Name; *@
+@*             _customerVendorCreditDebitLeft = selectedCustomerVendor.TotalCreditDebitLeft; *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             _customerVendorGuid = null; *@
+@*             _customerVendorName = null; *@
+@*             _customerVendorCreditDebitLeft = null; *@
+@*             CustomerVendorAutoComplete.Clear(); *@
+@*         } *@
+@* *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     void CustomerVendorClear() *@
+@*     { *@
+@*         _customerVendorGuid = null; *@
+@*         _customerVendorName = null; *@
+@*         _customerVendorCreditDebitLeft = null; *@
+@*         CustomerVendorAutoComplete.Clear(); *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task<IEnumerable<string>> CustomerVendorSearch(string? value) *@
+@*     { *@
+@*         Console.WriteLine("here2"); *@
+@*         await Task.Delay(5); *@
+@*         return await GetCustomerVendorSearchData(value); *@
+@*     } *@
+@* *@
+@*     async Task<IEnumerable<string>> GetCustomerVendorSearchData(string? value) *@
+@*     { *@
+@*         _isCustomerVendorLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.SearchCustomers(value); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             _customerVendorList = result.CustomerVendorViewDtos!; *@
+@*         } *@
+@* *@
+@*         _isCustomerVendorLoading = false; *@
+@*         StateHasChanged(); *@
+@*         return _customerVendorList.Select(c => c.Name); *@
+@*     } *@
+@* *@
+@*     async Task OpenCreateProductPurchaseAddToCartDialog(ProductViewDto productViewDto) *@
+@*     { *@
+@*         if (_productsInCartTemp.Select(c => c.ProductGuid).ToList().Contains(productViewDto.Guid)) *@
+@*         { *@
+@*             Snackbar.Add("Product Already In Cart!", Severity.Error); *@
+@*             return; *@
+@*         } *@
+@* *@
+@*         var options = new DialogOptions(); *@
+@*         var parameters = new DialogParameters<SaleProductCartDialog> *@
+@*         { *@
+@*             { x => x.IsUpdate, false }, *@
+@*             { x => x.Guid, productViewDto.Guid }, *@
+@*             { x => x.Image, productViewDto.Image }, *@
+@*             { x => x.Code, productViewDto.Code }, *@
+@*             { x => x.Name, productViewDto.Name }, *@
+@*             { x => x.Stock, productViewDto.TotalStockLeft } *@
+@*         }; *@
+@*         var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("Add to Cart", parameters, options); *@
+@* *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             var addedProduct = (ProductSaleAddToCartViewDto)result.Data; *@
+@*             _productsInCartTemp.Add(addedProduct); *@
+@* *@
+@*             Snackbar.Add("Product Added To Cart!", Severity.Success); *@
+@*             SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum(); *@
+@*         } *@
+@*     } *@
+@* *@
+@*     async Task OpenUpdateProductPurchaseAddToCartDialog(ProductSaleAddToCartViewDto productSaleAddToCart) *@
+@*     { *@
+@*         var parameters = new DialogParameters<SaleProductCartDialog> *@
+@*         { *@
+@*             { x => x.IsUpdate, true }, *@
+@*             { x => x.Guid, productSaleAddToCart.ProductGuid }, *@
+@*             { x => x.Image, productSaleAddToCart.Image }, *@
+@*             { x => x.Code, productSaleAddToCart.Code }, *@
+@*             { x => x.Name, productSaleAddToCart.Name }, *@
+@*             { x => x.Stock, productSaleAddToCart.Stock }, *@
+@*             { x => x.SelectedPriceGuid, productSaleAddToCart.SalePriceGuid }, *@
+@*             { x => x.SelectedPrice, productSaleAddToCart.SalePrice }, *@
+@*             { x => x.SelectedPriceIsWholeSale, productSaleAddToCart.SalePriceIsWholeSale }, *@
+@*             { x => x.Quantity, productSaleAddToCart.Quantity }, *@
+@*             { x => x.TotalPrice, productSaleAddToCart.TotalPrice } *@
+@*         }; *@
+@* *@
+@*         var options = new DialogOptions(); *@
+@*         var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("Update Cart", parameters, options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             var isGuid = Guid.TryParse(result.Data.ToString(), out var removedProduct); *@
+@*             if (isGuid) *@
+@*             { *@
+@*                 var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == removedProduct); *@
+@*                 if (productToRemove is not null) *@
+@*                     _productsInCartTemp.Remove(productToRemove); *@
+@* *@
+@*                 Snackbar.Add("Product Removed From Cart!", Severity.Success); *@
+@*             } *@
+@*             else *@
+@*             { *@
+@*                 var addedProduct = (ProductSaleAddToCartViewDto)result.Data; *@
+@*                 var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == addedProduct.ProductGuid); *@
+@*                 if (productToRemove is not null) *@
+@*                 { *@
+@*                     _productsInCartTemp.Remove(productToRemove); *@
+@*                     _productsInCartTemp.Add(addedProduct); *@
+@*                 } *@
+@* *@
+@*                 Snackbar.Add("Product Updated To Cart!", Severity.Success); *@
+@*             } *@
+@* *@
+@*             SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum(); *@
+@*         } *@
+@*     } *@
+@* *@
+@*     async Task AddDeliveryInfo() *@
+@*     { *@
+@*         var options = new DialogOptions(); *@
+@*         DialogResult? result; *@
+@* *@
+@*         if (_deliveryInfo is not null) *@
+@*         { *@
+@*             var parameters = new DialogParameters<SaleTransactionDeliveryDialog> *@
+@*             { *@
+@*                 { x => x.Address, _deliveryInfo.Address }, *@
+@*                 { x => x.ContactPhone, _deliveryInfo.ContactPhone }, *@
+@*                 { x => x.ContactPerson, _deliveryInfo.ContactPerson }, *@
+@*                 { x => x.DeliveryServiceName, _deliveryInfo.DeliveryServiceName }, *@
+@*                 { x => x.DeliveryServiceContactPerson, _deliveryInfo.DeliveryContactPerson }, *@
+@*                 { x => x.DeliveryServiceContactPhone, _deliveryInfo.DeliveryContactPhone }, *@
+@*                 { x => x.Remark, _deliveryInfo.Remark }, *@
+@*                 { x => x.DeliveryFees, _deliveryInfo.DeliveryFees } *@
+@*             }; *@
+@*             var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options); *@
+@*             result = await dialog.Result; *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Guid == _customerVendorGuid); *@
+@*             var parameters = new DialogParameters<SaleTransactionDeliveryDialog> *@
+@*             { *@
+@*                 { x => x.Address, selectedCustomerVendor!.Address }, *@
+@*                 { x => x.ContactPhone, selectedCustomerVendor.Phone }, *@
+@*                 { x => x.ContactPerson, selectedCustomerVendor.Name } *@
+@*             }; *@
+@*             var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options); *@
+@*             result = await dialog.Result; *@
+@*         } *@
+@* *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             _deliveryInfo = (InvoiceSaleDeliveryCreateDto)result.Data; *@
+@*             Snackbar.Add("Delivery Info Added!", Severity.Success); *@
+@*         } *@
+@*     } *@
+@* *@
+@*     async Task OpenTransactionCreateDialog() *@
+@*     { *@
+@*         if (_productsInCartTemp.Count == 0) *@
+@*         { *@
+@*             Snackbar.Add("Add Items To Proceed To Sale!", Severity.Error); *@
+@*             return; *@
+@*         } *@
+@* *@
+@*         var parameters = new DialogParameters<SaleTransactionDialog> *@
+@*         { *@
+@*             { x => x.InvoiceNo, _invoiceNo }, *@
+@*             { x => x.CustomerName, _customerVendorName }, *@
+@*             { x => x.CustomerExistingCreditDebit, _customerVendorCreditDebitLeft ?? 0 }, *@
+@*             { x => x.SubTotal, SubTotal } *@
+@*         }; *@
+@* *@
+@*         var options = new DialogOptions(); *@
+@*         var dialog = await DialogService.ShowAsync<SaleTransactionDialog>("Make Sale", parameters, options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Canceled) *@
+@*         { *@
+@*             _isLoading = true; *@
+@*             StateHasChanged(); *@
+@* *@
+@*             _invoiceSalePreCreateDto = (InvoiceSalePreCreateDto)result.Data; *@
+@* *@
+@*             List<InvoiceSaleProductCreateDto> productsInCart = []; *@
+@*             productsInCart.AddRange(_productsInCartTemp *@
+@*                 .Select(product => *@
+@*                     new InvoiceSaleProductCreateDto( *@
+@*                         product.ProductGuid, product.Quantity, product.TotalPrice, product.SalePriceGuid *@
+@*                     ) *@
+@*                 ) *@
+@*             ); *@
+@* *@
+@*             var invoiceToCreate = new InvoiceSaleCreateDto( *@
+@*                 SubTotal, *@
+@*                 _invoiceSalePreCreateDto.Discount, *@
+@*                 _invoiceSalePreCreateDto.DiscountType, *@
+@*                 _invoiceSalePreCreateDto.Total, *@
+@*                 _invoiceSalePreCreateDto.PaidTotal, *@
+@*                 _invoiceSalePreCreateDto.CreditDebitLeft, *@
+@*                 _invoiceSalePreCreateDto.Remark, *@
+@*                 _customerVendorGuid, *@
+@*                 productsInCart, *@
+@*                 _deliveryInfo *@
+@*             ); *@
+@* *@
+@*             var httpResult = await HttpRepo.CreateSaleInvoice(invoiceToCreate); *@
+@* *@
+@*             _isLoading = false; *@
+@*             StateHasChanged(); *@
+@* *@
+@*             if (httpResult.isSuccess) *@
+@*             { *@
+@*                 Snackbar.Add("Sale Completed!", Severity.Success); *@
+@*                 var fileName = $"{_invoiceNo}.pdf"; *@
+@* *@
+@*                 using var streamRef = new DotNetStreamReference(httpResult.stream!); *@
+@*                 await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef); *@
+@*                 NavManager.NavigateTo("/loading/sale"); *@
+@*             } *@
+@*         } *@
+@*     } *@
+@* *@
+@* } *@

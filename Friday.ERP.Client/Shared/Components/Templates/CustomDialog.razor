@@ -1,0 +1,22 @@
+﻿@if (IsLoading)
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
+        </DialogContent>
+        <DialogActions>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
+        </DialogActions>
+    </MudDialog>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter] public bool IsLoading { get; set; }
+}

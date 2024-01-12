@@ -1,198 +1,198 @@
-@using Friday.ERP.Client.Data.Enums
-@using Friday.ERP.Client.Data.DataTransferObjects
-<MudDialog>
-    <DialogContent>
-        <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Invoice No." SecondText="@InvoiceNo"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Vendor" SecondText="@VendorName"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Existing Credit / Debit"
-                                    SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Dark)"
-                                    SecondText="@_vendorExistingCreditDebitString">
-            </CustomRowWithTwoLabels>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-        <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Subtotal" SecondText="@($"{SubTotal.ToString()} mmk")"></CustomRowWithTwoLabels>
-            <CustomRowWithLabelsAndInput FirstText="Discount">
-                <MudItem sm="3" md="3" lg="3" Class="align-self-center">
-                    <MudSelect T="string"
-                               @bind-Value="_selectedDiscountType"
-                               FullWidth="true"
-                               Margin="Margin.Dense"
-                               Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("Flat")"/>
-                        <MudSelectItem Value="@("%")"/>
-                    </MudSelect>
-                </MudItem>
-                <MudItem sm="4" md="4" lg="4" Class="align-self-center">
-                    <MudTextField T="long" ValueChanged="@DiscountValueChanged"
-                                  Immediate="true"
-                                  FullWidth="true"
-                                  Margin="Margin.Dense"
-                                  Variant="Variant.Outlined">
-                    </MudTextField>
-                </MudItem>
-            </CustomRowWithLabelsAndInput>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-        <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Total (With Existing)" SecondText="@($"{_totalWithExisting.ToString()} mmk")"></CustomRowWithTwoLabels>
-            <CustomRowWithLabelsAndInput FirstText="Paid Total">
-                <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                    <MudTextField T="long?" ValueChanged="@TotalPaidValueChanged"
-                                  Immediate="true"
-                                  FullWidth="true" InputType="InputType.Number"
-                                  Margin="Margin.Dense" Variant="Variant.Outlined">
-                    </MudTextField>
-                </MudItem>
-            </CustomRowWithLabelsAndInput>
-            <CustomRowWithLabelsAndInput FirstText="Is Paid">
-                <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                    <MudCheckBox T="bool" @bind-Value="@IsPaid" Color="Color.Default"></MudCheckBox>
-                </MudItem>
-            </CustomRowWithLabelsAndInput>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-        <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Credit / Debit (Transaction)"
-                                    SecondText="@_creditDebitLeftTransactionString"
-                                    SecondTextColor="@(CreditDebitLeftTransaction < 0 ? Color.Error : Color.Dark)">
-            </CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Total Credit / Debit (Overall)"
-                                    SecondText="@_creditDebitLeftString"
-                                    SecondTextColor="@(_totalCreditDebitLeft < 0 ? Color.Error : Color.Dark)">
-            </CustomRowWithTwoLabels>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-        <MudGrid Spacing="2">
-            <CustomRowWithLabelsAndInput FirstText="Remark">
-                <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                    <MudTextField T="string" @bind-Value="Remark"
-                                  FullWidth="true" InputType="InputType.Text"
-                                  Margin="Margin.Dense" Variant="Variant.Outlined">
-                    </MudTextField>
-                </MudItem>
-            </CustomRowWithLabelsAndInput>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
-    </DialogContent>
-    <DialogActions>
-        <CustomButton Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton>
-        <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Make Purchase</CustomButton>
-    </DialogActions>
-</MudDialog>
-
-@code {
-
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
-
-    [Parameter] public string? InvoiceNo { get; set; }
-    [Parameter] public string? VendorName { get; set; }
-    [Parameter] public long VendorExistingCreditDebit { get; set; }
-    [Parameter] public long SubTotal { get; set; }
-
-    string? _vendorExistingCreditDebitString;
-    string? _creditDebitLeftTransactionString = "0 mmk";
-    string? _creditDebitLeftString = "0 mmk";
-    string? _selectedDiscountType = "Flat";
-    long _totalCreditDebitLeft;
-    long _totalWithExisting;
-
-    long Discount { get; set; }
-    DiscountTypeEnum DiscountType { get; set; } = DiscountTypeEnum.Flat;
-    long Total { get; set; }
-    long PaidTotal { get; set; }
-    bool IsPaid { get; set; }
-    long CreditDebitLeftTransaction { get; set; }
-    string? Remark { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        _vendorExistingCreditDebitString = VendorExistingCreditDebit.ToString();
-        if (VendorExistingCreditDebit < 0)
-            _vendorExistingCreditDebitString += " mmk (Debit)";
-        else if (VendorExistingCreditDebit == 0)
-            _vendorExistingCreditDebitString += " mmk";
-        else
-            _vendorExistingCreditDebitString += " mmk (Credit)";
-
-        Total = SubTotal;
-        _totalWithExisting = Total - VendorExistingCreditDebit;
-
-        CalculateCreditDebit(PaidTotal);
-        StateHasChanged();
-    }
-
-    void DiscountValueChanged(long value)
-    {
-        Discount = value;
-        if (_selectedDiscountType == "Flat")
-        {
-            DiscountType = DiscountTypeEnum.Flat;
-            Total = SubTotal - Discount;
-        }
-        else
-        {
-            DiscountType = DiscountTypeEnum.Percent;
-            var discountPercent = (double)Discount / 100;
-            var discountAmount = SubTotal - SubTotal * discountPercent;
-            Total = Convert.ToInt64(discountAmount);
-        }
-
-        _totalWithExisting = Total - VendorExistingCreditDebit;
-        CalculateCreditDebit(PaidTotal);
-        StateHasChanged();
-    }
-
-    void TotalPaidValueChanged(long? value)
-    {
-        var longValue = value ?? 0;
-        PaidTotal = longValue;
-
-        CalculateCreditDebit(longValue);
-        StateHasChanged();
-    }
-
-    void CalculateCreditDebit(long longValue)
-    {
-        CreditDebitLeftTransaction = longValue - Total;
-        _creditDebitLeftTransactionString = CreditDebitLeftTransaction.ToString();
-        if (CreditDebitLeftTransaction < 0)
-            _creditDebitLeftTransactionString += " mmk (Debit)";
-        else if (CreditDebitLeftTransaction == 0)
-            _creditDebitLeftTransactionString += " mmk";
-        else
-            _creditDebitLeftTransactionString += " mmk (Credit)";
-
-        _totalCreditDebitLeft = VendorExistingCreditDebit + CreditDebitLeftTransaction;
-        _creditDebitLeftString = _totalCreditDebitLeft.ToString();
-        if (_totalCreditDebitLeft < 0)
-            _creditDebitLeftString += " mmk (Debit)";
-        else if (_totalCreditDebitLeft == 0)
-            _creditDebitLeftString += " mmk";
-        else
-            _creditDebitLeftString += " mmk (Credit)";
-    }
-
-    void Cancel()
-    {
-        MudDialog!.Cancel();
-    }
-
-    void Submit()
-    {
-        var dataToReturn = new InvoicePurchasePreCreateDto(
-            Discount,
-            DiscountType,
-            Total,
-            PaidTotal,
-            CreditDebitLeftTransaction,
-            IsPaid,
-            Remark
-        );
-        MudDialog!.Close(DialogResult.Ok(dataToReturn));
-    }
-
-}
+@* @using Friday.ERP.Shared.Enums *@
+@* @using Friday.ERP.Shared.DataTransferObjects *@
+@* <MudDialog> *@
+@*     <DialogContent> *@
+@*         <MudGrid Spacing="2"> *@
+@*             <CustomRowWithTwoLabels FirstText="Invoice No." SecondText="@InvoiceNo"></CustomRowWithTwoLabels> *@
+@*             <CustomRowWithTwoLabels FirstText="Vendor" SecondText="@VendorName"></CustomRowWithTwoLabels> *@
+@*             <CustomRowWithTwoLabels FirstText="Existing Credit / Debit" *@
+@*                                     SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Dark)" *@
+@*                                     SecondText="@_vendorExistingCreditDebitString"> *@
+@*             </CustomRowWithTwoLabels> *@
+@*         </MudGrid> *@
+@*         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*         <MudGrid Spacing="2"> *@
+@*             <CustomRowWithTwoLabels FirstText="Subtotal" SecondText="@($"{SubTotal.ToString()} mmk")"></CustomRowWithTwoLabels> *@
+@*             <CustomRowWithLabelsAndInput FirstText="Discount"> *@
+@*                 <MudItem sm="3" md="3" lg="3" Class="align-self-center"> *@
+@*                     <MudSelect T="string" *@
+@*                                @bind-Value="_selectedDiscountType" *@
+@*                                FullWidth="true" *@
+@*                                Margin="Margin.Dense" *@
+@*                                Variant="Variant.Outlined"> *@
+@*                         <MudSelectItem Value="@("Flat")"/> *@
+@*                         <MudSelectItem Value="@("%")"/> *@
+@*                     </MudSelect> *@
+@*                 </MudItem> *@
+@*                 <MudItem sm="4" md="4" lg="4" Class="align-self-center"> *@
+@*                     <MudTextField T="long" ValueChanged="@DiscountValueChanged" *@
+@*                                   Immediate="true" *@
+@*                                   FullWidth="true" *@
+@*                                   Margin="Margin.Dense" *@
+@*                                   Variant="Variant.Outlined"> *@
+@*                     </MudTextField> *@
+@*                 </MudItem> *@
+@*             </CustomRowWithLabelsAndInput> *@
+@*         </MudGrid> *@
+@*         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*         <MudGrid Spacing="2"> *@
+@*             <CustomRowWithTwoLabels FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"></CustomRowWithTwoLabels> *@
+@*             <CustomRowWithTwoLabels FirstText="Total (With Existing)" SecondText="@($"{_totalWithExisting.ToString()} mmk")"></CustomRowWithTwoLabels> *@
+@*             <CustomRowWithLabelsAndInput FirstText="Paid Total"> *@
+@*                 <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                     <MudTextField T="long?" ValueChanged="@TotalPaidValueChanged" *@
+@*                                   Immediate="true" *@
+@*                                   FullWidth="true" InputType="InputType.Number" *@
+@*                                   Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+@*                     </MudTextField> *@
+@*                 </MudItem> *@
+@*             </CustomRowWithLabelsAndInput> *@
+@*             <CustomRowWithLabelsAndInput FirstText="Is Paid"> *@
+@*                 <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                     <MudCheckBox T="bool" @bind-Value="@IsPaid" Color="Color.Default"></MudCheckBox> *@
+@*                 </MudItem> *@
+@*             </CustomRowWithLabelsAndInput> *@
+@*         </MudGrid> *@
+@*         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*         <MudGrid Spacing="2"> *@
+@*             <CustomRowWithTwoLabels FirstText="Credit / Debit (Transaction)" *@
+@*                                     SecondText="@_creditDebitLeftTransactionString" *@
+@*                                     SecondTextColor="@(CreditDebitLeftTransaction < 0 ? Color.Error : Color.Dark)"> *@
+@*             </CustomRowWithTwoLabels> *@
+@*             <CustomRowWithTwoLabels FirstText="Total Credit / Debit (Overall)" *@
+@*                                     SecondText="@_creditDebitLeftString" *@
+@*                                     SecondTextColor="@(_totalCreditDebitLeft < 0 ? Color.Error : Color.Dark)"> *@
+@*             </CustomRowWithTwoLabels> *@
+@*         </MudGrid> *@
+@*         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*         <MudGrid Spacing="2"> *@
+@*             <CustomRowWithLabelsAndInput FirstText="Remark"> *@
+@*                 <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                     <MudTextField T="string" @bind-Value="Remark" *@
+@*                                   FullWidth="true" InputType="InputType.Text" *@
+@*                                   Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+@*                     </MudTextField> *@
+@*                 </MudItem> *@
+@*             </CustomRowWithLabelsAndInput> *@
+@*         </MudGrid> *@
+@*         <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider> *@
+@*     </DialogContent> *@
+@*     <DialogActions> *@
+@*         <CustomButton Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton> *@
+@*         <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Make Purchase</CustomButton> *@
+@*     </DialogActions> *@
+@* </MudDialog> *@
+@* *@
+@* @code { *@
+@* *@
+@*     [CascadingParameter] MudDialogInstance? MudDialog { get; set; } *@
+@* *@
+@*     [Parameter] public string? InvoiceNo { get; set; } *@
+@*     [Parameter] public string? VendorName { get; set; } *@
+@*     [Parameter] public long VendorExistingCreditDebit { get; set; } *@
+@*     [Parameter] public long SubTotal { get; set; } *@
+@* *@
+@*     string? _vendorExistingCreditDebitString; *@
+@*     string? _creditDebitLeftTransactionString = "0 mmk"; *@
+@*     string? _creditDebitLeftString = "0 mmk"; *@
+@*     string? _selectedDiscountType = "Flat"; *@
+@*     long _totalCreditDebitLeft; *@
+@*     long _totalWithExisting; *@
+@* *@
+@*     long Discount { get; set; } *@
+@*     DiscountTypeEnum DiscountType { get; set; } = DiscountTypeEnum.Flat; *@
+@*     long Total { get; set; } *@
+@*     long PaidTotal { get; set; } *@
+@*     bool IsPaid { get; set; } *@
+@*     long CreditDebitLeftTransaction { get; set; } *@
+@*     string? Remark { get; set; } *@
+@* *@
+@*     protected override void OnParametersSet() *@
+@*     { *@
+@*         base.OnParametersSet(); *@
+@*         _vendorExistingCreditDebitString = VendorExistingCreditDebit.ToString(); *@
+@*         if (VendorExistingCreditDebit < 0) *@
+@*             _vendorExistingCreditDebitString += " mmk (Debit)"; *@
+@*         else if (VendorExistingCreditDebit == 0) *@
+@*             _vendorExistingCreditDebitString += " mmk"; *@
+@*         else *@
+@*             _vendorExistingCreditDebitString += " mmk (Credit)"; *@
+@* *@
+@*         Total = SubTotal; *@
+@*         _totalWithExisting = Total - VendorExistingCreditDebit; *@
+@* *@
+@*         CalculateCreditDebit(PaidTotal); *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     void DiscountValueChanged(long value) *@
+@*     { *@
+@*         Discount = value; *@
+@*         if (_selectedDiscountType == "Flat") *@
+@*         { *@
+@*             DiscountType = DiscountTypeEnum.Flat; *@
+@*             Total = SubTotal - Discount; *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             DiscountType = DiscountTypeEnum.Percent; *@
+@*             var discountPercent = (double)Discount / 100; *@
+@*             var discountAmount = SubTotal - SubTotal * discountPercent; *@
+@*             Total = Convert.ToInt64(discountAmount); *@
+@*         } *@
+@* *@
+@*         _totalWithExisting = Total - VendorExistingCreditDebit; *@
+@*         CalculateCreditDebit(PaidTotal); *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     void TotalPaidValueChanged(long? value) *@
+@*     { *@
+@*         var longValue = value ?? 0; *@
+@*         PaidTotal = longValue; *@
+@* *@
+@*         CalculateCreditDebit(longValue); *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     void CalculateCreditDebit(long longValue) *@
+@*     { *@
+@*         CreditDebitLeftTransaction = longValue - Total; *@
+@*         _creditDebitLeftTransactionString = CreditDebitLeftTransaction.ToString(); *@
+@*         if (CreditDebitLeftTransaction < 0) *@
+@*             _creditDebitLeftTransactionString += " mmk (Debit)"; *@
+@*         else if (CreditDebitLeftTransaction == 0) *@
+@*             _creditDebitLeftTransactionString += " mmk"; *@
+@*         else *@
+@*             _creditDebitLeftTransactionString += " mmk (Credit)"; *@
+@* *@
+@*         _totalCreditDebitLeft = VendorExistingCreditDebit + CreditDebitLeftTransaction; *@
+@*         _creditDebitLeftString = _totalCreditDebitLeft.ToString(); *@
+@*         if (_totalCreditDebitLeft < 0) *@
+@*             _creditDebitLeftString += " mmk (Debit)"; *@
+@*         else if (_totalCreditDebitLeft == 0) *@
+@*             _creditDebitLeftString += " mmk"; *@
+@*         else *@
+@*             _creditDebitLeftString += " mmk (Credit)"; *@
+@*     } *@
+@* *@
+@*     void Cancel() *@
+@*     { *@
+@*         MudDialog!.Cancel(); *@
+@*     } *@
+@* *@
+@*     void Submit() *@
+@*     { *@
+@*         var dataToReturn = new InvoicePurchasePreCreateDto( *@
+@*             Discount, *@
+@*             DiscountType, *@
+@*             Total, *@
+@*             PaidTotal, *@
+@*             CreditDebitLeftTransaction, *@
+@*             IsPaid, *@
+@*             Remark *@
+@*         ); *@
+@*         MudDialog!.Close(DialogResult.Ok(dataToReturn)); *@
+@*     } *@
+@* *@
+@* } *@

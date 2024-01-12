@@ -1,215 +1,215 @@
-@page "/Settings"
-@using Friday.ERP.Client.Data.DataTransferObjects
-@using Friday.ERP.Client.Data
-@using Friday.ERP.Client.Shared.Layouts
-
-@inject IHttpRepository HttpRepo
-@inject ISnackbar Snackbar
-
-@layout MainLayout
-@attribute [Authorize]
-
-<CustomPageContainer>
-    <MudItem sm="6" md="6" lg="6" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard IsFlex="false">
-                <MudGrid Spacing="2">
-                    <MudItem sm="12" md="12" lg="12" Class="align-self-center">
-                        <MudText Typo="Typo.h6">
-                            Shop Info
-                        </MudText>
-                    </MudItem>
-                </MudGrid>
-                <MudGrid Spacing="2">
-                    <MudItem sm="12" md="12" lg="12" Class="d-flex justify-center">
-                        <MudImage Src="@ShopImage" Width="100" Height="100" Elevation="0"/>
-                    </MudItem>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Shop Name" SecondText="@ShopName"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Shop Description" SecondText="@ShopDescription"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Address One" SecondText="@AddressOne"></CustomRowWithTwoLabels>
-                    <CustomRowWithTwoLabels FirstText="Address Two" SecondText="@AddressTwo"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Phone One" SecondText="@PhoneOne"></CustomRowWithTwoLabels>
-                    <CustomRowWithTwoLabels FirstText="Phone Two" SecondText="@PhoneTwo"></CustomRowWithTwoLabels>
-                    <CustomRowWithTwoLabels FirstText="Phone Three" SecondText="@PhoneThree"></CustomRowWithTwoLabels>
-                    <CustomRowWithTwoLabels FirstText="Phone Four" SecondText="@PhoneFour"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-            </CustomPageCard>
-        }
-    </MudItem>
-    <MudItem sm="6" md="6" lg="6" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard IsFlex="false">
-                <MudGrid Spacing="2">
-                    <MudItem sm="12" md="12" lg="12" Class="align-self-center">
-                        <MudText Typo="Typo.h6">
-                            Settings
-                        </MudText>
-                    </MudItem>
-                </MudGrid>
-                <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudGrid Spacing="2">
-                        <CustomRowWithLabelsAndInput FirstText="Default Profit Percent">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudTextField T="int" @bind-Value="@DefaultProfitPercent"
-                                              FullWidth="true" InputType="InputType.Number"
-                                              Margin="Margin.Dense" Variant="Variant.Outlined">
-                                </MudTextField>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
-                        <CustomRowWithLabelsAndInput FirstText="Default Profit Percent For Wholesale">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudTextField T="int" @bind-Value="@DefaultProfitPercentForWholeSale"
-                                              FullWidth="true" InputType="InputType.Number"
-                                              Margin="Margin.Dense" Variant="Variant.Outlined">
-                                </MudTextField>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
-                    </MudGrid>
-                    <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                    <MudGrid Spacing="2">
-                        <CustomRowWithLabelsAndInput FirstText="Stock Margin To Notify">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudTextField T="int" @bind-Value="@MinimumStockMargin"
-                                              FullWidth="true" InputType="InputType.Number"
-                                              Margin="Margin.Dense" Variant="Variant.Outlined">
-                                </MudTextField>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
-                    </MudGrid>
-                    <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                    <MudGrid Spacing="2">
-                        <CustomRowWithLabelsAndInput FirstText="Suggest Sale Price">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudCheckBox T="bool" @bind-Value="@SuggestSalePrice" Color="Color.Default"></MudCheckBox>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
-                    </MudGrid>
-                    <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                    <MudGrid Spacing="2" Class="flex-grow-1">
-                        <MudItem sm="12" md="12">
-                            <CustomButton Disabled="_isLoading" OnClick="@Update" Color="Color.Primary">
-                                @if (_isLoading)
-                                {
-                                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                                }
-                                else
-                                {
-                                    @("သိမ်းရန်")
-                                }
-                            </CustomButton>
-                        </MudItem>
-                    </MudGrid>
-                </MudForm>
-            </CustomPageCard>
-        }
-    </MudItem>
-</CustomPageContainer>
-
-@code {
-    MudForm? _form;
-    bool _success;
-    string[] _errors = [];
-
-    bool _isMainLoading;
-    bool _isLoading;
-
-    string? ShopImage { get; set; }
-    string? ShopName { get; set; }
-    string? ShopDescription { get; set; }
-    string? AddressOne { get; set; }
-    string? AddressTwo { get; set; }
-    string? PhoneOne { get; set; }
-    string? PhoneTwo { get; set; }
-    string? PhoneThree { get; set; }
-    string? PhoneFour { get; set; }
-
-    int DefaultProfitPercent { get; set; }
-    int DefaultProfitPercentForWholeSale { get; set; }
-    int MinimumStockMargin { get; set; }
-    bool SuggestSalePrice { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _isMainLoading = true;
-        StateHasChanged();
-
-        var result = await HttpRepo.GetSettings();
-        if (result.isSuccess)
-        {
-            BindData(result.settingViewDto!);
-        }
-
-        _isMainLoading = false;
-        StateHasChanged();
-    }
-
-    async Task Update()
-    {
-        _isLoading = true;
-        StateHasChanged();
-
-        await _form!.Validate();
-        if (_form.IsValid)
-        {
-            var result = await HttpRepo.UpdateSettings(new SettingUpdateDto(
-                    DefaultProfitPercent,
-                    DefaultProfitPercentForWholeSale,
-                    MinimumStockMargin,
-                    SuggestSalePrice
-                )
-            );
-            if (result.isSuccess)
-            {
-                BindData(result.settingViewDto!);
-                Snackbar.Add("Update Successful", Severity.Success);
-            }
-        }
-
-        _isLoading = false;
-        StateHasChanged();
-    }
-
-    void BindData(SettingViewDto settingViewDto)
-    {
-        if (settingViewDto.ShopImage is not null)
-            ShopImage = $"data:image/png;base64, {settingViewDto.ShopImage!}";
-
-        ShopName = settingViewDto.ShopName;
-        ShopDescription = settingViewDto.ShopDescription;
-        AddressOne = settingViewDto.AddressOne;
-        AddressTwo = settingViewDto.AddressTwo;
-        PhoneOne = settingViewDto.PhoneOne;
-        PhoneTwo = settingViewDto.PhoneTwo;
-        PhoneThree = settingViewDto.PhoneThree;
-        PhoneFour = settingViewDto.PhoneFour;
-
-        DefaultProfitPercent = settingViewDto.DefaultProfitPercent;
-        DefaultProfitPercentForWholeSale = settingViewDto.DefaultProfitPercentForWholeSale;
-        MinimumStockMargin = settingViewDto.MinimumStockMargin;
-        SuggestSalePrice = settingViewDto.SuggestSalePrice ?? false;
-        StateHasChanged();
-    }
-
-}
+@* @page "/Settings" *@
+@* @using Friday.ERP.Client.Data.DataTransferObjects *@
+@* @using Friday.ERP.Client.Data *@
+@* @using Friday.ERP.Client.Shared.Layouts *@
+@* *@
+@* @inject IHttpRepository HttpRepo *@
+@* @inject ISnackbar Snackbar *@
+@* *@
+@* @layout MainLayout *@
+@* @attribute [Authorize] *@
+@* *@
+@* <CustomPageContainer> *@
+@*     <MudItem sm="6" md="6" lg="6" Class="align-self-center"> *@
+@*         @if (_isMainLoading) *@
+@*         { *@
+@*             <CustomPageCardWithSkeleton/> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <CustomPageCard IsFlex="false"> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12" md="12" lg="12" Class="align-self-center"> *@
+@*                         <MudText Typo="Typo.h6"> *@
+@*                             Shop Info *@
+@*                         </MudText> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12" md="12" lg="12" Class="d-flex justify-center"> *@
+@*                         <MudImage Src="@ShopImage" Width="100" Height="100" Elevation="0"/> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithTwoLabels FirstText="Shop Name" SecondText="@ShopName"></CustomRowWithTwoLabels> *@
+@*                 </MudGrid> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithTwoLabels FirstText="Shop Description" SecondText="@ShopDescription"></CustomRowWithTwoLabels> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithTwoLabels FirstText="Address One" SecondText="@AddressOne"></CustomRowWithTwoLabels> *@
+@*                     <CustomRowWithTwoLabels FirstText="Address Two" SecondText="@AddressTwo"></CustomRowWithTwoLabels> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <CustomRowWithTwoLabels FirstText="Phone One" SecondText="@PhoneOne"></CustomRowWithTwoLabels> *@
+@*                     <CustomRowWithTwoLabels FirstText="Phone Two" SecondText="@PhoneTwo"></CustomRowWithTwoLabels> *@
+@*                     <CustomRowWithTwoLabels FirstText="Phone Three" SecondText="@PhoneThree"></CustomRowWithTwoLabels> *@
+@*                     <CustomRowWithTwoLabels FirstText="Phone Four" SecondText="@PhoneFour"></CustomRowWithTwoLabels> *@
+@*                 </MudGrid> *@
+@*                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*             </CustomPageCard> *@
+@*         } *@
+@*     </MudItem> *@
+@*     <MudItem sm="6" md="6" lg="6" Class="align-self-center"> *@
+@*         @if (_isMainLoading) *@
+@*         { *@
+@*             <CustomPageCardWithSkeleton/> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <CustomPageCard IsFlex="false"> *@
+@*                 <MudGrid Spacing="2"> *@
+@*                     <MudItem sm="12" md="12" lg="12" Class="align-self-center"> *@
+@*                         <MudText Typo="Typo.h6"> *@
+@*                             Settings *@
+@*                         </MudText> *@
+@*                     </MudItem> *@
+@*                 </MudGrid> *@
+@*                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors"> *@
+@*                     <MudGrid Spacing="2"> *@
+@*                         <CustomRowWithLabelsAndInput FirstText="Default Profit Percent"> *@
+@*                             <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                                 <MudTextField T="int" @bind-Value="@DefaultProfitPercent" *@
+@*                                               FullWidth="true" InputType="InputType.Number" *@
+@*                                               Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+@*                                 </MudTextField> *@
+@*                             </MudItem> *@
+@*                         </CustomRowWithLabelsAndInput> *@
+@*                         <CustomRowWithLabelsAndInput FirstText="Default Profit Percent For Wholesale"> *@
+@*                             <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                                 <MudTextField T="int" @bind-Value="@DefaultProfitPercentForWholeSale" *@
+@*                                               FullWidth="true" InputType="InputType.Number" *@
+@*                                               Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+@*                                 </MudTextField> *@
+@*                             </MudItem> *@
+@*                         </CustomRowWithLabelsAndInput> *@
+@*                     </MudGrid> *@
+@*                     <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                     <MudGrid Spacing="2"> *@
+@*                         <CustomRowWithLabelsAndInput FirstText="Stock Margin To Notify"> *@
+@*                             <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                                 <MudTextField T="int" @bind-Value="@MinimumStockMargin" *@
+@*                                               FullWidth="true" InputType="InputType.Number" *@
+@*                                               Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+@*                                 </MudTextField> *@
+@*                             </MudItem> *@
+@*                         </CustomRowWithLabelsAndInput> *@
+@*                     </MudGrid> *@
+@*                     <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                     <MudGrid Spacing="2"> *@
+@*                         <CustomRowWithLabelsAndInput FirstText="Suggest Sale Price"> *@
+@*                             <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+@*                                 <MudCheckBox T="bool" @bind-Value="@SuggestSalePrice" Color="Color.Default"></MudCheckBox> *@
+@*                             </MudItem> *@
+@*                         </CustomRowWithLabelsAndInput> *@
+@*                     </MudGrid> *@
+@*                     <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
+@*                     <MudGrid Spacing="2" Class="flex-grow-1"> *@
+@*                         <MudItem sm="12" md="12"> *@
+@*                             <CustomButton Disabled="_isLoading" OnClick="@Update" Color="Color.Primary"> *@
+@*                                 @if (_isLoading) *@
+@*                                 { *@
+@*                                     <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/> *@
+@*                                 } *@
+@*                                 else *@
+@*                                 { *@
+@*                                     @("သိမ်းရန်") *@
+@*                                 } *@
+@*                             </CustomButton> *@
+@*                         </MudItem> *@
+@*                     </MudGrid> *@
+@*                 </MudForm> *@
+@*             </CustomPageCard> *@
+@*         } *@
+@*     </MudItem> *@
+@* </CustomPageContainer> *@
+@* *@
+@* @code { *@
+@*     MudForm? _form; *@
+@*     bool _success; *@
+@*     string[] _errors = []; *@
+@* *@
+@*     bool _isMainLoading; *@
+@*     bool _isLoading; *@
+@* *@
+@*     string? ShopImage { get; set; } *@
+@*     string? ShopName { get; set; } *@
+@*     string? ShopDescription { get; set; } *@
+@*     string? AddressOne { get; set; } *@
+@*     string? AddressTwo { get; set; } *@
+@*     string? PhoneOne { get; set; } *@
+@*     string? PhoneTwo { get; set; } *@
+@*     string? PhoneThree { get; set; } *@
+@*     string? PhoneFour { get; set; } *@
+@* *@
+@*     int DefaultProfitPercent { get; set; } *@
+@*     int DefaultProfitPercentForWholeSale { get; set; } *@
+@*     int MinimumStockMargin { get; set; } *@
+@*     bool SuggestSalePrice { get; set; } *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         _isMainLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         var result = await HttpRepo.GetSettings(); *@
+@*         if (result.isSuccess) *@
+@*         { *@
+@*             BindData(result.settingViewDto!); *@
+@*         } *@
+@* *@
+@*         _isMainLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     async Task Update() *@
+@*     { *@
+@*         _isLoading = true; *@
+@*         StateHasChanged(); *@
+@* *@
+@*         await _form!.Validate(); *@
+@*         if (_form.IsValid) *@
+@*         { *@
+@*             var result = await HttpRepo.UpdateSettings(new SettingUpdateDto( *@
+@*                     DefaultProfitPercent, *@
+@*                     DefaultProfitPercentForWholeSale, *@
+@*                     MinimumStockMargin, *@
+@*                     SuggestSalePrice *@
+@*                 ) *@
+@*             ); *@
+@*             if (result.isSuccess) *@
+@*             { *@
+@*                 BindData(result.settingViewDto!); *@
+@*                 Snackbar.Add("Update Successful", Severity.Success); *@
+@*             } *@
+@*         } *@
+@* *@
+@*         _isLoading = false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     void BindData(SettingViewDto settingViewDto) *@
+@*     { *@
+@*         if (settingViewDto.ShopImage is not null) *@
+@*             ShopImage = $"data:image/png;base64, {settingViewDto.ShopImage!}"; *@
+@* *@
+@*         ShopName = settingViewDto.ShopName; *@
+@*         ShopDescription = settingViewDto.ShopDescription; *@
+@*         AddressOne = settingViewDto.AddressOne; *@
+@*         AddressTwo = settingViewDto.AddressTwo; *@
+@*         PhoneOne = settingViewDto.PhoneOne; *@
+@*         PhoneTwo = settingViewDto.PhoneTwo; *@
+@*         PhoneThree = settingViewDto.PhoneThree; *@
+@*         PhoneFour = settingViewDto.PhoneFour; *@
+@* *@
+@*         DefaultProfitPercent = settingViewDto.DefaultProfitPercent; *@
+@*         DefaultProfitPercentForWholeSale = settingViewDto.DefaultProfitPercentForWholeSale; *@
+@*         MinimumStockMargin = settingViewDto.MinimumStockMargin; *@
+@*         SuggestSalePrice = settingViewDto.SuggestSalePrice ?? false; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@* } *@

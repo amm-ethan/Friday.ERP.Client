@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Friday.ERP.Client.Data;
+using Friday.ERP.Shared;
 using MudBlazor;
 using Newtonsoft.Json;
 using Toolbelt.Blazor;

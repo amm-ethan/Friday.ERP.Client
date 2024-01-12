@@ -1,6 +1,13 @@
 <MudButton OnClick="@OnClick" Variant="@Variant" FullWidth="@FullWidth"
-           Color="@Color" Disabled="@Disabled" DisableElevation="true">
-    @ChildContent
+           Color="@Color" Disabled="@IsLoading" DisableElevation="true">
+    @if (IsLoading)
+    {
+        <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
+    }
+    else
+    {
+        @Label
+    }
 </MudButton>
 
 @code {
@@ -11,9 +18,11 @@
 
     [Parameter] public Color Color { get; set; } = Color.Primary;
 
-    [Parameter] public Variant Variant { get; set; } = Variant.Filled;
+    [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
 
     [Parameter] public bool FullWidth { get; set; } = true;
 
-    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+
+    [Parameter] public string? Label { get; set; }
 }
