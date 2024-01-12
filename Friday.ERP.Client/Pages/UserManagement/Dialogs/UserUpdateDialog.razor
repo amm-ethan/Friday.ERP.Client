@@ -3,48 +3,14 @@
 @using System.Text
 @inject IHttpRepository HttpRepo
 
-@if (_isMainLoading)
-{
-    <MudDialog>
-        <DialogContent>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
-        </DialogContent>
-        <DialogActions>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-        </DialogActions>
-    </MudDialog>
-}
-else
-{
+<CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
         <DialogContent>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Name">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Name" Required="true"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
-                    <CustomRowWithLabelsAndInput FirstText="Phone">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Phone"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
-                    <CustomRowWithLabelsAndInput FirstText="Email">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudTextField T="string" @bind-Value="@Email"
-                                          FullWidth="true" InputType="InputType.Text"
-                                          Margin="Margin.Dense" Variant="Variant.Outlined">
-                            </MudTextField>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLabelAndFieldString FirstText="Name" @bind-BindValue="@Name" Required="true"/>
+                    <CustomRowWithLabelAndFieldString FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                    <CustomRowWithLabelAndFieldString FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
@@ -52,7 +18,6 @@ else
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-
                     <CustomRowWithLabelsAndInput FirstText="Change Password">
                         <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                             <MudCheckBox T="bool" ValueChanged="@OnCheckChangePassword"
@@ -70,51 +35,26 @@ else
                             </MudItem>
                         </CustomRowWithLabelsAndInput>
                     }
-
                     @if (IsChangePassword && !IsForceResetPassword)
                     {
-                        <CustomRowWithLabelsAndInput FirstText="Old Password">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudTextField T="string" @bind-Value="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
-                                              FullWidth="true"
-                                              Margin="Margin.Dense" Variant="Variant.Outlined"
-                                              InputType="@_oldPasswordInput"
-                                              Adornment="Adornment.End" AdornmentIcon="@_oldPasswordInputIcon"
-                                              OnAdornmentClick="ShowOldPassword" AdornmentAriaLabel="Show Password">
-                                </MudTextField>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
+                        <CustomRowWithLabelAndFieldPassword FirstText="Old Password" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
+                                                            KeyboardInputType="@_oldPasswordInput"
+                                                            AdornmentIcon="@_oldPasswordInputIcon" OnAdornmentClick="@ShowOldPassword"/>
                     }
                     @if (IsChangePassword)
                     {
-                        <CustomRowWithLabelsAndInput FirstText="New Password">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudTextField T="string" @bind-Value="@NewPassword" Required="@(IsChangePassword)"
-                                              FullWidth="true"
-                                              Margin="Margin.Dense" Variant="Variant.Outlined"
-                                              InputType="@_passwordInput"
-                                              Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
-                                              OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password">
-                                </MudTextField>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
+                        <CustomRowWithLabelAndFieldPassword FirstText="New Password" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
+                                                            KeyboardInputType="@_passwordInput"
+                                                            AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                     }
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
                     <CustomRowWithLabelsAndInput FirstText="Role">
                         <MudItem sm="7">
-                            <MudAutocomplete
-                                @ref="RoleAutoComplete"
-                                T="string?" Required="false"
-                                Variant="Variant.Outlined"
-                                Margin="Margin.Dense"
-                                Dense="true"
-                                FullWidth="true"
-                                SearchFunc="@RoleSearch"
-                                ShowProgressIndicator="@_isRoleSearchLoading"
-                                ValueChanged="@RoleChange">
-                            </MudAutocomplete>
+                            <MudAutocomplete T="string?" Required="true" Dense="true" FullWidth="true" ResetValueOnEmptyText="true"
+                                             Variant="Variant.Outlined" Margin="Margin.Dense" Value="@RoleName"
+                                             ShowProgressIndicator="@_isRoleSearchLoading" SearchFunc="@RoleSearch" ValueChanged="@RoleChange"/>
                         </MudItem>
                     </CustomRowWithLabelsAndInput>
                 </MudGrid>
@@ -122,29 +62,13 @@ else
             </MudForm>
         </DialogContent>
         <DialogActions>
-            <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
-                @if (_isLoading)
-                {
-                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                }
-                else
-                {
-                    @("Cancel")
-                }
-            </CustomButton>
-            <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false">
-                @if (_isLoading)
-                {
-                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                }
-                else
-                {
-                    @("Update")
-                }
-            </CustomButton>
+            <CustomButton
+                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            <CustomButton
+                Label="Update" IsLoading="_isLoading" OnClick="@DialogSubmit" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
-}
+</CustomDialog>
 
 @code {
 
@@ -165,20 +89,17 @@ else
     bool _isLoading;
     bool _isRoleSearchLoading;
 
-    MudAutocomplete<string?> RoleAutoComplete { get; set; } = new();
     List<UserRoleViewDto> _roles = [];
 
     string? OldPassword { get; set; }
     string? NewPassword { get; set; }
-    Guid RoleGuid { get; set; }
 
     bool IsChangePassword { get; set; }
     bool IsForceResetPassword { get; set; }
 
     void RoleChange(string? value)
     {
-        if (value is not null)
-            RoleGuid = _roles.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
+        RoleName = value;
     }
 
     async Task<IEnumerable<string>> RoleSearch(string? value)
@@ -202,15 +123,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetUserRoles();
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-
-        RoleAutoComplete.Text = RoleName;
-        RoleAutoComplete.Value = RoleName!;
-        RoleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
     }
 
     async Task GetUserRoles()
@@ -260,6 +172,7 @@ else
         await _form!.Validate();
         if (_form.IsValid)
         {
+            var roleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
             var result = await HttpRepo.UpdateUserByGuid(UserGuid,
                 new UserUpdateDto(
                     Name,
@@ -268,7 +181,7 @@ else
                     IsForceResetPassword,
                     OldPassword is not null ? Encoding.UTF8.GetBytes(OldPassword!) : null,
                     NewPassword is not null ? Encoding.UTF8.GetBytes(NewPassword!) : null,
-                    RoleGuid
+                    roleGuid
                 )
             );
             if (result.isSuccess)

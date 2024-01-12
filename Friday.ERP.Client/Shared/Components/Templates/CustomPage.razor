@@ -1,0 +1,33 @@
+<MudItem md="@Md" lg="@Lg" Class="align-self-center">
+    @if (IsLoading)
+    {
+        <CustomLoadingPage/>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Class="@ClassParameter" Style="border-radius: 18px;height: 85vh">
+            @ChildContent
+        </MudPaper>
+    }
+</MudItem>
+
+@code {
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public bool IsFlex { get; set; } = true;
+
+    [Parameter] public int Md { get; set; } = 6;
+
+    [Parameter] public int Lg { get; set; } = 6;
+
+    [Parameter] public bool IsLoading { get; set; }
+
+    string? ClassParameter { get; set; } = "pa-8";
+
+    protected override void OnInitialized()
+    {
+        ClassParameter = IsFlex ? ClassParameter + " d-flex flex-column " : ClassParameter;
+    }
+
+}

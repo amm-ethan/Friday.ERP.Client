@@ -25,16 +25,9 @@
                 <MudGrid Spacing="2">
                     <CustomRowWithLabelsAndInput FirstText="Role">
                         <MudItem sm="7">
-                            <MudAutocomplete T="string?"
-                                             Required="true"
-                                             Dense="true"
-                                             FullWidth="true"
-                                             Variant="Variant.Outlined"
-                                             Margin="Margin.Dense"
-                                             ShowProgressIndicator="@_isRoleSearchLoading"
-                                             SearchFunc="@RoleSearch"
-                                             ValueChanged="@RoleChange">
-                            </MudAutocomplete>
+                            <MudAutocomplete T="string?" Required="true" Dense="true" FullWidth="true" ResetValueOnEmptyText="true"
+                                             Variant="Variant.Outlined" Margin="Margin.Dense"
+                                             ShowProgressIndicator="@_isRoleSearchLoading" SearchFunc="@RoleSearch" ValueChanged="@RoleChange"/>
                         </MudItem>
                     </CustomRowWithLabelsAndInput>
                 </MudGrid>
@@ -70,26 +63,9 @@
     string? Email { get; set; }
     string? Username { get; set; }
     string? Password { get; set; }
-    Guid? RoleGuid { get; set; }
-
-    void RoleChange(string? value)
-    {
-        if (value is not null)
-            RoleGuid = _roles.Where(x => x.Name == value).Select(c => c.Guid).SingleOrDefault();
-    }
-
-    async Task<IEnumerable<string>> RoleSearch(string? value)
-    {
-        await Task.Delay(5);
-        return await ReturnUserRoles(value);
-    }
+    string? RoleName { get; set; }
 
     protected override async Task OnInitializedAsync()
-    {
-        await GetUserRoles();
-    }
-
-    async Task GetUserRoles()
     {
         _isMainLoading = true;
         StateHasChanged();
@@ -103,23 +79,31 @@
         StateHasChanged();
     }
 
-    async Task<IEnumerable<string>> ReturnUserRoles(string? value)
+    void RoleChange(string? value)
+    {
+        RoleName = value;
+    }
+
+    async Task<IEnumerable<string>> RoleSearch(string? value)
+    {
+        await Task.Delay(5);
+        return await SearchUserRoles(value);
+    }
+
+    async Task<IEnumerable<string>> SearchUserRoles(string? value)
     {
         _isRoleSearchLoading = true;
         StateHasChanged();
 
         var result = await HttpRepo.GetAllUserRoles(value);
-        if (!result.isSuccess)
-        {
-            _isRoleSearchLoading = false;
-            StateHasChanged();
-            return [];
-        }
 
-        _roles = result.userRoleViewDtos!;
         _isRoleSearchLoading = false;
         StateHasChanged();
 
+        if (!result.isSuccess)
+            return [];
+
+        _roles = result.userRoleViewDtos!;
         return _roles.Select(c => c.Name);
     }
 
@@ -134,26 +118,24 @@
         StateHasChanged();
 
         await _form!.Validate();
-        if (_form.IsValid)
-        {
-            var encryptedPassword = Encoding.UTF8.GetBytes(Password!);
-            var result = await HttpRepo.CreateUser(new UserCreateDto(
-                    Name!,
-                    Phone,
-                    Email,
-                    Username!,
-                    encryptedPassword,
-                    RoleGuid ?? Guid.Empty
-                )
-            );
-            if (result.isSuccess)
-            {
-                MudDialog!.Close(DialogResult.Ok(true));
-            }
-        }
-
+        
         _isLoading = false;
         StateHasChanged();
+        
+        if (_form.IsValid)
+        {
+            var roleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
+            var encryptedPassword = Encoding.UTF8.GetBytes(Password!);
+            MudDialog!.Close(DialogResult.Ok(new UserCreateDto(
+                Name!,
+                Phone,
+                Email,
+                Username!,
+                encryptedPassword,
+                roleGuid
+            )));
+            
+        }
     }
 
     bool _isPasswordShow;
