@@ -1,72 +1,36 @@
 ﻿@using Friday.ERP.Client.Data
 @using Friday.ERP.Shared.DataTransferObjects
+
 @inject IHttpRepository HttpRepo
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomRowWithLabelsAndInput FirstText="Category Color">
+                <CustomRowWithLabelAndInput FirstText="Category Color">
                     <MudItem sm="2" md="2" lg="2" Class="align-self-center">
                         <MudPaper Elevation="0" Style="@($"border: {CategoryColor}; background-color: {CategoryColor}")" Class="pa-2">&nbsp;</MudPaper>
                     </MudItem>
                     <MudItem sm="5" md="5" lg="5">
                         <MudColorPicker Required="@(!IsUpdate)" @bind-Text="CategoryColor" Margin="Margin.Dense" Variant="Variant.Outlined" ColorPickerView="ColorPickerView.Palette"/>
                     </MudItem>
-                </CustomRowWithLabelsAndInput>
-                <CustomRowWithLabelsAndInput FirstText="Category Name">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@CategoryName" Required="@(!IsUpdate)"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
+                </CustomRowWithLabelAndInput>
+                <CustomRowWithLabelAndFieldString FirstText="Category Name" @bind-BindValue="@CategoryName" Required="@(!IsUpdate)"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
-            @if (_isLoading)
-            {
-                <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-            }
-            else
-            {
-                @("Cancel")
-            }
-        </CustomButton>
         @if (IsUpdate)
         {
-            <CustomButton Color="Color.Error" Disabled="_isLoading" OnClick="@DialogDelete" Variant="Variant.Text" FullWidth="false">
-                @if (_isLoading)
-                {
-                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                }
-                else
-                {
-                    @("Remove")
-                }
-            </CustomButton>
+            <CustomButton
+                Label="Remove" IsLoading="_isLoading" OnClick="@DialogDelete" Color="Color.Error" Variant="Variant.Text" FullWidth="false"/>
         }
-        <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@(IsUpdate ? DialogUpdate : DialogSubmit)" Variant="Variant.Text" FullWidth="false">
-            @if (_isLoading)
-            {
-                <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-            }
-            else
-            {
-                if (IsUpdate)
-                {
-                    @("Update")
-                }
-                else
-                {
-                    @("Create")
-                }
-            }
-        </CustomButton>
+        <CustomButton
+            Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+        <CustomButton
+            Label="@(IsUpdate ? "Update" : "Create")" IsLoading="_isLoading" OnClick="@(IsUpdate ? DialogUpdate : DialogSubmit)" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 
@@ -102,8 +66,10 @@
             var result = await HttpRepo.DisableCategory(CategoryGuid);
             if (result)
             {
-                MudDialog!.Close(DialogResult.Ok(false));
+                Snackbar.Add("Category Disabled", Severity.Success);
             }
+
+            MudDialog!.Close(DialogResult.Ok(result));
         }
 
         _isLoading = false;
@@ -125,8 +91,10 @@
             );
             if (result.isSuccess)
             {
-                MudDialog!.Close(DialogResult.Ok(true));
+                Snackbar.Add("Category Created", Severity.Success);
             }
+
+            MudDialog!.Close(DialogResult.Ok(result.isSuccess));
         }
 
         _isLoading = false;
@@ -149,8 +117,10 @@
             );
             if (result.isSuccess)
             {
-                MudDialog!.Close(DialogResult.Ok(true));
+                Snackbar.Add("Category Updated", Severity.Success);
             }
+
+            MudDialog!.Close(DialogResult.Ok(result.isSuccess));
         }
 
         _isLoading = false;

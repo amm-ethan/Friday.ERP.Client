@@ -1,8 +1,8 @@
 ﻿@page "/"
 @using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Dashboard.Components.Molecules
 @using Friday.ERP.Client.Pages.Dashboard.Components.Templates
-@using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Shared.Layouts
 
 @inject IHttpRepository HttpRepo
@@ -221,7 +221,7 @@
     async Task GetMonthlySummary()
     {
         var result = await HttpRepo.GetMonthlySummary();
-        if (result.isSuccess)
+        if (result is { isSuccess: true, monthlySaleFigureViewDtos: not null })
         {
             var xAxisLabels = new List<string>();
             var purchaseSeries = new ChartSeries { Name = "Purchase", Data = [] };

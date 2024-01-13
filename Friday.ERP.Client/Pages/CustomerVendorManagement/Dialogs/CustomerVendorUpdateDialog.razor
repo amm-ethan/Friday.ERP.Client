@@ -1,6 +1,8 @@
 ﻿@using Friday.ERP.Client.Data
 @using Friday.ERP.Shared.DataTransferObjects
+
 @inject IHttpRepository HttpRepo
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
@@ -14,69 +16,25 @@
                 </CustomRowWithTwoLabels>
             </MudGrid>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelsAndInput FirstText="Phone">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@Phone"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
-                <CustomRowWithLabelsAndInput FirstText="Email">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@Email"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
+                <CustomRowWithLabelAndFieldString FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                <CustomRowWithLabelAndFieldString FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelsAndInput FirstText="Address">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="string" @bind-Value="@Address"
-                                      FullWidth="true" InputType="InputType.Text"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
+                <CustomRowWithLabelAndFieldString FirstText="Address" @bind-BindValue="@Address"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelsAndInput FirstText="Total Credit / Debit">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField T="long" @bind-Value="@TotalCreditDebit"
-                                      FullWidth="true" InputType="InputType.Number"
-                                      Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelsAndInput>
+                <CustomRowWithLabelAndFieldLong FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
-            @if (_isLoading)
-            {
-                <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-            }
-            else
-            {
-                @("Cancel")
-            }
-        </CustomButton>
-        <CustomButton Color="Color.Primary" Disabled="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false">
-            @if (_isLoading)
-            {
-                <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-            }
-            else
-            {
-                @("Update")
-            }
-        </CustomButton>
+        <CustomButton
+            Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+        <CustomButton
+            Label="Update" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 
@@ -111,23 +69,26 @@
         StateHasChanged();
 
         await _form!.Validate();
+
         if (_form.IsValid)
         {
-            var dataToCreate = new CustomerVendorUpdateDto(
+            var dataToUpdate = new CustomerVendorUpdateDto(
                 Phone,
                 Email,
                 Address,
                 TotalCreditDebit
             );
 
-            var result = IsCustomer
-                ? await HttpRepo.UpdateCustomer(Guid, dataToCreate)
-                : await HttpRepo.UpdateVendor(Guid, dataToCreate);
+            var httpResult = IsCustomer
+                ? await HttpRepo.UpdateCustomer(Guid, dataToUpdate)
+                : await HttpRepo.UpdateVendor(Guid, dataToUpdate);
 
-            if (result.isSuccess)
+            if (httpResult.isSuccess)
             {
-                MudDialog!.Close(DialogResult.Ok(true));
+                Snackbar.Add(IsCustomer ? "Customer Created!" : "Vendor Created!", Severity.Success);
             }
+
+            MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));
         }
 
         _isLoading = false;

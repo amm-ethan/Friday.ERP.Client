@@ -1,15 +1,13 @@
 <CustomRowWithLabelAndInput Md="@FirstMd" Lg="@FirstLg" FirstText="@FirstText" Typo="@Typo">
-    <MudItem md="@SecondMd" lg="@SecondLg" Class="align-self-center">
-        <MudTextField T="string" @bind-Value="@BindValue" Required="@Required" Immediate="true"
-                      FullWidth="true" InputType="@KeyboardInputType"
-                      Margin="Margin.Dense" Variant="Variant.Outlined">
-        </MudTextField>
+    <MudItem Md="@SecondMd" Lg="@SecondLg" Class="align-self-center">
+        <MudCheckBox T="bool" @bind-Value="@BindValue" Required="@Required" Immediate="true"
+                     Color="Color.Default">
+        </MudCheckBox>
     </MudItem>
 </CustomRowWithLabelAndInput>
 
 
 @code {
-
     [Parameter] public int FirstMd { get; set; } = 5;
 
     [Parameter] public int FirstLg { get; set; } = 5;
@@ -23,7 +21,7 @@
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
 
     [Parameter]
-    public string? BindValue
+    public bool BindValue
     {
         get => _bindValue;
         set
@@ -36,10 +34,8 @@
 
     [Parameter] public bool Required { get; set; }
 
-    [Parameter] public InputType KeyboardInputType { get; set; } = InputType.Text;
+    [Parameter] public EventCallback<bool> BindValueChanged { get; set; }
 
-    [Parameter] public EventCallback<string> BindValueChanged { get; set; }
-
-    private string? _bindValue;
+    private bool _bindValue;
 
 }

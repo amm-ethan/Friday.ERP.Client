@@ -1,7 +1,9 @@
 ﻿@using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using System.Text
+
 @inject IHttpRepository HttpRepo
+@inject ISnackbar Snackbar
 
 <CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
@@ -18,22 +20,10 @@
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Change Password">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudCheckBox T="bool" ValueChanged="@OnCheckChangePassword"
-                                         Color="Color.Default">
-                            </MudCheckBox>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLableAndCheckbox FirstText="Change Password" @bind-BindValue="IsChangePassword"/>
                     @if (IsChangePassword)
                     {
-                        <CustomRowWithLabelsAndInput FirstText="Force Reset Password">
-                            <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                                <MudCheckBox T="bool" ValueChanged="@OnCheckForceResetPassword"
-                                             Color="Color.Default">
-                                </MudCheckBox>
-                            </MudItem>
-                        </CustomRowWithLabelsAndInput>
+                        <CustomRowWithLableAndCheckbox FirstText="Force Reset Password" @bind-BindValue="IsForceResetPassword"/>
                     }
                     @if (IsChangePassword && !IsForceResetPassword)
                     {
@@ -50,13 +40,8 @@
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Role">
-                        <MudItem sm="7">
-                            <MudAutocomplete T="string?" Required="true" Dense="true" FullWidth="true" ResetValueOnEmptyText="true"
-                                             Variant="Variant.Outlined" Margin="Margin.Dense" Value="@RoleName"
-                                             ShowProgressIndicator="@_isRoleSearchLoading" SearchFunc="@RoleSearch" ValueChanged="@RoleChange"/>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
+                                                       OnClearButtonClick="() => { }"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             </MudForm>
@@ -65,7 +50,7 @@
             <CustomButton
                 Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="Update" IsLoading="_isLoading" OnClick="@DialogSubmit" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="Update" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>
@@ -87,7 +72,6 @@
 
     bool _isMainLoading;
     bool _isLoading;
-    bool _isRoleSearchLoading;
 
     List<UserRoleViewDto> _roles = [];
 
@@ -97,35 +81,7 @@
     bool IsChangePassword { get; set; }
     bool IsForceResetPassword { get; set; }
 
-    void RoleChange(string? value)
-    {
-        RoleName = value;
-    }
-
-    async Task<IEnumerable<string>> RoleSearch(string? value)
-    {
-        await Task.Delay(5);
-        return await ReturnUserRoles(value);
-    }
-
-    void OnCheckChangePassword(bool isPasswordChange)
-    {
-        IsChangePassword = isPasswordChange;
-        StateHasChanged();
-    }
-
-    void OnCheckForceResetPassword(bool isForceReset)
-    {
-        IsForceResetPassword = isForceReset;
-        StateHasChanged();
-    }
-
     protected override async Task OnInitializedAsync()
-    {
-        await GetUserRoles();
-    }
-
-    async Task GetUserRoles()
     {
         _isMainLoading = true;
         StateHasChanged();
@@ -139,23 +95,18 @@
         StateHasChanged();
     }
 
-    async Task<IEnumerable<string>> ReturnUserRoles(string? value)
+    void RoleChange(string? value)
     {
-        _isRoleSearchLoading = true;
-        StateHasChanged();
+        RoleName = value;
+    }
 
+    async Task<IEnumerable<string>> SearchUserRoles(string? value, CancellationToken token)
+    {
         var result = await HttpRepo.GetAllUserRoles(value);
         if (!result.isSuccess)
-        {
-            _isRoleSearchLoading = false;
-            StateHasChanged();
             return [];
-        }
 
         _roles = result.userRoleViewDtos!;
-        _isRoleSearchLoading = false;
-        StateHasChanged();
-
         return _roles.Select(c => c.Name);
     }
 
@@ -173,23 +124,26 @@
         if (_form.IsValid)
         {
             var roleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
-            var result = await HttpRepo.UpdateUserByGuid(UserGuid,
-                new UserUpdateDto(
-                    Name,
-                    Phone,
-                    Email,
-                    IsForceResetPassword,
-                    OldPassword is not null ? Encoding.UTF8.GetBytes(OldPassword!) : null,
-                    NewPassword is not null ? Encoding.UTF8.GetBytes(NewPassword!) : null,
-                    roleGuid
-                )
+            
+            var dataToUpdate = new UserUpdateDto(
+                Name,
+                Phone,
+                Email,
+                IsForceResetPassword,
+                OldPassword is not null ? Encoding.UTF8.GetBytes(OldPassword!) : null,
+                NewPassword is not null ? Encoding.UTF8.GetBytes(NewPassword!) : null,
+                roleGuid
             );
-            if (result.isSuccess)
-            {
-                MudDialog!.Close(DialogResult.Ok(true));
-            }
-        }
+            var httpResult = await HttpRepo.UpdateUserByGuid(UserGuid,
+                dataToUpdate
+            );
 
+            if (httpResult.isSuccess)
+            {
+                Snackbar.Add("User Updated!", Severity.Success);
+            }
+            MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));
+        }
         _isLoading = false;
         StateHasChanged();
     }

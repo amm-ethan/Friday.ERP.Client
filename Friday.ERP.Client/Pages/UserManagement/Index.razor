@@ -1,9 +1,9 @@
 ﻿@page "/user-management"
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Shared.RequestFeatures
+@using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.UserManagement.Components
 @using Friday.ERP.Client.Pages.UserManagement.Dialogs
-@using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Shared.Layouts
 
 @inject IHttpRepository HttpRepo
@@ -126,20 +126,7 @@
         var result = await dialog.Result;
         if (!result.Canceled)
         {
-            var dataToCreate = (UserCreateDto)result.Data;
-            _isLoading = true;
-            StateHasChanged();
-
-            var httpResult = await HttpRepo.CreateUser(dataToCreate);
-
-            _isLoading = false;
-            StateHasChanged();
-
-            if (httpResult.isSuccess)
-            {
-                Snackbar.Add("User Created!", Severity.Success);
-                await GetUserData();
-            }
+            await GetUserData();
         }
     }
 
@@ -159,7 +146,6 @@
         var result = await dialog.Result;
         if (!result.Canceled)
         {
-            Snackbar.Add("User Updated!", Severity.Success);
             await GetUserData();
         }
     }

@@ -1,0 +1,36 @@
+<CustomRowWithLabelAndInput Md="@FirstMd" Lg="@FirstLg" FirstText="@FirstText" Typo="@Typo">
+    <MudItem Md="@SecondMd" Lg="@SecondLg" Class="align-self-center">
+        <MudAutocomplete T="string?" Required="@Required" Dense="true" FullWidth="true" ResetValueOnEmptyText="true" Immediate="true"
+                         Clearable="@Clearable" OnClearButtonClick="@OnClearButtonClick"
+                         Variant="Variant.Outlined" Margin="Margin.Dense" Value="@Value"
+                         SearchFuncWithCancel="@SearchFuncWithCancel" ValueChanged="@ValueChanged"/>
+    </MudItem>
+</CustomRowWithLabelAndInput>
+
+
+@code {
+    [Parameter] public int FirstMd { get; set; } = 5;
+
+    [Parameter] public int FirstLg { get; set; } = 5;
+
+    [Parameter] public int SecondMd { get; set; } = 7;
+
+    [Parameter] public int SecondLg { get; set; } = 7;
+
+    [Parameter] public string? FirstText { get; set; }
+
+    [Parameter] public Typo Typo { get; set; } = Typo.body1;
+
+    [Parameter] public bool Clearable { get; set; }
+
+    [Parameter] public bool Required { get; set; }
+
+    [Parameter] public string? Value { get; set; }
+
+    [Parameter] public Func<string, CancellationToken, Task<IEnumerable<string?>>>? SearchFuncWithCancel { get; set; }
+
+    [Parameter] public EventCallback<MouseEventArgs> OnClearButtonClick { get; set; }
+
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+}

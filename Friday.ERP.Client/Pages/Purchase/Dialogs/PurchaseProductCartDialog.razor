@@ -1,6 +1,6 @@
 @using Friday.ERP.Client.Data
-@using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Pages.Sale.Dialogs.Components.Molecules
+@using Friday.ERP.Shared.DataTransferObjects
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
 
@@ -33,7 +33,7 @@ else
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelsAndInput FirstText="Purchase Price">
+                <CustomRowWithLabelAndInput FirstText="Purchase Price">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                         <MudTextField
                             @ref="PurchasePriceTextField"
@@ -44,8 +44,8 @@ else
                             Margin="Margin.Dense" Variant="Variant.Outlined">
                         </MudTextField>
                     </MudItem>
-                </CustomRowWithLabelsAndInput>
-                <CustomRowWithLabelsAndInput FirstText="Quantity">
+                </CustomRowWithLabelAndInput>
+                <CustomRowWithLabelAndInput FirstText="Quantity">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                         <MudTextField
                             @ref="QuantityTextField"
@@ -56,7 +56,7 @@ else
                             Margin="Margin.Dense" Variant="Variant.Outlined">
                         </MudTextField>
                     </MudItem>
-                </CustomRowWithLabelsAndInput>
+                </CustomRowWithLabelAndInput>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">

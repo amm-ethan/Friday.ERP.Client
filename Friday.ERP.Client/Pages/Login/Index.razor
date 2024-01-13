@@ -1,8 +1,8 @@
 @page "/login"
 @using Friday.ERP.Client.Data
 @using System.Text
-@using Friday.ERP.Client.Shared.Layouts
 @using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Shared.Layouts
 
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
@@ -10,21 +10,17 @@
 
 @layout LoginLayout
 
-<MudPaper Elevation="25" Class="pa-8 mx-auto" Width="100%" MaxWidth="500px">
+<MudPaper Elevation="10" Class="pa-8 mx-auto" Width="100%" MaxWidth="500px">
     <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-        <MudText Class="py-4" Typo="Typo.h5">Friday</MudText>
+        <MudText Class="mb-6" Typo="Typo.h5">Friday</MudText>
         <MudGrid>
-            <MudItem xs="12" sm="12" md="12">
-                <MudTextField Label="username" @bind-Value="Username" Variant="Variant.Outlined" Required="true"></MudTextField>
-            </MudItem>
-        </MudGrid>
-        <MudGrid>
-            <MudItem xs="12" sm="12" md="12">
-                <MudTextField Label="password" @bind-Value="Password" Required="true"
-                              Variant="Variant.Outlined" InputType="@_passwordInput"
-                              Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon"
-                              OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password"/>
-            </MudItem>
+            <CustomRowWithLabelAndFieldString FirstMd="4" FirstLg="4"
+                                              SecondMd="8" SecondLg="8"
+                                              FirstText="Username" @bind-BindValue="@Username" Required="true"/>
+            <CustomRowWithLabelAndFieldPassword FirstMd="4" FirstLg="4"
+                                                SecondMd="8" SecondLg="8"
+                                                FirstText="Password" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
+                                                AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
         </MudGrid>
         <MudGrid Class="mt-2">
             <MudItem xs="12" sm="12" md="12">

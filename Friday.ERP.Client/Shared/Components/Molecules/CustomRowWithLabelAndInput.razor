@@ -1,4 +1,4 @@
-<MudItem sm="5" md="5" lg="5" Class="align-self-center">
+<MudItem md="@Md" lg="@Lg" Class="align-self-center">
     <MudText Typo="Typo">
         @FirstText
     </MudText>
@@ -8,6 +8,10 @@
 
 @code {
 
+    [Parameter] public int Md { get; set; } = 5;
+
+    [Parameter] public int Lg { get; set; } = 5;
+    
     [Parameter] public string? FirstText { get; set; }
 
     [Parameter] public Typo Typo { get; set; } = Typo.body1;

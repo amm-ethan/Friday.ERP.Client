@@ -32,14 +32,9 @@ public class HttpInterceptorService(HttpClientInterceptor interceptor, TokenServ
     {
         var absPath = args.Request.RequestUri!.AbsoluteUri;
         if (!absPath.Contains("refresh"))
-        {
-            var statusCode = args.Response?.StatusCode;
-            if (statusCode == null)
+            if (args.Response?.StatusCode is not null && !args.Response.IsSuccessStatusCode)
             {
-                snackbar.Add("Connection Error, Try Again", Severity.Error);
-            }
-            else if (!args.Response!.IsSuccessStatusCode)
-            {
+                var statusCode = args.Response?.StatusCode;
                 if (statusCode == HttpStatusCode.InternalServerError)
                 {
                     snackbar.Add("Unhandled Error. Contact Your System Admin.", Severity.Error);
@@ -80,7 +75,6 @@ public class HttpInterceptorService(HttpClientInterceptor interceptor, TokenServ
                         break;
                 }
             }
-        }
     }
 
     public void DisposeEvent()

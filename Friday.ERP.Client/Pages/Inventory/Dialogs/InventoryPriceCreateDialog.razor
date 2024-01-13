@@ -4,27 +4,14 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-@if (_isMainLoading)
-{
-    <MudDialog>
-        <DialogContent>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
-        </DialogContent>
-        <DialogActions>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-        </DialogActions>
-    </MudDialog>
-}
-else
-{
+<CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
         <DialogContent>
             <MudText Typo="Typo.subtitle1">
                 <b>Remove Old Prices</b>
             </MudText>
             <MudGrid Spacing="2" Class="mt-4">
-                <CustomRowWithLabelsAndInput FirstText="Price">
+                <CustomRowWithLabelAndInput FirstText="Price">
                     <MudItem sm="6" Class="align-self-center">
                         <MudSelect
                             @bind-Value="SelectedPrice"
@@ -48,7 +35,7 @@ else
                         <MudIconButton Disabled="@_isLoading" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined"
                                        OnClick="@DeletePrice" Color="Color.Error" Size="Size.Medium"/>
                     </MudItem>
-                </CustomRowWithLabelsAndInput>
+                </CustomRowWithLabelAndInput>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudText Typo="Typo.subtitle1">
@@ -56,11 +43,11 @@ else
             </MudText>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2" Class="mt-4">
-                    <CustomRowWithLabelsAndInput FirstText="Is Wholesale">
+                    <CustomRowWithLabelAndInput FirstText="Is Wholesale">
                         <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                             <MudCheckBox T="bool" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"></MudCheckBox>
                         </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    </CustomRowWithLabelAndInput>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
@@ -85,19 +72,11 @@ else
             </MudForm>
         </DialogContent>
         <DialogActions>
-            <CustomButton Color="Color.Default" Disabled="_isLoading" OnClick="@DialogCancel" Variant="Variant.Text" FullWidth="false">
-                @if (_isLoading)
-                {
-                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                }
-                else
-                {
-                    @("Cancel")
-                }
-            </CustomButton>
+            <CustomButton
+                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
-}
+</CustomDialog>
 
 @code {
 
@@ -125,16 +104,6 @@ else
     bool _isMainLoading;
     bool _isLoading;
 
-    void IsWholeSaleValueChanged(bool value)
-    {
-        IsWholesale = value;
-        if (IsWholesale)
-            _priceHelperText = _suggestPrice!.SalePriceForWholeSale != -1 ? $"Suggested Price is {_suggestPrice.SalePriceForWholeSale}" : "No Suggestion Yet!";
-        else
-            _priceHelperText = _suggestPrice!.SalePrice != -1 ? $"Suggested Price is {_suggestPrice.SalePrice}" : "No Suggestion Yet!";
-        StateHasChanged();
-    }
-
     protected override async Task OnInitializedAsync()
     {
         _isMainLoading = true;
@@ -150,6 +119,16 @@ else
         }
 
         _isMainLoading = false;
+        StateHasChanged();
+    }
+    
+    void IsWholeSaleValueChanged(bool value)
+    {
+        IsWholesale = value;
+        if (IsWholesale)
+            _priceHelperText = _suggestPrice!.SalePriceForWholeSale != -1 ? $"Suggested Price is {_suggestPrice.SalePriceForWholeSale}" : "No Suggestion Yet!";
+        else
+            _priceHelperText = _suggestPrice!.SalePrice != -1 ? $"Suggested Price is {_suggestPrice.SalePrice}" : "No Suggestion Yet!";
         StateHasChanged();
     }
 
@@ -203,8 +182,8 @@ else
             );
             if (result.isSuccess)
             {
-                Snackbar.Add("Price Created!", Severity.Success);
                 NewPrice = null;
+                Snackbar.Add("Price Created!", Severity.Success);
                 await GetProductPrices();
             }
         }
@@ -217,6 +196,7 @@ else
     {
         _isLoading = true;
         StateHasChanged();
+        
         var selectedPriceGuid = _oldPrices
             .Where(c => c.SalePrice == long.Parse(SelectedPrice!))
             .Select(c => c.Guid)
@@ -228,14 +208,10 @@ else
         {
             SelectedPrice = null;
             Snackbar.Add("Price Deleted!", Severity.Success);
-
             await GetProductPrices();
         }
-
-
+        
         _isLoading = false;
         StateHasChanged();
     }
-
-
 }

@@ -1,7 +1,9 @@
 ﻿@using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using System.Text
+
 @inject IHttpRepository HttpRepo
+@inject ISnackbar Snackbar
 
 <CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
@@ -23,13 +25,8 @@
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Role">
-                        <MudItem sm="7">
-                            <MudAutocomplete T="string?" Required="true" Dense="true" FullWidth="true" ResetValueOnEmptyText="true"
-                                             Variant="Variant.Outlined" Margin="Margin.Dense"
-                                             ShowProgressIndicator="@_isRoleSearchLoading" SearchFunc="@RoleSearch" ValueChanged="@RoleChange"/>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
+                    <CustomRowWithLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
+                                                       OnClearButtonClick="() => { }"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             </MudForm>
@@ -38,7 +35,7 @@
             <CustomButton
                 Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="Create" IsLoading="_isLoading" OnClick="@DialogSubmit" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="Create" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>
@@ -54,7 +51,6 @@
 
     bool _isMainLoading;
     bool _isLoading;
-    bool _isRoleSearchLoading;
 
     List<UserRoleViewDto> _roles = [];
 
@@ -84,22 +80,9 @@
         RoleName = value;
     }
 
-    async Task<IEnumerable<string>> RoleSearch(string? value)
+    async Task<IEnumerable<string>> SearchUserRoles(string? value, CancellationToken token)
     {
-        await Task.Delay(5);
-        return await SearchUserRoles(value);
-    }
-
-    async Task<IEnumerable<string>> SearchUserRoles(string? value)
-    {
-        _isRoleSearchLoading = true;
-        StateHasChanged();
-
         var result = await HttpRepo.GetAllUserRoles(value);
-
-        _isRoleSearchLoading = false;
-        StateHasChanged();
-
         if (!result.isSuccess)
             return [];
 
@@ -118,24 +101,29 @@
         StateHasChanged();
 
         await _form!.Validate();
-        
-        _isLoading = false;
-        StateHasChanged();
-        
+
         if (_form.IsValid)
         {
             var roleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
             var encryptedPassword = Encoding.UTF8.GetBytes(Password!);
-            MudDialog!.Close(DialogResult.Ok(new UserCreateDto(
+
+            var dataToCreate = new UserCreateDto(
                 Name!,
                 Phone,
                 Email,
                 Username!,
                 encryptedPassword,
                 roleGuid
-            )));
-            
+            );
+            var httpResult = await HttpRepo.CreateUser(dataToCreate);
+            if (httpResult.isSuccess)
+            {
+                Snackbar.Add("User Created!", Severity.Success);
+            }
+            MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));
         }
+        _isLoading = false;
+        StateHasChanged();
     }
 
     bool _isPasswordShow;

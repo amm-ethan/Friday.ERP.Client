@@ -20,6 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Friday.ERP.Server\Friday.ERP.Shared\Friday.ERP.Shared.csproj" />
+        <ProjectReference Include="..\..\Friday.ERP.Server\Friday.ERP.Shared\Friday.ERP.Shared.csproj"/>
     </ItemGroup>
 </Project>

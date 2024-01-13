@@ -1,13 +1,20 @@
-<CustomRowWithLabelsAndInput FirstText="@FirstText" Typo="@Typo">
-    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+<CustomRowWithLabelAndInput Md="@FirstMd" Lg="@FirstLg" FirstText="@FirstText" Typo="@Typo">
+    <MudItem Md="@SecondMd" Lg="@SecondLg" Class="align-self-center">
         <MudText Typo="Typo.subtitle1" Align="@SecondTextAlign" Color="@SecondTextColor">
             @SecondText
         </MudText>
     </MudItem>
-</CustomRowWithLabelsAndInput>
+</CustomRowWithLabelAndInput>
 
 
 @code {
+    [Parameter] public int FirstMd { get; set; } = 5;
+
+    [Parameter] public int FirstLg { get; set; } = 5;
+
+    [Parameter] public int SecondMd { get; set; } = 7;
+
+    [Parameter] public int SecondLg { get; set; } = 7;
 
     [Parameter] public string? FirstText { get; set; }
 
