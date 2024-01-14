@@ -4,6 +4,7 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
+@* Todo *@
 <CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
         <DialogContent>
@@ -11,7 +12,7 @@
                 <b>Remove Old Prices</b>
             </MudText>
             <MudGrid Spacing="2" Class="mt-4">
-                <CustomRowWithLabelAndInput FirstText="Price">
+                <CustomLabelAndInput FirstText="Price">
                     <MudItem sm="6" Class="align-self-center">
                         <MudSelect
                             @bind-Value="SelectedPrice"
@@ -35,7 +36,7 @@
                         <MudIconButton Disabled="@_isLoading" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined"
                                        OnClick="@DeletePrice" Color="Color.Error" Size="Size.Medium"/>
                     </MudItem>
-                </CustomRowWithLabelAndInput>
+                </CustomLabelAndInput>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudText Typo="Typo.subtitle1">
@@ -43,11 +44,11 @@
             </MudText>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2" Class="mt-4">
-                    <CustomRowWithLabelAndInput FirstText="Is Wholesale">
+                    <CustomLabelAndInput FirstText="Is Wholesale">
                         <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                             <MudCheckBox T="bool" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"></MudCheckBox>
                         </MudItem>
-                    </CustomRowWithLabelAndInput>
+                    </CustomLabelAndInput>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">

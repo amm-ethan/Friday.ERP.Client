@@ -25,22 +25,22 @@
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Shop Name" SecondText="@ShopName"></CustomRowWithTwoLabels>
+            <CustomLabelAndLabel FirstText="Shop Name" SecondText="@ShopName"></CustomLabelAndLabel>
         </MudGrid>
         <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Shop Description" SecondText="@ShopDescription"></CustomRowWithTwoLabels>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-        <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Address One" SecondText="@AddressOne"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Address Two" SecondText="@AddressTwo"></CustomRowWithTwoLabels>
+            <CustomLabelAndLabel FirstText="Shop Description" SecondText="@ShopDescription"></CustomLabelAndLabel>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
-            <CustomRowWithTwoLabels FirstText="Phone One" SecondText="@PhoneOne"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Phone Two" SecondText="@PhoneTwo"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Phone Three" SecondText="@PhoneThree"></CustomRowWithTwoLabels>
-            <CustomRowWithTwoLabels FirstText="Phone Four" SecondText="@PhoneFour"></CustomRowWithTwoLabels>
+            <CustomLabelAndLabel FirstText="Address One" SecondText="@AddressOne"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Address Two" SecondText="@AddressTwo"></CustomLabelAndLabel>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2">
+            <CustomLabelAndLabel FirstText="Phone One" SecondText="@PhoneOne"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Phone Two" SecondText="@PhoneTwo"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Phone Three" SecondText="@PhoneThree"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Phone Four" SecondText="@PhoneFour"></CustomLabelAndLabel>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
     </CustomPage>
@@ -54,19 +54,19 @@
         </MudGrid>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndFieldLong FirstText="Default Profit Percent"
+                <CustomLabelAndLongField FirstText="Default Profit Percent"
                                                 @bind-BindValue="@DefaultProfitPercent"/>
-                <CustomRowWithLabelAndFieldLong FirstText="Default Profit Percent For Wholesale"
+                <CustomLabelAndLongField FirstText="Default Profit Percent For Wholesale"
                                                 @bind-BindValue="@DefaultProfitPercentForWholeSale"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndFieldLong FirstText="Stock Margin To Notify"
+                <CustomLabelAndLongField FirstText="Stock Margin To Notify"
                                                 @bind-BindValue="@MinimumStockMargin"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLableAndCheckbox FirstText="Suggest Sale Price" @bind-BindValue="SuggestSalePrice"/>
+                <CustomLableAndCheckbox FirstText="Suggest Sale Price" @bind-BindValue="SuggestSalePrice"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2" Class="flex-grow-1">

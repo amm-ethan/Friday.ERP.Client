@@ -29,7 +29,7 @@ else
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mb-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndInput FirstText="Sale Price">
+                <CustomLabelAndInput FirstText="Sale Price">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                         <MudSelect
                             T="long"
@@ -51,8 +51,8 @@ else
                             }
                         </MudSelect>
                     </MudItem>
-                </CustomRowWithLabelAndInput>
-                <CustomRowWithLabelAndInput FirstText="Quantity">
+                </CustomLabelAndInput>
+                <CustomLabelAndInput FirstText="Quantity">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                         <MudTextField
                             @ref="QuantityTextField"
@@ -63,11 +63,11 @@ else
                             Margin="Margin.Dense" Variant="Variant.Outlined">
                         </MudTextField>
                     </MudItem>
-                </CustomRowWithLabelAndInput>
+                </CustomLabelAndInput>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithTwoLabels FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomRowWithTwoLabels>
+                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomLabelAndLabel>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
         </DialogContent>

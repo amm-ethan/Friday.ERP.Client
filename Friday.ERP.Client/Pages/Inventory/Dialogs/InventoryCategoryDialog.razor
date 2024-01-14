@@ -8,15 +8,15 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndInput FirstText="Category Color">
+                <CustomLabelAndInput FirstText="Category Color">
                     <MudItem sm="2" md="2" lg="2" Class="align-self-center">
                         <MudPaper Elevation="0" Style="@($"border: {CategoryColor}; background-color: {CategoryColor}")" Class="pa-2">&nbsp;</MudPaper>
                     </MudItem>
                     <MudItem sm="5" md="5" lg="5">
                         <MudColorPicker Required="@(!IsUpdate)" @bind-Text="CategoryColor" Margin="Margin.Dense" Variant="Variant.Outlined" ColorPickerView="ColorPickerView.Palette"/>
                     </MudItem>
-                </CustomRowWithLabelAndInput>
-                <CustomRowWithLabelAndFieldString FirstText="Category Name" @bind-BindValue="@CategoryName" Required="@(!IsUpdate)"/>
+                </CustomLabelAndInput>
+                <CustomLabelAndStringField FirstText="Category Name" @bind-BindValue="@CategoryName" Required="@(!IsUpdate)"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
         </MudForm>

@@ -14,10 +14,10 @@
     <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
         <MudText Class="mb-6" Typo="Typo.h5">Friday</MudText>
         <MudGrid>
-            <CustomRowWithLabelAndFieldString FirstSm="4" FirstMd="4"
+            <CustomLabelAndStringField FirstSm="4" FirstMd="4"
                                               SecondSm="8" SecondMd="8"
                                               FirstText="Username" @bind-BindValue="@Username" Required="true"/>
-            <CustomRowWithLabelAndFieldPassword FirstSm="4" FirstMd="4"
+            <CustomLabelAndFieldPassword FirstSm="4" FirstMd="4"
                                                 SecondSm="8" SecondMd="8"
                                                 FirstText="Password" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
                                                 AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>

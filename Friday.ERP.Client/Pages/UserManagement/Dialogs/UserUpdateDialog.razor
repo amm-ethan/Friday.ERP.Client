@@ -10,37 +10,37 @@
         <DialogContent>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2">
-                    <CustomRowWithLabelAndFieldString FirstText="Name" @bind-BindValue="@Name" Required="true"/>
-                    <CustomRowWithLabelAndFieldString FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
-                    <CustomRowWithLabelAndFieldString FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
+                    <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="true"/>
+                    <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                    <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Username" SecondText="@Username"></CustomRowWithTwoLabels>
+                    <CustomLabelAndLabel FirstText="Username" SecondText="@Username"></CustomLabelAndLabel>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLableAndCheckbox FirstText="Change Password" @bind-BindValue="IsChangePassword"/>
+                    <CustomLableAndCheckbox FirstText="Change Password" @bind-BindValue="IsChangePassword"/>
                     @if (IsChangePassword)
                     {
-                        <CustomRowWithLableAndCheckbox FirstText="Force Reset Password" @bind-BindValue="IsForceResetPassword"/>
+                        <CustomLableAndCheckbox FirstText="Force Reset Password" @bind-BindValue="IsForceResetPassword"/>
                     }
                     @if (IsChangePassword && !IsForceResetPassword)
                     {
-                        <CustomRowWithLabelAndFieldPassword FirstText="Old Password" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
+                        <CustomLabelAndFieldPassword FirstText="Old Password" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
                                                             KeyboardInputType="@_oldPasswordInput"
                                                             AdornmentIcon="@_oldPasswordInputIcon" OnAdornmentClick="@ShowOldPassword"/>
                     }
                     @if (IsChangePassword)
                     {
-                        <CustomRowWithLabelAndFieldPassword FirstText="New Password" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
+                        <CustomLabelAndFieldPassword FirstText="New Password" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
                                                             KeyboardInputType="@_passwordInput"
                                                             AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                     }
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
                 <MudGrid Spacing="2">
-                    <CustomRowWithLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
+                    <CustomLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
                                                        OnClearButtonClick="() => { }"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>

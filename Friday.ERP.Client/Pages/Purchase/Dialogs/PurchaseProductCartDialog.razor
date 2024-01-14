@@ -4,24 +4,11 @@
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
 
-@if (_isMainLoading)
-{
-    <MudDialog>
-        <DialogContent>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
-        </DialogContent>
-        <DialogActions>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-        </DialogActions>
-    </MudDialog>
-}
-else
-{
+<CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
         <DialogContent>
             <MudGrid Spacing="2">
-                <MudItem sm="12" md="12" lg="12">
+                <MudItem sm="12" md="12">
                     <ImageHolder ImageSrc="@(Image is not null ? $"data:image/png;base64, {Image!}" : "product_png/placeholder.png")"
                                  ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()">
                     </ImageHolder>
@@ -29,38 +16,43 @@ else
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4 mb-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithTwoLabels FirstText="Last Purchase Price" SecondText="@($"{_lastPrice.ToString()} mmk")"></CustomRowWithTwoLabels>
+                <CustomLabelAndLabel FirstText="Last Purchase Price" SecondText="@($"{_lastPrice.ToString()} mmk")"></CustomLabelAndLabel>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndInput FirstText="Purchase Price">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField
-                            @ref="PurchasePriceTextField"
-                            T="long?" Required="true"
-                            ValueChanged="@ValueChangedPrice"
-                            Immediate="true"
-                            FullWidth="true" InputType="InputType.Number"
-                            Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelAndInput>
-                <CustomRowWithLabelAndInput FirstText="Quantity">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                        <MudTextField
-                            @ref="QuantityTextField"
-                            T="int" Required="true"
-                            ValueChanged="@ValueChangedQuantity"
-                            Immediate="true"
-                            FullWidth="true" InputType="InputType.Number"
-                            Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
-                    </MudItem>
-                </CustomRowWithLabelAndInput>
+                @* <CustomRowWithLabelAndFieldLong FirstText="Purchase Price"  *@
+                @*                                   @bind-BindValue="@Name"  *@
+                @*                                   Required="true"  *@
+                @*                                   BindValueChanged="@ValueChangedPrice"/> *@
+                
+                @* <CustomRowWithLabelAndInput FirstText="Purchase Price"> *@
+                @*     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+                @*         <MudTextField *@
+                @*             @ref="PurchasePriceTextField" *@
+                @*             T="long?" Required="true" *@
+                @*             ValueChanged="@ValueChangedPrice" *@
+                @*             Immediate="true" *@
+                @*             FullWidth="true" InputType="InputType.Number" *@
+                @*             Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+                @*         </MudTextField> *@
+                @*     </MudItem> *@
+                @* </CustomRowWithLabelAndInput> *@
+                @* <CustomRowWithLabelAndInput FirstText="Quantity"> *@
+                @*     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
+                @*         <MudTextField *@
+                @*             @ref="QuantityTextField" *@
+                @*             T="int" Required="true" *@
+                @*             ValueChanged="@ValueChangedQuantity" *@
+                @*             Immediate="true" *@
+                @*             FullWidth="true" InputType="InputType.Number" *@
+                @*             Margin="Margin.Dense" Variant="Variant.Outlined"> *@
+                @*         </MudTextField> *@
+                @*     </MudItem> *@
+                @* </CustomRowWithLabelAndInput> *@
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithTwoLabels FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomRowWithTwoLabels>
+                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomLabelAndLabel>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
         </DialogContent>
@@ -75,7 +67,7 @@ else
             </CustomButton>
         </DialogActions>
     </MudDialog>
-}
+</CustomDialog>
 
 @code {
 
@@ -96,8 +88,8 @@ else
     bool _isMainLoading;
     long? _lastPrice;
 
-    MudTextField<long?> PurchasePriceTextField { get; set; } = new();
-    MudTextField<int> QuantityTextField { get; set; } = new();
+    // MudTextField<long?> PurchasePriceTextField { get; set; } = new();
+    // MudTextField<int> QuantityTextField { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,15 +109,15 @@ else
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-
-        QuantityTextField.Text = Quantity.ToString();
-        QuantityTextField.Value = Quantity;
-
-        if (IsUpdate)
-        {
-            PurchasePriceTextField.Text = Price.ToString();
-            PurchasePriceTextField.Value = Price;
-        }
+        //
+        // QuantityTextField.Text = Quantity.ToString();
+        // QuantityTextField.Value = Quantity;
+        //
+        // if (IsUpdate)
+        // {
+        //     PurchasePriceTextField.Text = Price.ToString();
+        //     PurchasePriceTextField.Value = Price;
+        // }
     }
 
     void ValueChangedQuantity(int value)
@@ -135,9 +127,9 @@ else
         StateHasChanged();
     }
 
-    void ValueChangedPrice(long? value)
+    void ValueChangedPrice(long value)
     {
-        Price = value ?? 0;
+        Price = value;
         TotalPrice = Quantity * Price;
         StateHasChanged();
     }

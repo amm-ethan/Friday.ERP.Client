@@ -1,16 +1,15 @@
-<CustomRowWithLabelAndInput Sm="@FirstSm" Md="@FirstMd" FirstText="@FirstText" Typo="@Typo">
-    <MudItem sm="SecondSm" md="@SecondMd" Class="align-self-center">
+<CustomLabelAndInput Sm="FirstSm" Md="@FirstMd" FirstText="@FirstText" Typo="@Typo">
+    <MudItem sm="@SecondSm" md="@SecondMd" Class="align-self-center">
         <MudTextField T="string" @bind-Value="@BindValue" Required="@Required" Immediate="true"
                       FullWidth="true" InputType="@KeyboardInputType"
-                      Margin="Margin.Dense" Variant="Variant.Outlined"
-                      Adornment="Adornment.End" AdornmentIcon="@AdornmentIcon"
-                      OnAdornmentClick="@OnAdornmentClick" AdornmentAriaLabel="Show Password">
+                      Margin="Margin.Dense" Variant="Variant.Outlined">
         </MudTextField>
     </MudItem>
-</CustomRowWithLabelAndInput>
+</CustomLabelAndInput>
 
 
 @code {
+
     [Parameter] public int FirstSm { get; set; } = 5;
 
     [Parameter] public int FirstMd { get; set; } = 5;
@@ -18,7 +17,7 @@
     [Parameter] public int SecondSm { get; set; } = 7;
 
     [Parameter] public int SecondMd { get; set; } = 7;
-    
+
     [Parameter] public string? FirstText { get; set; }
 
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
@@ -40,10 +39,6 @@
     [Parameter] public InputType KeyboardInputType { get; set; } = InputType.Text;
 
     [Parameter] public EventCallback<string> BindValueChanged { get; set; }
-
-    [Parameter] public string? AdornmentIcon { get; set; }
-
-    [Parameter] public EventCallback<MouseEventArgs> OnAdornmentClick { get; set; }
 
     private string? _bindValue;
 

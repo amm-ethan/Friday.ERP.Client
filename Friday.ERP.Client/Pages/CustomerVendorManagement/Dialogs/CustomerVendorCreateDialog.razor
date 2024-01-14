@@ -8,17 +8,17 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndFieldString FirstText="Name" @bind-BindValue="@Name" Required="true"/>
-                <CustomRowWithLabelAndFieldString FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
-                <CustomRowWithLabelAndFieldString FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
+                <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="true"/>
+                <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndFieldString FirstText="Address" @bind-BindValue="@Address"/>
+                <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
             <MudGrid Spacing="2">
-                <CustomRowWithLabelAndFieldLong FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
+                <CustomLabelAndLongField FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         </MudForm>
