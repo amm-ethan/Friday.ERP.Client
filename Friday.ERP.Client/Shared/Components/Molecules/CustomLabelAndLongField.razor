@@ -2,6 +2,7 @@
     <MudItem sm="SecondSm" md="@SecondMd" Class="align-self-center">
         <MudTextField T="long" @bind-Value="@BindValue" Required="@Required" Immediate="true"
                       FullWidth="true" InputType="@KeyboardInputType"
+                      a
                       Margin="Margin.Dense" Variant="Variant.Outlined">
         </MudTextField>
     </MudItem>
@@ -9,7 +10,6 @@
 
 
 @code {
-
     [Parameter] public int FirstSm { get; set; } = 5;
 
     [Parameter] public int FirstMd { get; set; } = 5;
@@ -17,7 +17,7 @@
     [Parameter] public int SecondSm { get; set; } = 7;
 
     [Parameter] public int SecondMd { get; set; } = 7;
-    
+
     [Parameter] public string? FirstText { get; set; }
 
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
@@ -41,5 +41,6 @@
     [Parameter] public EventCallback<long> BindValueChanged { get; set; }
 
     private long _bindValue;
+
 
 }

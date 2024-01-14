@@ -29,7 +29,7 @@
                 {
                     <MudItem sm="6" md="4">
                         <CustomCardBox OnClick="@(() => OpenCreateProductPurchaseAddToCartDialog(product))"
-                                       ProductCode="@product!.Code"
+                                       ProductCode="@product.Code"
                                        ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                        ProductTotalStock="@product.TotalStockLeft"
                                        ProductName="@product.Name">
@@ -39,7 +39,7 @@
             </ChildContent>
         </ProductPage>
     </CustomPage>
-    <CustomPage Sm="12" Md="7" IsLoading="@_isMainLoading">
+    <CustomPage Sm="12" Md="5" IsLoading="@_isMainLoading">
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"></CustomLabelAndLabel>
             <CustomLabelAndLabel FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"></CustomLabelAndLabel>
@@ -86,7 +86,7 @@
         <MudGrid Spacing="2">
             <MudItem sm="12" md="12" lg="12">
                 <CustomButton
-                    Label="Proceed to Purchase" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" FullWidth="false"/>
+                    Label="Proceed to Purchase" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" Variant="Variant.Filled"/>
             </MudItem>
         </MudGrid>
     </CustomPage>
@@ -299,58 +299,62 @@
             Snackbar.Add("Select Vendor To Proceed!", Severity.Error);
             return;
         }
-        //
-        // var parameters = new DialogParameters<PurchaseTransactionDialog>
-        // {
-        //     { x => x.InvoiceNo, _invoiceNo },
-        //     { x => x.VendorName, _customerVendorName },
-        //     { x => x.VendorExistingCreditDebit, _customerVendorCreditDebitLeft ?? 0 },
-        //     { x => x.SubTotal, SubTotal }
-        // };
-        //
-        // var options = new DialogOptions();
-        // var dialog = await DialogService.ShowAsync<PurchaseTransactionDialog>("Make Purchase", parameters, options);
-        // var result = await dialog.Result;
-        // if (!result.Canceled)
-        // {
-        //     _isLoading = true;
-        //     StateHasChanged();
-        //
-        //     var invoiceInfo = (InvoicePurchasePreCreateDto)result.Data;
-        //
-        //     List<InvoicePurchaseProductCreateDto> productsInCart = [];
-        //     productsInCart.AddRange(_productsInCartTemp
-        //         .Select(product =>
-        //             new InvoicePurchaseProductCreateDto(
-        //                 product.ProductGuid, product.BuyPrice, product.Quantity, product.TotalPrice
-        //             )
-        //         )
-        //     );
-        //
-        //     var invoiceToCreate = new InvoicePurchaseCreateDto(
-        //         SubTotal,
-        //         invoiceInfo.Discount,
-        //         invoiceInfo.DiscountType,
-        //         invoiceInfo.Total,
-        //         invoiceInfo.PaidTotal,
-        //         invoiceInfo.CreditDebitLeft,
-        //         invoiceInfo.IsPaid,
-        //         invoiceInfo.Remark,
-        //         _customerVendorGuid ?? Guid.Empty,
-        //         productsInCart
-        //     );
-        //
-        //     var httpResult = await HttpRepo.CreatePurchaseInvoice(invoiceToCreate);
-        //
-        //     _isLoading = false;
-        //     StateHasChanged();
-        //
-        //     if (httpResult.isSuccess)
-        //     {
-        //         Snackbar.Add("Purchase Completed!", Severity.Success);
-        //         NavManager.NavigateTo("/loading/purchase");
-        //     }
-        // }
+
+        var selectedCustomerVendor = _customerVendorList.FirstOrDefault(c => c.Name == _customerVendorName);
+
+        var parameters = new DialogParameters<PurchaseTransactionDialog>
+        {
+            { x => x.InvoiceNo, _invoiceNo },
+            { x => x.VendorName, _customerVendorName },
+            { x => x.VendorExistingCreditDebit, selectedCustomerVendor!.TotalCreditDebitLeft },
+            { x => x.SubTotal, SubTotal }
+        };
+
+        var options = new DialogOptions();
+        var dialog = await DialogService.ShowAsync<PurchaseTransactionDialog>("Make Purchase", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            _isLoading = true;
+            StateHasChanged();
+
+            var invoiceInfo = (InvoicePurchasePreCreateDto)result.Data;
+
+            List<InvoicePurchaseProductCreateDto> productsInCart = [];
+            productsInCart.AddRange(_productsInCartTemp
+                .Select(product =>
+                    new InvoicePurchaseProductCreateDto(
+                        product.ProductGuid, product.BuyPrice, product.Quantity, product.TotalPrice
+                    )
+                )
+            );
+
+            var invoiceToCreate = new InvoicePurchaseCreateDto(
+                SubTotal,
+                invoiceInfo.Discount,
+                invoiceInfo.DiscountType,
+                invoiceInfo.DeliveryFees,
+                invoiceInfo.Total,
+                invoiceInfo.GrandTotal,
+                invoiceInfo.PaidTotal,
+                invoiceInfo.CreditDebitLeft,
+                invoiceInfo.IsPaid,
+                invoiceInfo.Remark,
+                selectedCustomerVendor.Guid,
+                productsInCart
+            );
+
+            var httpResult = await HttpRepo.CreatePurchaseInvoice(invoiceToCreate);
+
+            _isLoading = false;
+            StateHasChanged();
+
+            if (httpResult.isSuccess)
+            {
+                Snackbar.Add("Purchase Completed!", Severity.Success);
+                NavManager.NavigateTo("/loading/purchase");
+            }
+        }
     }
 
 }
