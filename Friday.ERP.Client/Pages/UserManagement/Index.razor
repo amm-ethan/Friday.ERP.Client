@@ -8,24 +8,21 @@
 
 @inject IHttpRepository HttpRepo
 @inject IDialogService DialogService
-@inject ISnackbar Snackbar
 
 @layout MainLayout
 @attribute [Authorize]
 
 <CustomContainer>
-    <CustomPage Md="12" Lg="12" IsLoading="@_isMainLoading">
+    <CustomPage Sm="12" Md="12" IsLoading="@_isMainLoading">
         <MudTabs Elevation="0" Rounded="true" Centered="true">
             <CustomTab TitleText="User"
                        IsLoading="@_isLoading"
                        OnTabClick="() => { }">
                 <CustomHeader>
-                    <MudItem sm="3" Class="align-self-center">
+                    <MudItem sm="6" md="5" Class="align-self-center">
                         <CustomTextFieldWithIcon BindValue="@_searchTerm" ValueChanged="ChangeSearchValue" ClassParameter="mr-2"/>
                     </MudItem>
-                    <MudItem sm="7">
-                    </MudItem>
-                    <MudItem sm="2" Class="align-self-center">
+                    <MudItem sm="6" md="3" Class="align-self-center">
                         <CustomButton
                             Label="Create New"
                             IsLoading="_isLoading"

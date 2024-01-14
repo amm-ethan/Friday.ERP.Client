@@ -1,5 +1,5 @@
-<CustomRowWithLabelAndInput Md="@FirstMd" Lg="@FirstLg" FirstText="@FirstText" Typo="@Typo">
-    <MudItem Md="@SecondMd" Lg="@SecondLg" Class="align-self-center">
+<CustomRowWithLabelAndInput Sm="@FirstSm" Md="@FirstMd" FirstText="@FirstText" Typo="@Typo">
+    <MudItem sm="SecondSm" md="@SecondMd" Class="align-self-center">
         <MudAutocomplete T="string?" Required="@Required" Dense="true" FullWidth="true" ResetValueOnEmptyText="true" Immediate="true"
                          Clearable="@Clearable" OnClearButtonClick="@OnClearButtonClick"
                          Variant="Variant.Outlined" Margin="Margin.Dense" Value="@Value"
@@ -9,13 +9,13 @@
 
 
 @code {
+    [Parameter] public int FirstSm { get; set; } = 5;
+
     [Parameter] public int FirstMd { get; set; } = 5;
 
-    [Parameter] public int FirstLg { get; set; } = 5;
+    [Parameter] public int SecondSm { get; set; } = 7;
 
     [Parameter] public int SecondMd { get; set; } = 7;
-
-    [Parameter] public int SecondLg { get; set; } = 7;
 
     [Parameter] public string? FirstText { get; set; }
 

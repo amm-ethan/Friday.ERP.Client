@@ -1,6 +1,6 @@
 <MudTextField T="string" Value="BindValue" ValueChanged="@ValueChanged" Immediate="true"
               Class="@ClassParameter" AdornmentIcon="@Icon" Label="@Label" Adornment="Adornment.End"
-              Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="true">
+              Variant="Variant.Outlined" Margin="Margin.Dense" FullWidth="@FullWidth">
 </MudTextField>
 
 @code {
@@ -14,5 +14,7 @@
     [Parameter] public string Label { get; set; } = "Search";
 
     [Parameter] public string? ClassParameter { get; set; }
+
+    [Parameter] public bool FullWidth { get; set; } = true;
 
 }
