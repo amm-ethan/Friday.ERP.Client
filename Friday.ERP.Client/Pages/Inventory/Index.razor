@@ -1,7 +1,7 @@
 ﻿@page "/inventory"
 @using Friday.ERP.Client.Pages.Inventory.Components.Moledules
+@using Friday.ERP.Client.Pages.Inventory.Components.Templates
 @using Friday.ERP.Client.Pages.Inventory.Dialogs
-@using Friday.ERP.Client.Pages.Sale.Components.Templates
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Shared.Layouts
 @using Friday.ERP.Shared.DataTransferObjects
@@ -20,7 +20,7 @@
                 <MudText Typo="Typo.h6">Categories</MudText>
             </MudItem>
         </MudGrid>
-        <MudGrid Spacing="2">
+        <MudGrid Spacing="2" Class="mb-2">
             <MudItem sm="12">
                 <div class="d-flex flex-row flex-wrap">
                     @foreach (var category in _categoryList)
@@ -31,59 +31,31 @@
                 </div>
             </MudItem>
         </MudGrid>
-        <MudProgressLinear Color="Color.Primary" Class="mt-2 mb-4" Indeterminate="@_isLoading"/>
-        <MudGrid Spacing="2">
-            <MudItem sm="12" md="4" Class="align-self-center">
-                <MudText Typo="Typo.h6">Products</MudText>
-            </MudItem>
-            <MudItem sm="12" md="3" Class="align-self-center">
-                <MudAutocomplete T="string?"
-                                 Label="Category"
-                                 Clearable="true"
-                                 ResetValueOnEmptyText="true"
-                                 Dense="true"
-                                 FullWidth="true"
-                                 Variant="Variant.Outlined"
-                                 Margin="Margin.Dense"
-                                 SearchFuncWithCancel="@CategorySearch"
-                                 ValueChanged="@CategoryChange"
-                                 OnClearButtonClick="@CategoryClear">
-                </MudAutocomplete>
-            </MudItem>
-            <MudItem sm="12" md="3" Class="align-self-center">
-                <CustomTextFieldWithIcon BindValue="@_searchTerm" ValueChanged="ChangeProductSearchValue" ClassParameter="mr-2"/>
-            </MudItem>
-            <MudItem sm="12" md="2" Class="align-self-center">
+        <ProductPage IsLoading="@_isLoading"
+                     CategorySearch="@CategorySearch"
+                     CategoryChange="@CategoryChange"
+                     CategoryClear="@CategoryClear"
+                     SearchTerm="@_searchTerm"
+                     ProductSearchValueChange="@ChangeProductSearchValue"
+                     ProductList="_productList">
+            <CreateButton>
                 <CustomButton Variant="Variant.Filled"
                               Label="Create New" IsLoading="_isLoading" OnClick="@OpenProductCreateDialog"/>
-            </MudItem>
-        </MudGrid>
-        <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto;">
-            @if (_productList.Count == 0)
-            {
-                <MudItem sm="12">
-                    <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
-                        <div class="align-self-center">
-                            <MudText Typo="Typo.caption">No Product Yet!</MudText>
-                        </div>
-                    </div>
-                </MudItem>
-            }
-            else
-            {
+            </CreateButton>
+            <ChildContent>
                 @foreach (var product in _productList)
                 {
-                    <MudItem sm="4" md="3" lg="2">
+                    <MudItem sm="3" md="2">
                         <CustomCardBox OnClick="@(() => OpenProductUpdateDialog(product))"
-                                       ProductCode="@product.Code"
+                                       ProductCode="@product!.Code"
                                        ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                        ProductTotalStock="@product.TotalStockLeft"
                                        ProductName="@product.Name">
                         </CustomCardBox>
                     </MudItem>
                 }
-            }
-        </MudGrid>
+            </ChildContent>
+        </ProductPage>
     </CustomPage>
 </CustomContainer>
 

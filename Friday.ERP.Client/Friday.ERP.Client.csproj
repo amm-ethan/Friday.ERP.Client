@@ -22,4 +22,12 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Friday.ERP.Server\Friday.ERP.Shared\Friday.ERP.Shared.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\CustomerVendorManagement\Components\CustomerVendorComponent.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Purchase\Components\Templates\CustomCardRectangle.razor" />
+    </ItemGroup>
 </Project>

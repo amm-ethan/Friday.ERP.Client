@@ -1,6 +1,8 @@
 ﻿@page "/purchase"
 @using Friday.ERP.Client.Pages.Purchase.Dialogs
-@using Friday.ERP.Client.Pages.Sale.Components.Templates
+@using Friday.ERP.Client.Pages.Purchase.Components.Templates
+@using Friday.ERP.Client.Pages.Inventory.Components.Moledules
+@using Friday.ERP.Client.Pages.Inventory.Components.Templates
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Shared.Layouts
 @using Friday.ERP.Shared.DataTransferObjects
@@ -15,55 +17,27 @@
 
 <CustomContainer>
     <CustomPage Sm="12" Md="7" IsLoading="@_isMainLoading">
-        <MudProgressLinear Color="Color.Primary" Class="mb-4" Indeterminate="@_isLoading"/>
-        <MudGrid Spacing="2">
-            <MudItem sm="12" md="6" Class="align-self-center">
-                <MudText Typo="Typo.h6">Purchases</MudText>
-            </MudItem>
-            <MudItem sm="12" md="3" Class="align-self-center">
-                <MudAutocomplete T="string?"
-                                 Label="Category"
-                                 Clearable="true"
-                                 ResetValueOnEmptyText="true"
-                                 Dense="true"
-                                 FullWidth="true"
-                                 Variant="Variant.Outlined"
-                                 Margin="Margin.Dense"
-                                 SearchFuncWithCancel="@CategorySearch"
-                                 ValueChanged="@CategoryChange"
-                                 OnClearButtonClick="@CategoryClear">
-                </MudAutocomplete>
-            </MudItem>
-            <MudItem sm="12" md="3" Class="align-self-center">
-                <CustomTextFieldWithIcon BindValue="@_searchTerm" ValueChanged="ChangeProductSearchValue" ClassParameter="mr-2"/>
-            </MudItem>
-        </MudGrid>
-        <MudGrid Spacing="2" Class="mt-4" Justify="Justify.FlexStart" Style="overflow-y: auto">
-            @if (_productList.Count == 0)
-            {
-                <MudItem sm="12">
-                    <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
-                        <div class="align-self-center">
-                            <MudText Typo="Typo.caption">No Products Yet!</MudText>
-                        </div>
-                    </div>
-                </MudItem>
-            }
-            else
-            {
+        <ProductPage IsLoading="@_isLoading"
+                     CategorySearch="@CategorySearch"
+                     CategoryChange="@CategoryChange"
+                     CategoryClear="@CategoryClear"
+                     SearchTerm="@_searchTerm"
+                     ProductSearchValueChange="@ChangeProductSearchValue"
+                     ProductList="_productList">
+            <ChildContent>
                 @foreach (var product in _productList)
                 {
                     <MudItem sm="6" md="4">
                         <CustomCardBox OnClick="@(() => OpenCreateProductPurchaseAddToCartDialog(product))"
-                                       ProductCode="@product.Code"
+                                       ProductCode="@product!.Code"
                                        ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                        ProductTotalStock="@product.TotalStockLeft"
                                        ProductName="@product.Name">
                         </CustomCardBox>
                     </MudItem>
                 }
-            }
-        </MudGrid>
+            </ChildContent>
+        </ProductPage>
     </CustomPage>
     <CustomPage Sm="12" Md="7" IsLoading="@_isMainLoading">
         <MudGrid Spacing="2">
@@ -100,9 +74,9 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
             <CustomLableAndAutocomplete FirstText="Vendor" Required="true"
-                                               Value="@_customerVendorName" SearchFuncWithCancel="@CustomerVendorSearch"
-                                               ValueChanged="@CustomerVendorChange"
-                                               OnClearButtonClick="@CustomerVendorClear"/>
+                                        Value="@_customerVendorName" SearchFuncWithCancel="@CustomerVendorSearch"
+                                        ValueChanged="@CustomerVendorChange"
+                                        OnClearButtonClick="@CustomerVendorClear"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
