@@ -1,5 +1,6 @@
 ﻿@page "/sale"
 @using Friday.ERP.Client.Pages.Sale.Dialogs
+@using Friday.ERP.Client.Pages.Purchase.Components.Templates
 @using Friday.ERP.Client.Pages.Inventory.Components.Templates
 @using Friday.ERP.Client.Pages.Inventory.Components.Moledules
 @using Friday.ERP.Client.Data
@@ -39,103 +40,64 @@
             </ChildContent>
         </ProductPage>
     </CustomPage>
-    <MudItem sm="12" md="12" lg="5" Class="align-self-center">
-        @if (_isMainLoading)
-        {
-            <CustomPageCardWithSkeleton/>
-        }
-        else
-        {
-            <CustomPageCard>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"></CustomRowWithTwoLabels>
-                    <CustomRowWithTwoLabels FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
-                    @if (_productsInCartTemp.Count == 0)
-                    {
-                        <MudItem sm="12">
-                            <div class="d-flex d-column justify-center flex-grow-1" style="height: 40vh;">
-                                <div class="align-self-center">
-                                    <MudText Typo="Typo.caption">No Product In Cart!</MudText>
-                                </div>
-                            </div>
-                        </MudItem>
-                    }
-                    else
-                    {
-                        @foreach (var product in _productsInCartTemp)
-                        {
-                            <MudItem sm="12" md="12" lg="12">
-                                <CustomCardRectangle OnClick="@(() => OpenUpdateProductPurchaseAddToCartDialog(product))"
-                                                     FirstMainText="@product.Name" FirstSubText="@product.Quantity.ToString()"
-                                                     ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
-                                                     SecondMainText="@product.SalePrice.ToString()"
-                                                     SecondSubText="@(product.TotalPrice.ToString())">
-                                </CustomCardRectangle>
-                            </MudItem>
-                        }
-                    }
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithLabelsAndInput FirstText="Customer">
-                        <MudItem sm="7" md="7" lg="7">
-                            <MudAutocomplete T="string?"
-                                             @ref="CustomerVendorAutoComplete"
-                                             Clearable="true"
-                                             ResetValueOnEmptyText="true"
-                                             Variant="Variant.Outlined"
-                                             Margin="Margin.Dense"
-                                             Dense="true"
-                                             FullWidth="true"
-                                             SearchFunc="@CustomerVendorSearch"
-                                             ShowProgressIndicator="@_isCustomerVendorLoading"
-                                             ValueChanged="@CustomerVendorChange"
-                                             OnClearButtonClick="@CustomerVendorClear"
-                                             RequiredError="Choose Customer!">
-                            </MudAutocomplete>
-                        </MudItem>
-                    </CustomRowWithLabelsAndInput>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    <CustomRowWithTwoLabels FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"></CustomRowWithTwoLabels>
-                </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-                <MudGrid Spacing="2">
-                    @if (_customerVendorGuid is not null)
-                    {
-                        <MudItem sm="6" md="6" lg="6">
-                            <CustomButton Disabled="@_isLoading" OnClick="@AddDeliveryInfo" Color="Color.Secondary">
-                                @if (_isLoading)
-                                {
-                                    <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                                }
-                                else
-                                {
-                                    @("Add Delivery Info")
-                                }
-                            </CustomButton>
-                        </MudItem>
-                    }
-                    <MudItem sm="@(_customerVendorGuid is not null ? 6 : 12)">
-                        <CustomButton Disabled="@_isLoading" OnClick="@OpenTransactionCreateDialog" Color="Color.Primary">
-                            @if (_isLoading)
-                            {
-                                <MudProgressCircular Color="Color.Default" Style="height:27px;width:27px;" Indeterminate="true"/>
-                            }
-                            else
-                            {
-                                @("Proceed to Sale")
-                            }
-                        </CustomButton>
+    <CustomPage Sm="12" Md="5" IsLoading="@_isMainLoading">
+        <MudGrid Spacing="2">
+            <CustomLabelAndLabel FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"></CustomLabelAndLabel>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
+            @if (_productsInCartTemp.Count == 0)
+            {
+                <MudItem sm="12">
+                    <div class="d-flex d-column justify-center flex-grow-1" style="height: 40vh;">
+                        <div class="align-self-center">
+                            <MudText Typo="Typo.caption">No Product In Cart!</MudText>
+                        </div>
+                    </div>
+                </MudItem>
+            }
+            else
+            {
+                @foreach (var product in _productsInCartTemp)
+                {
+                    <MudItem sm="12" md="12" lg="12">
+                        <CustomCardRectangle OnClick="@(() => OpenUpdateProductPurchaseAddToCartDialog(product))"
+                                             FirstMainText="@product.Name" FirstSubText="@product.Quantity.ToString()"
+                                             ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
+                                             SecondMainText="@product.SalePrice.ToString()"
+                                             SecondSubText="@(product.TotalPrice.ToString())">
+                        </CustomCardRectangle>
                     </MudItem>
-                </MudGrid>
-            </CustomPageCard>
-        }
-    </MudItem>
+                }
+            }
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2">
+            <CustomLableAndAutocomplete FirstText="Customer"
+                                        Value="@_customerVendorName" SearchFuncWithCancel="@CustomerVendorSearch"
+                                        ValueChanged="@CustomerVendorChange"
+                                        OnClearButtonClick="@CustomerVendorClear"/>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2">
+            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"></CustomLabelAndLabel>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudGrid Spacing="2">
+            @if (_customerVendorName is not null)
+            {
+                <MudItem sm="6" md="6" lg="6">
+                    <CustomButton
+                        Label="Add Delivery Info" IsLoading="_isLoading" OnClick="@AddDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary"/>
+                </MudItem>
+            }
+            <MudItem sm="@(_customerVendorName is not null ? 6 : 12)">
+                <CustomButton
+                    Label="Proceed to Sale" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" Variant="Variant.Filled"/>
+            </MudItem>
+        </MudGrid>
+    </CustomPage>
 </CustomContainer>
 
 <script>
@@ -164,12 +126,11 @@
     string? _searchTerm;
     string? _categoryName;
     string? _customerVendorName;
-    
+
     readonly List<ProductSaleAddToCartViewDto> _productsInCartTemp = [];
     long SubTotal { get; set; }
-    
+
     InvoiceSaleDeliveryCreateDto? _deliveryInfo;
-    InvoiceSalePreCreateDto? _invoiceSalePreCreateDto;
 
     protected override async Task OnInitializedAsync()
     {
@@ -205,7 +166,7 @@
     {
         return await GetCategoryProductData(value);
     }
-    
+
     async Task<IEnumerable<string>> GetCategoryProductData(string? value)
     {
         _isLoading = true;
@@ -416,7 +377,7 @@
             _isLoading = true;
             StateHasChanged();
 
-            _invoiceSalePreCreateDto = (InvoiceSalePreCreateDto)result.Data;
+            var invoiceSalePreCreateDto = (InvoiceSalePreCreateDto)result.Data;
 
             List<InvoiceSaleProductCreateDto> productsInCart = [];
             productsInCart.AddRange(_productsInCartTemp
@@ -429,13 +390,13 @@
 
             var invoiceToCreate = new InvoiceSaleCreateDto(
                 SubTotal,
-                _invoiceSalePreCreateDto.Discount,
-                _invoiceSalePreCreateDto.DiscountType,
-                _invoiceSalePreCreateDto.Total,
-                _invoiceSalePreCreateDto.PaidTotal,
-                _invoiceSalePreCreateDto.CreditDebitLeft,
-                _invoiceSalePreCreateDto.Remark,
-                _customerVendorGuid,
+                invoiceSalePreCreateDto.Discount,
+                invoiceSalePreCreateDto.DiscountType,
+                invoiceSalePreCreateDto.Total,
+                invoiceSalePreCreateDto.PaidTotal,
+                invoiceSalePreCreateDto.CreditDebitLeft,
+                invoiceSalePreCreateDto.Remark,
+                invoiceSalePreCreateDto,
                 productsInCart,
                 _deliveryInfo
             );

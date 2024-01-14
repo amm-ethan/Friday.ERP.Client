@@ -209,77 +209,6 @@
         return _customerVendorList.Select(c => c.Name);
     }
 
-    async Task OpenTransactionCreateDialog()
-    {
-        if (_productsInCartTemp.Count == 0)
-        {
-            Snackbar.Add("Add Items To Proceed To Sale!", Severity.Error);
-            return;
-        }
-
-        if (_customerVendorName is null)
-        {
-            Snackbar.Add("Select Vendor To Proceed!", Severity.Error);
-            return;
-        }
-
-        var selectedCustomerVendor = _customerVendorList.FirstOrDefault(c => c.Name == _customerVendorName);
-
-        var parameters = new DialogParameters<PurchaseTransactionDialog>
-        {
-            { x => x.InvoiceNo, _invoiceNo },
-            { x => x.VendorName, _customerVendorName },
-            { x => x.VendorExistingCreditDebit, selectedCustomerVendor!.TotalCreditDebitLeft },
-            { x => x.SubTotal, SubTotal }
-        };
-
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<PurchaseTransactionDialog>("Make Purchase", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            _isLoading = true;
-            StateHasChanged();
-
-            var invoiceInfo = (InvoicePurchasePreCreateDto)result.Data;
-
-            List<InvoicePurchaseProductCreateDto> productsInCart = [];
-            productsInCart.AddRange(_productsInCartTemp
-                .Select(product =>
-                    new InvoicePurchaseProductCreateDto(
-                        product.ProductGuid, product.BuyPrice, product.Quantity, product.TotalPrice
-                    )
-                )
-            );
-
-            var invoiceToCreate = new InvoicePurchaseCreateDto(
-                SubTotal,
-                invoiceInfo.Discount,
-                invoiceInfo.DiscountType,
-                invoiceInfo.DeliveryFees,
-                invoiceInfo.Total,
-                invoiceInfo.GrandTotal,
-                invoiceInfo.PaidTotal,
-                invoiceInfo.CreditDebitLeft,
-                invoiceInfo.IsPaid,
-                invoiceInfo.Remark,
-                selectedCustomerVendor.Guid,
-                productsInCart
-            );
-
-            var httpResult = await HttpRepo.CreatePurchaseInvoice(invoiceToCreate);
-
-            _isLoading = false;
-            StateHasChanged();
-
-            if (httpResult.isSuccess)
-            {
-                Snackbar.Add("Purchase Completed!", Severity.Success);
-                NavManager.NavigateTo("/loading/purchase");
-            }
-        }
-    }
-    
     async Task OpenCreateProductPurchaseAddToCartDialog(ProductViewDto productViewDto)
     {
         if (_productsInCartTemp.Select(c => c.ProductGuid).ToList().Contains(productViewDto.Guid))
@@ -356,4 +285,76 @@
             SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
         }
     }
+
+    async Task OpenTransactionCreateDialog()
+    {
+        if (_productsInCartTemp.Count == 0)
+        {
+            Snackbar.Add("Add Items To Proceed To Sale!", Severity.Error);
+            return;
+        }
+
+        if (_customerVendorName is null)
+        {
+            Snackbar.Add("Select Vendor To Proceed!", Severity.Error);
+            return;
+        }
+
+        var selectedCustomerVendor = _customerVendorList.FirstOrDefault(c => c.Name == _customerVendorName);
+
+        var parameters = new DialogParameters<PurchaseTransactionDialog>
+        {
+            { x => x.InvoiceNo, _invoiceNo },
+            { x => x.VendorName, _customerVendorName },
+            { x => x.VendorExistingCreditDebit, selectedCustomerVendor!.TotalCreditDebitLeft },
+            { x => x.SubTotal, SubTotal }
+        };
+
+        var options = new DialogOptions();
+        var dialog = await DialogService.ShowAsync<PurchaseTransactionDialog>("Make Purchase", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            _isLoading = true;
+            StateHasChanged();
+
+            var invoiceInfo = (InvoicePurchasePreCreateDto)result.Data;
+
+            List<InvoicePurchaseProductCreateDto> productsInCart = [];
+            productsInCart.AddRange(_productsInCartTemp
+                .Select(product =>
+                    new InvoicePurchaseProductCreateDto(
+                        product.ProductGuid, product.BuyPrice, product.Quantity, product.TotalPrice
+                    )
+                )
+            );
+
+            var invoiceToCreate = new InvoicePurchaseCreateDto(
+                SubTotal,
+                invoiceInfo.Discount,
+                invoiceInfo.DiscountType,
+                invoiceInfo.DeliveryFees,
+                invoiceInfo.Total,
+                invoiceInfo.GrandTotal,
+                invoiceInfo.PaidTotal,
+                invoiceInfo.CreditDebitLeft,
+                invoiceInfo.IsPaid,
+                invoiceInfo.Remark,
+                selectedCustomerVendor.Guid,
+                productsInCart
+            );
+
+            var httpResult = await HttpRepo.CreatePurchaseInvoice(invoiceToCreate);
+
+            _isLoading = false;
+            StateHasChanged();
+
+            if (httpResult.isSuccess)
+            {
+                Snackbar.Add("Purchase Completed!", Severity.Success);
+                NavManager.NavigateTo("/loading/purchase");
+            }
+        }
+    }
+
 }
