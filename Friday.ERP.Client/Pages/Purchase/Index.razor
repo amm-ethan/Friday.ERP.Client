@@ -189,83 +189,6 @@
         await GetProductData();
     }
 
-    async Task OpenCreateProductPurchaseAddToCartDialog(ProductViewDto productViewDto)
-    {
-        if (_productsInCartTemp.Select(c => c.ProductGuid).ToList().Contains(productViewDto.Guid))
-        {
-            Snackbar.Add("Product Already In Cart!", Severity.Error);
-            return;
-        }
-
-        var parameters = new DialogParameters<PurchaseProductCartDialog>
-        {
-            { x => x.IsUpdate, false },
-            { x => x.Guid, productViewDto.Guid },
-            { x => x.Image, productViewDto.Image },
-            { x => x.Code, productViewDto.Code },
-            { x => x.Name, productViewDto.Name },
-            { x => x.Stock, productViewDto.TotalStockLeft }
-        };
-
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<PurchaseProductCartDialog>("Add to Cart", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            var addedProduct = (ProductPurchaseAddToCartViewDto)result.Data;
-            _productsInCartTemp.Add(addedProduct);
-
-            Snackbar.Add("Product Added To Cart!", Severity.Success);
-            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
-        }
-    }
-
-    async Task OpenUpdateProductPurchaseAddToCartDialog(ProductPurchaseAddToCartViewDto productPurchaseAddToCart)
-    {
-        var parameters = new DialogParameters<PurchaseProductCartDialog>
-        {
-            { x => x.IsUpdate, true },
-            { x => x.Guid, productPurchaseAddToCart.ProductGuid },
-            { x => x.Image, productPurchaseAddToCart.Image },
-            { x => x.Code, productPurchaseAddToCart.Code },
-            { x => x.Name, productPurchaseAddToCart.Name },
-            { x => x.Stock, productPurchaseAddToCart.Stock },
-            { x => x.Price, productPurchaseAddToCart.BuyPrice },
-            { x => x.Quantity, productPurchaseAddToCart.Quantity },
-            { x => x.TotalPrice, productPurchaseAddToCart.TotalPrice }
-        };
-
-        var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<PurchaseProductCartDialog>("Update Cart", parameters, options);
-        var result = await dialog.Result;
-        if (!result.Canceled)
-        {
-            var isGuid = Guid.TryParse(result.Data.ToString(), out var removedProduct);
-            if (isGuid)
-            {
-                var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == removedProduct);
-                if (productToRemove is not null)
-                    _productsInCartTemp.Remove(productToRemove);
-
-                Snackbar.Add("Product Removed From Cart!", Severity.Success);
-            }
-            else
-            {
-                var addedProduct = (ProductPurchaseAddToCartViewDto)result.Data;
-                var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == addedProduct.ProductGuid);
-                if (productToRemove is not null)
-                {
-                    _productsInCartTemp.Remove(productToRemove);
-                    _productsInCartTemp.Add(addedProduct);
-                }
-
-                Snackbar.Add("Product Updated To Cart!", Severity.Success);
-            }
-
-            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
-        }
-    }
-
     void CustomerVendorChange(string? value)
     {
         _customerVendorName = value;
@@ -356,5 +279,81 @@
             }
         }
     }
+    
+    async Task OpenCreateProductPurchaseAddToCartDialog(ProductViewDto productViewDto)
+    {
+        if (_productsInCartTemp.Select(c => c.ProductGuid).ToList().Contains(productViewDto.Guid))
+        {
+            Snackbar.Add("Product Already In Cart!", Severity.Error);
+            return;
+        }
 
+        var parameters = new DialogParameters<PurchaseProductCartDialog>
+        {
+            { x => x.IsUpdate, false },
+            { x => x.Guid, productViewDto.Guid },
+            { x => x.Image, productViewDto.Image },
+            { x => x.Code, productViewDto.Code },
+            { x => x.Name, productViewDto.Name },
+            { x => x.Stock, productViewDto.TotalStockLeft }
+        };
+
+        var options = new DialogOptions();
+        var dialog = await DialogService.ShowAsync<PurchaseProductCartDialog>("Add to Cart", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var addedProduct = (ProductPurchaseAddToCartViewDto)result.Data;
+            _productsInCartTemp.Add(addedProduct);
+
+            Snackbar.Add("Product Added To Cart!", Severity.Success);
+            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
+        }
+    }
+
+    async Task OpenUpdateProductPurchaseAddToCartDialog(ProductPurchaseAddToCartViewDto productPurchaseAddToCart)
+    {
+        var parameters = new DialogParameters<PurchaseProductCartDialog>
+        {
+            { x => x.IsUpdate, true },
+            { x => x.Guid, productPurchaseAddToCart.ProductGuid },
+            { x => x.Image, productPurchaseAddToCart.Image },
+            { x => x.Code, productPurchaseAddToCart.Code },
+            { x => x.Name, productPurchaseAddToCart.Name },
+            { x => x.Stock, productPurchaseAddToCart.Stock },
+            { x => x.Price, productPurchaseAddToCart.BuyPrice },
+            { x => x.Quantity, productPurchaseAddToCart.Quantity },
+            { x => x.TotalPrice, productPurchaseAddToCart.TotalPrice }
+        };
+
+        var options = new DialogOptions();
+        var dialog = await DialogService.ShowAsync<PurchaseProductCartDialog>("Update Cart", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var isGuid = Guid.TryParse(result.Data.ToString(), out var removedProduct);
+            if (isGuid)
+            {
+                var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == removedProduct);
+                if (productToRemove is not null)
+                    _productsInCartTemp.Remove(productToRemove);
+
+                Snackbar.Add("Product Removed From Cart!", Severity.Success);
+            }
+            else
+            {
+                var addedProduct = (ProductPurchaseAddToCartViewDto)result.Data;
+                var productToRemove = _productsInCartTemp.SingleOrDefault(c => c.ProductGuid == addedProduct.ProductGuid);
+                if (productToRemove is not null)
+                {
+                    _productsInCartTemp.Remove(productToRemove);
+                    _productsInCartTemp.Add(addedProduct);
+                }
+
+                Snackbar.Add("Product Updated To Cart!", Severity.Success);
+            }
+
+            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
+        }
+    }
 }
