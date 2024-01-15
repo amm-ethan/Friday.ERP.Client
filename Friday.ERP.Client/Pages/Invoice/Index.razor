@@ -181,8 +181,8 @@
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Total"
-                                     SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.Total.ToString() : _selectedInvoiceSale!.Total.ToString())"
+                <CustomLabelAndLabel FirstText="Grand Total"
+                                     SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.GrandTotal.ToString() : _selectedInvoiceSale!.Total.ToString())"
                                      SecondTextAlign="Align.End"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>

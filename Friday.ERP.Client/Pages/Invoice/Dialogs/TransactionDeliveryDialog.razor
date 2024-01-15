@@ -14,7 +14,6 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Remark" SecondText="@Remark"/>
-            <CustomLabelAndLabel FirstText="Delivery Fees" SecondText="@DeliveryFees.ToString()"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
     </DialogContent>
@@ -35,7 +34,6 @@
     [Parameter] public string? DeliveryContactPerson { get; set; }
     [Parameter] public string? DeliveryContactPhone { get; set; }
     [Parameter] public string? Remark { get; set; }
-    [Parameter] public long? DeliveryFees { get; set; }
 
     void Back()
     {

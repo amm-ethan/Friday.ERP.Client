@@ -2,7 +2,7 @@
     <DialogContent>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="SubTotal" SecondText="@SubTotal.ToString()"/>
-            <CustomLabelAndLabel FirstText="Discounts" SecondText="@Discount.ToString()"/>
+             <CustomLabelAndLabel FirstText="Discount" SecondText="@($"- {Discount}")" SecondTextColor="Color.Error"/>
             <CustomLabelAndLabel FirstText="Discount Type" SecondText="@DiscountType"/>
             <CustomLabelAndLabel FirstText="Delivery Fees" SecondText="@DeliveryFees.ToString()"/>
         </MudGrid>
