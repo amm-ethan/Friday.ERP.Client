@@ -454,6 +454,7 @@
             parameters.Add("Total", _selectedInvoicePurchase!.Total);
             parameters.Add("GrandTotal", _selectedInvoicePurchase!.GrandTotal);
             parameters.Add("PaidTotal", _selectedInvoicePurchase!.PaidTotal);
+            parameters.Add("ExistingCreditDebit", _selectedInvoicePurchase!.ExistingCreditDebit);
             parameters.Add("CreditDebitLeft", _selectedInvoicePurchase!.CreditDebitLeft);
             parameters.Add("Remark", _selectedInvoicePurchase!.Remark);
             parameters.Add("IsPaid", _selectedInvoicePurchase!.IsPaid ? "Yes" : "No");
@@ -466,6 +467,7 @@
             parameters.Add("Total", _selectedInvoiceSale!.Total);
             parameters.Add("GrandTotal", _selectedInvoiceSale!.GrandTotal);
             parameters.Add("PaidTotal", _selectedInvoiceSale!.PaidTotal);
+            parameters.Add("ExistingCreditDebit", _selectedInvoiceSale!.ExistingCreditDebit);
             parameters.Add("CreditDebitLeft", _selectedInvoiceSale!.CreditDebitLeft);
             parameters.Add("Remark", _selectedInvoiceSale!.Remark);
             parameters.Add("IsPaid", null);

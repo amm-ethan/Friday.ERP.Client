@@ -8,6 +8,10 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="Existing Credit Debit" SecondText="@($"{(ExistingCreditDebit * -1).ToString()} mmk")"/>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
+        <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Grand Total" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
@@ -46,6 +50,7 @@
     [Parameter] public long Total { get; set; }
     [Parameter] public long GrandTotal { get; set; }
     [Parameter] public long PaidTotal { get; set; }
+    [Parameter] public long ExistingCreditDebit { get; set; }
     [Parameter] public long CreditDebitLeft { get; set; }
     [Parameter] public string? Remark { get; set; }
     [Parameter] public string? IsPaid { get; set; }
