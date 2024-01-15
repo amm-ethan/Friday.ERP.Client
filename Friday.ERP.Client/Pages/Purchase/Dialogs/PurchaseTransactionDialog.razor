@@ -6,7 +6,7 @@
             <CustomLabelAndLabel FirstText="Invoice No." SecondText="@InvoiceNo"/>
             <CustomLabelAndLabel FirstText="Vendor" SecondText="@VendorName"/>
             <CustomLabelAndLabel FirstText="Existing Credit / Debit"
-                                 SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Dark)"
+                                 SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Info)"
                                  SecondText="@_vendorExistingCreditDebitString"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
@@ -46,8 +46,8 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Total Credit / Debit (Overall)"
-                                 SecondText="@_creditDebitLeftString"
-                                 SecondTextColor="@(_totalCreditDebitLeft < 0 ? Color.Error : Color.Dark)"/>
+                                 SecondText="@_totalCreditDebitLeftString"
+                                 SecondTextColor="@(CreditDebitLeftTransaction < 0 ? Color.Error : Color.Info)"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
@@ -79,9 +79,9 @@
     [Parameter] public long SubTotal { get; set; }
 
     string? _vendorExistingCreditDebitString;
-    string? _creditDebitLeftString = "0 mmk";
+    string? _totalCreditDebitLeftString = "0 mmk";
     string? _selectedDiscountType = "Flat";
-    long _totalCreditDebitLeft;
+
     long _discount;
 
     long Discount { get; set; }
@@ -125,17 +125,16 @@
         if (_selectedDiscountType == "Flat")
         {
             Discount = _discount;
-            Total = SubTotal + DeliveryFees - Discount;
         }
         else
         {
             var discountPercent = (double)_discount / 100;
             var calculatedDiscount = SubTotal - SubTotal * discountPercent;
-            Console.WriteLine(calculatedDiscount);
+            calculatedDiscount = SubTotal - calculatedDiscount;
             Discount = (long)calculatedDiscount;
-            Total = Convert.ToInt64(Discount) + DeliveryFees;
         }
 
+        Total = SubTotal + DeliveryFees - Convert.ToInt64(Discount);
         GrandTotal = Total - VendorExistingCreditDebit;
         CalculateCreditDebit(PaidTotal);
         StateHasChanged();
@@ -151,15 +150,13 @@
     void CalculateCreditDebit(long longValue)
     {
         CreditDebitLeftTransaction = longValue - GrandTotal;
-
-        _totalCreditDebitLeft = VendorExistingCreditDebit + CreditDebitLeftTransaction;
-        _creditDebitLeftString = _totalCreditDebitLeft.ToString();
-        if (_totalCreditDebitLeft < 0)
-            _creditDebitLeftString += " mmk (Debit)";
-        else if (_totalCreditDebitLeft == 0)
-            _creditDebitLeftString += " mmk";
+        _totalCreditDebitLeftString = CreditDebitLeftTransaction.ToString();
+        if (CreditDebitLeftTransaction < 0)
+            _totalCreditDebitLeftString += " mmk (Debit)";
+        else if (CreditDebitLeftTransaction == 0)
+            _totalCreditDebitLeftString += " mmk";
         else
-            _creditDebitLeftString += " mmk (Credit)";
+            _totalCreditDebitLeftString += " mmk (Credit)";
     }
 
     void Cancel()
