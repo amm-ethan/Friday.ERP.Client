@@ -1,11 +1,11 @@
 ﻿@page "/sale"
-@using Friday.ERP.Client.Pages.Sale.Dialogs
-@using Friday.ERP.Client.Pages.Purchase.Components.Templates
-@using Friday.ERP.Client.Pages.Inventory.Components.Templates
-@using Friday.ERP.Client.Pages.Inventory.Components.Moledules
-@using Friday.ERP.Client.Data
-@using Friday.ERP.Client.Shared.Layouts
 @using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.Inventory.Components.Moledules
+@using Friday.ERP.Client.Pages.Inventory.Components.Templates
+@using Friday.ERP.Client.Pages.Purchase.Components.Templates
+@using Friday.ERP.Client.Pages.Sale.Dialogs
+@using Friday.ERP.Client.Shared.Layouts
 
 @inject NavigationManager NavManager
 @inject IHttpRepository HttpRepo
@@ -33,8 +33,7 @@
                                        ProductCode="@product.Code"
                                        ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                        ProductTotalStock="@product.TotalStockLeft"
-                                       ProductName="@product.Name">
-                        </CustomCardBox>
+                                       ProductName="@product.Name"/>
                     </MudItem>
                 }
             </ChildContent>
@@ -42,10 +41,10 @@
     </CustomPage>
     <CustomPage Sm="12" Md="5" IsLoading="@_isMainLoading">
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
             @if (_productsInCartTemp.Count == 0)
             {
@@ -66,24 +65,23 @@
                                              FirstMainText="@product.Name" FirstSubText="@product.Quantity.ToString()"
                                              ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                              SecondMainText="@product.SalePrice.ToString()"
-                                             SecondSubText="@(product.TotalPrice.ToString())">
-                        </CustomCardRectangle>
+                                             SecondSubText="@(product.TotalPrice.ToString())"/>
                     </MudItem>
                 }
             }
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLableAndAutocomplete FirstText="Customer"
                                         Value="@_customerVendorName" SearchFuncWithCancel="@CustomerVendorSearch"
                                         ValueChanged="@CustomerVendorChange"
                                         OnClearButtonClick="@CustomerVendorClear"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             @if (_customerVendorName is not null)
             {
@@ -325,7 +323,7 @@
                 { x => x.DeliveryServiceName, _deliveryInfo.DeliveryServiceName },
                 { x => x.DeliveryServiceContactPerson, _deliveryInfo.DeliveryContactPerson },
                 { x => x.DeliveryServiceContactPhone, _deliveryInfo.DeliveryContactPhone },
-                { x => x.Remark, _deliveryInfo.Remark },
+                { x => x.Remark, _deliveryInfo.Remark }
             };
             var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
             result = await dialog.Result;

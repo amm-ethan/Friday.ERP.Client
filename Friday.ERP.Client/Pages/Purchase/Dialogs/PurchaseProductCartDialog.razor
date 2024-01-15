@@ -10,26 +10,25 @@
             <MudGrid Spacing="2">
                 <MudItem sm="12" md="12">
                     <ImageHolder ImageSrc="@(Image is not null ? $"data:image/png;base64, {Image!}" : "product_png/placeholder.png")"
-                                 ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()">
-                    </ImageHolder>
+                                 ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()"/>
                 </MudItem>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4 mb-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4 mb-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Last Purchase Price" SecondText="@($"{_lastPrice.ToString()} mmk")"></CustomLabelAndLabel>
+                <CustomLabelAndLabel FirstText="Last Purchase Price" SecondText="@($"{_lastPrice.ToString()} mmk")"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLongField
                     FirstText="Purchase Price" BindValue="@Price" BindValueChanged="@ValueChangedPrice" Required="true"/>
                 <CustomLabelAndLongField
                     FirstText="Quantity" BindValue="@Quantity" BindValueChanged="@ValueChangedQuantity" Required="true"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomLabelAndLabel>
+                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </DialogContent>
         <DialogActions>
             @if (IsUpdate)

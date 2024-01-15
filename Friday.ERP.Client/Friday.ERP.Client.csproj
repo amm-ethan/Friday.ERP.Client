@@ -24,10 +24,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Pages\CustomerVendorManagement\Components\CustomerVendorComponent.razor" />
+        <_ContentIncludedByDefault Remove="Pages\CustomerVendorManagement\Components\CustomerVendorComponent.razor"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Pages\Purchase\Components\Templates\CustomCardRectangle.razor" />
+        <AdditionalFiles Include="Pages\Purchase\Components\Templates\CustomCardRectangle.razor"/>
     </ItemGroup>
 </Project>

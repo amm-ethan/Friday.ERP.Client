@@ -1,29 +1,28 @@
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="SubTotal" SecondText="@SubTotal.ToString()"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Discounts" SecondText="@Discount.ToString()"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Discount Type" SecondText="@DiscountType"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Delivery Fees" SecondText="@DeliveryFees.ToString()"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="SubTotal" SecondText="@SubTotal.ToString()"/>
+            <CustomLabelAndLabel FirstText="Discounts" SecondText="@Discount.ToString()"/>
+            <CustomLabelAndLabel FirstText="Discount Type" SecondText="@DiscountType"/>
+            <CustomLabelAndLabel FirstText="Delivery Fees" SecondText="@DeliveryFees.ToString()"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Total" SecondText="@Total.ToString()"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Grand Total" SecondText="@GrandTotal.ToString()"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Total" SecondText="@Total.ToString()"/>
+            <CustomLabelAndLabel FirstText="Grand Total" SecondText="@GrandTotal.ToString()"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Paid Total" SecondText="@PaidTotal.ToString()"/>
             <CustomLabelAndLabel FirstText="Credit / Debit Left"
                                  SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Dark)"
                                  SecondText="@CreditDebitLeft.ToString()"/>
-
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Remark" SecondText="@Remark"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         @if (IsPaid is not null)
         {
             <MudGrid Spacing="2">
@@ -34,7 +33,7 @@
         }
     </DialogContent>
     <DialogActions>
-        <CustomButton OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false">Back</CustomButton>
+        <CustomButton Label="Back" OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 

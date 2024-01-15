@@ -1,7 +1,7 @@
 @page "/Settings"
+@using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Shared.Layouts
-@using Friday.ERP.Shared.DataTransferObjects
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
 
@@ -22,26 +22,26 @@
                 <MudImage Src="@ShopImage" Width="100" Height="100" Elevation="0"/>
             </MudItem>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Shop Name" SecondText="@ShopName"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Shop Name" SecondText="@ShopName"/>
         </MudGrid>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Shop Description" SecondText="@ShopDescription"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Shop Description" SecondText="@ShopDescription"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Address One" SecondText="@AddressOne"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Address Two" SecondText="@AddressTwo"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Address One" SecondText="@AddressOne"/>
+            <CustomLabelAndLabel FirstText="Address Two" SecondText="@AddressTwo"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Phone One" SecondText="@PhoneOne"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Phone Two" SecondText="@PhoneTwo"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Phone Three" SecondText="@PhoneThree"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Phone Four" SecondText="@PhoneFour"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Phone One" SecondText="@PhoneOne"/>
+            <CustomLabelAndLabel FirstText="Phone Two" SecondText="@PhoneTwo"/>
+            <CustomLabelAndLabel FirstText="Phone Three" SecondText="@PhoneThree"/>
+            <CustomLabelAndLabel FirstText="Phone Four" SecondText="@PhoneFour"/>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
     </CustomPage>
     <CustomPage Sm="6" Md="6" IsLoading="@_isMainLoading">
         <MudGrid Spacing="2">
@@ -54,20 +54,20 @@
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
                 <CustomLabelAndLongField FirstText="Default Profit Percent"
-                                                @bind-BindValue="@DefaultProfitPercent"/>
+                                         @bind-BindValue="@DefaultProfitPercent"/>
                 <CustomLabelAndLongField FirstText="Default Profit Percent For Wholesale"
-                                                @bind-BindValue="@DefaultProfitPercentForWholeSale"/>
+                                         @bind-BindValue="@DefaultProfitPercentForWholeSale"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLongField FirstText="Stock Margin To Notify"
-                                                @bind-BindValue="@MinimumStockMargin"/>
+                                         @bind-BindValue="@MinimumStockMargin"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLableAndCheckbox FirstText="Suggest Sale Price" @bind-BindValue="SuggestSalePrice"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2" Class="flex-grow-1">
                 <MudItem sm="12" md="12">
                     <CustomButton

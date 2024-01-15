@@ -10,8 +10,7 @@
 @attribute [Authorize]
 
 <CustomContainer>
-    <MudItem sm="12" style="padding: 6px;">
-    </MudItem>
+    <MudItem sm="12" style="padding: 6px;"/>
     <MudItem sm="12" md="8" lg="8">
         @if (_isMainLoading)
         {
@@ -30,9 +29,8 @@
                 <ChildContent>
                     @if (_hasSummaryData)
                     {
-                        <MudChart
-                            ChartType="ChartType.Bar" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="100%">
-                        </MudChart>
+                        <MudChart ChartType="ChartType.Bar" ChartSeries="@_series" 
+                                  @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="100%"/>
                     }
                     else
                     {
@@ -76,8 +74,7 @@
                         @foreach (var customer in _customersWithDebits)
                         {
                             <CustomRowWithAvaterAndLabel AvatarColor="Color.Dark" AvatarText="@customer.CustomerName[0].ToString()"
-                                                         MainText="@customer.CustomerName" SubText="@customer.TotalCreditDebitLeft.ToString()">
-                            </CustomRowWithAvaterAndLabel>
+                                                         MainText="@customer.CustomerName" SubText="@customer.TotalCreditDebitLeft.ToString()"/>
                         }
                     }
                     else
@@ -122,8 +119,7 @@
                         {
                             <CustomRowWithAvaterAndLabel AvatarColor="Color.Primary" AvatarText="@product.ProductName[0].ToString()"
                                                          MainText="@product.ProductName" SubText="@product.PurchaseCount.ToString()"
-                                                         ExtraColor="@product.CategoryColor" ExtraText="@product.CategoryName">
-                            </CustomRowWithAvaterAndLabel>
+                                                         ExtraColor="@product.CategoryColor" ExtraText="@product.CategoryName"/>
                         }
                     }
                     else
@@ -168,8 +164,7 @@
                         @foreach (var customer in _frequentCustomer)
                         {
                             <CustomRowWithAvaterAndLabel AvatarColor="Color.Dark" AvatarText="@customer.CustomerName![0].ToString()"
-                                                         MainText="@customer.CustomerName" SubText="@customer.Total.ToString()">
-                            </CustomRowWithAvaterAndLabel>
+                                                         MainText="@customer.CustomerName" SubText="@customer.Total.ToString()"/>
                         }
                     }
                     else
@@ -184,8 +179,7 @@
             </CustomInfoCard>
         }
     </MudItem>
-    <MudItem sm="12" style="padding: 6px;">
-    </MudItem>
+    <MudItem sm="12" style="padding: 6px;"/>
 </CustomContainer>
 
 

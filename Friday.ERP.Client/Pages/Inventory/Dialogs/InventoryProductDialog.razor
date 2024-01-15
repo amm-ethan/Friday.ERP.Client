@@ -34,7 +34,7 @@
                         </div>
                     </MudItem>
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
                     @if (IsUpdate)
                     {
@@ -44,18 +44,18 @@
                     {
                         <CustomLabelAndStringField FirstText="Code" @bind-BindValue="@Code" Required="true"/>
                     }
-                    <CustomLableAndAutocomplete FirstText="Category" Required=@(!IsUpdate)
-                                                       Value="@CategoryName"
-                                                       SearchFuncWithCancel="@CategorySearch"
-                                                       ValueChanged="@CategoryChange"
-                                                       OnClearButtonClick="@CategoryClear"/>
-                    <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required=@(!IsUpdate)/>
+                    <CustomLableAndAutocomplete FirstText="Category" Required="@(!IsUpdate)"
+                                                Value="@CategoryName"
+                                                SearchFuncWithCancel="@CategorySearch"
+                                                ValueChanged="@CategoryChange"
+                                                OnClearButtonClick="@CategoryClear"/>
+                    <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="@(!IsUpdate)"/>
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndLongField FirstText="Stock" @bind-BindValue="@Stock" Required=@(!IsUpdate)/>
+                    <CustomLabelAndLongField FirstText="Stock" @bind-BindValue="@Stock" Required="@(!IsUpdate)"/>
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
             </MudForm>
         </DialogContent>
         <DialogActions>

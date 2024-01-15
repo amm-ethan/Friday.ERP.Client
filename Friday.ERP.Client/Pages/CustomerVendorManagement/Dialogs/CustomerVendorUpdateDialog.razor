@@ -8,25 +8,23 @@
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText=@(IsCustomer ? "Customer Code" : "Vendor Code")
-                                        SecondText="@Code">
-                </CustomLabelAndLabel>
+                                     SecondText="@Code"/>
                 <CustomLabelAndLabel FirstText=@(IsCustomer ? "Customer Name" : "Vendor Name")
-                                        SecondText="@Name">
-                </CustomLabelAndLabel>
+                                     SecondText="@Name"/>
             </MudGrid>
             <MudGrid Spacing="2">
                 <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
                 <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLongField FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         </MudForm>
     </DialogContent>
     <DialogActions>

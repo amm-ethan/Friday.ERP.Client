@@ -11,15 +11,15 @@
                 <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
                 <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLongField FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         </MudForm>
     </DialogContent>
     <DialogActions>
@@ -75,8 +75,10 @@
             {
                 Snackbar.Add(IsCustomer ? "Customer Created!" : "Vendor Created!", Severity.Success);
             }
+
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));
         }
+
         _isLoading = false;
         StateHasChanged();
     }

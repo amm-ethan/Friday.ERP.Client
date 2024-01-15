@@ -1,10 +1,10 @@
 ﻿@page "/inventory"
+@using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Inventory.Components.Moledules
 @using Friday.ERP.Client.Pages.Inventory.Components.Templates
 @using Friday.ERP.Client.Pages.Inventory.Dialogs
-@using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Shared.Layouts
-@using Friday.ERP.Shared.DataTransferObjects
 @inject IHttpRepository HttpRepo
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
@@ -26,7 +26,7 @@
                     {
                         <CustomChip OnClick="@(() => OpenCategoryUpdateDialog(category))" Color="@category.Color">@category.Name</CustomChip>
                     }
-                    <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"></MudIconButton>
+                    <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"/>
                 </div>
             </MudItem>
         </MudGrid>
@@ -49,8 +49,7 @@
                                        ProductCode="@product.Code"
                                        ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                        ProductTotalStock="@product.TotalStockLeft"
-                                       ProductName="@product.Name">
-                        </CustomCardBox>
+                                       ProductName="@product.Name"/>
                     </MudItem>
                 }
             </ChildContent>

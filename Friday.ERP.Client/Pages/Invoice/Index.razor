@@ -1,10 +1,10 @@
 @page "/invoice"
-@using Friday.ERP.Client.Pages.Invoice.Dialogs
-@using Friday.ERP.Client.Pages.UserManagement.Components
-@using Friday.ERP.Client.Pages.Purchase.Components.Templates
-@using Friday.ERP.Client.Data
-@using Friday.ERP.Client.Shared.Layouts
 @using Friday.ERP.Shared.DataTransferObjects
+@using Friday.ERP.Client.Data
+@using Friday.ERP.Client.Pages.Invoice.Dialogs
+@using Friday.ERP.Client.Pages.Purchase.Components.Templates
+@using Friday.ERP.Client.Pages.UserManagement.Components
+@using Friday.ERP.Client.Shared.Layouts
 
 @inject IHttpRepository HttpRepo
 @inject IDialogService DialogService
@@ -39,8 +39,7 @@
                                          Margin="Margin.Dense"
                                          SearchFuncWithCancel="@CustomerVendorSearch"
                                          ValueChanged="@CustomerVendorChange"
-                                         OnClearButtonClick="@CustomerVendorClear">
-                        </MudAutocomplete>
+                                         OnClearButtonClick="@CustomerVendorClear"/>
                     </MudItem>
                     <MudItem sm="4">
                         <CustomTextFieldWithIcon BindValue="@_searchTerm" ValueChanged="ChangeInvoiceSearchValue" ClassParameter="mr-2"/>
@@ -71,7 +70,7 @@
                     }
                 </CustomBody>
             </CustomTab>
-            <CustomTab TitleText="Purchases" OnTabClick=@(() => ChangeTab(true))
+            <CustomTab TitleText="Purchases" OnTabClick="@(() => ChangeTab(true))"
                        IsLoading="@_isLoading"
                        Height="60vh">
                 <CustomHeader>
@@ -94,8 +93,7 @@
                                          Margin="Margin.Dense"
                                          SearchFuncWithCancel="@CustomerVendorSearch"
                                          ValueChanged="@CustomerVendorChange"
-                                         OnClearButtonClick="@CustomerVendorClear">
-                        </MudAutocomplete>
+                                         OnClearButtonClick="@CustomerVendorClear"/>
                     </MudItem>
                     <MudItem sm="4">
                         <CustomTextFieldWithIcon BindValue="@_searchTerm" ValueChanged="ChangeInvoiceSearchValue" ClassParameter="mr-2"/>
@@ -119,8 +117,7 @@
                                                      FirstMainText="@invoice.InvoiceNo"
                                                      FirstSubText="@invoice.GrandTotal.ToString()"
                                                      SecondMainText="@invoice.VendorName"
-                                                     SecondSubText="@invoice.PurchasedAt.ToString("d")">
-                                </CustomCardRectangle>
+                                                     SecondSubText="@invoice.PurchasedAt.ToString("d")"/>
                             </MudItem>
                         }
                     }
@@ -142,18 +139,15 @@
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText="Invoice"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.InvoiceNo : _selectedInvoiceSale!.InvoiceNo)"
-                                     SecondTextAlign="Align.End">
-                </CustomLabelAndLabel>
+                                     SecondTextAlign="Align.End"/>
                 <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "Purchased At" : "Sold At")"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.PurchasedAt.ToString("d") : _selectedInvoiceSale!.PurchasedAt.ToString("d"))"
-                                     SecondTextAlign="Align.End">
-                </CustomLabelAndLabel>
+                                     SecondTextAlign="Align.End"/>
                 <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "Vendor" : "Customer")"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.Vendor.Name : _selectedInvoiceSale!.Customer is null ? "Walk-in" : _selectedInvoiceSale!.Customer.Name)"
-                                     SecondTextAlign="Align.End">
-                </CustomLabelAndLabel>
+                                     SecondTextAlign="Align.End"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
                 @if (_isPurchaseInvoice)
                 {
@@ -165,8 +159,7 @@
                                                  FirstSubText="@product.Quantity.ToString()"
                                                  ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                                  SecondMainText="@product.BuyPrice.ToString()"
-                                                 SecondSubText="@product.Total.ToString()">
-                            </CustomCardRectangle>
+                                                 SecondSubText="@product.Total.ToString()"/>
                         </MudItem>
                     }
                 }
@@ -180,22 +173,19 @@
                                                  FirstSubText="@product.Quantity.ToString()"
                                                  ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                                  SecondMainText="@product.ProducePriceSalePrice.ToString()"
-                                                 SecondSubText="@product.Total.ToString()">
-                            </CustomCardRectangle>
+                                                 SecondSubText="@product.Total.ToString()"/>
                         </MudItem>
                     }
                 }
 
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
-
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText="Total"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.Total.ToString() : _selectedInvoiceSale!.Total.ToString())"
-                                     SecondTextAlign="Align.End">
-                </CustomLabelAndLabel>
+                                     SecondTextAlign="Align.End"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 @if (_isPurchaseInvoice)
                 {

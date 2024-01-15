@@ -13,11 +13,11 @@
                     <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
                     <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndLabel FirstText="Username" SecondText="@Username"></CustomLabelAndLabel>
+                    <CustomLabelAndLabel FirstText="Username" SecondText="@Username"/>
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
                     <CustomLableAndCheckbox FirstText="Change Password" @bind-BindValue="IsChangePassword"/>
                     @if (IsChangePassword)
@@ -27,22 +27,22 @@
                     @if (IsChangePassword && !IsForceResetPassword)
                     {
                         <CustomLabelAndFieldPassword FirstText="Old Password" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
-                                                            KeyboardInputType="@_oldPasswordInput"
-                                                            AdornmentIcon="@_oldPasswordInputIcon" OnAdornmentClick="@ShowOldPassword"/>
+                                                     KeyboardInputType="@_oldPasswordInput"
+                                                     AdornmentIcon="@_oldPasswordInputIcon" OnAdornmentClick="@ShowOldPassword"/>
                     }
                     @if (IsChangePassword)
                     {
                         <CustomLabelAndFieldPassword FirstText="New Password" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
-                                                            KeyboardInputType="@_passwordInput"
-                                                            AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
+                                                     KeyboardInputType="@_passwordInput"
+                                                     AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                     }
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
                     <CustomLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
-                                                       OnClearButtonClick="() => { }"/>
+                                                OnClearButtonClick="() => { }"/>
                 </MudGrid>
-                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+                <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             </MudForm>
         </DialogContent>
         <DialogActions>
@@ -123,7 +123,7 @@
         if (_form.IsValid)
         {
             var roleGuid = _roles.Where(x => x.Name == RoleName).Select(c => c.Guid).SingleOrDefault();
-            
+
             var dataToUpdate = new UserUpdateDto(
                 Name,
                 Phone,
@@ -141,8 +141,10 @@
             {
                 Snackbar.Add("User Updated!", Severity.Success);
             }
+
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));
         }
+
         _isLoading = false;
         StateHasChanged();
     }

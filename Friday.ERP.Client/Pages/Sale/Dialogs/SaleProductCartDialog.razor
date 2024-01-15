@@ -23,11 +23,10 @@ else
             <MudGrid Spacing="2">
                 <MudItem sm="12" md="12" lg="12">
                     <ImageHolder ImageSrc="@(Image is not null ? $"data:image/png;base64, {Image!}" : "product_png/placeholder.png")"
-                                 ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()">
-                    </ImageHolder>
+                                 ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()"/>
                 </MudItem>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="mb-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mb-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndInput FirstText="Sale Price">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
@@ -60,16 +59,15 @@ else
                             ValueChanged="@ValueChangedQuantity"
                             Immediate="true"
                             FullWidth="true" InputType="InputType.Number"
-                            Margin="Margin.Dense" Variant="Variant.Outlined">
-                        </MudTextField>
+                            Margin="Margin.Dense" Variant="Variant.Outlined"/>
                     </MudItem>
                 </CustomLabelAndInput>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"></CustomLabelAndLabel>
+                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </DialogContent>
         <DialogActions>
             <CustomButton Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton>

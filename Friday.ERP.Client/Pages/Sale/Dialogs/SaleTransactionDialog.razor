@@ -1,23 +1,21 @@
 @using Friday.ERP.Shared.Enums
 @using Friday.ERP.Shared.DataTransferObjects
-
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Invoice No." SecondText="@InvoiceNo"></CustomLabelAndLabel>
-            <CustomLabelAndLabel FirstText="Customer" SecondText="@(CustomerName ?? "Walk-in")"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Invoice No." SecondText="@InvoiceNo"/>
+            <CustomLabelAndLabel FirstText="Customer" SecondText="@(CustomerName ?? "Walk-in")"/>
             @if (CustomerName is not null)
             {
                 <CustomLabelAndLabel FirstText="Existing Credit / Debit"
                                      SecondTextColor="@(CustomerExistingCreditDebit < 0 ? Color.Error : Color.Dark)"
-                                     SecondText="@_vendorExistingCreditDebitString">
-                </CustomLabelAndLabel>
+                                     SecondText="@_vendorExistingCreditDebitString"/>
             }
 
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal.ToString()} mmk")"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal.ToString()} mmk")"/>
             @* Todo *@
             <CustomLabelAndInput FirstText="Discount">
                 <MudItem sm="3" md="3" lg="3" Class="align-self-center">
@@ -31,50 +29,47 @@
                     </MudSelect>
                 </MudItem>
                 <MudItem sm="4" md="4" lg="4" Class="align-self-center">
-                    <MudTextField T="long" ValueChanged="@((e) => DiscountOrDeliveryFeesValueChanged(e, true))"
+                    <MudTextField T="long" ValueChanged="@(e => DiscountOrDeliveryFeesValueChanged(e, true))"
                                   Immediate="true"
                                   FullWidth="true"
                                   Margin="Margin.Dense"
-                                  Variant="Variant.Outlined">
-                    </MudTextField>
+                                  Variant="Variant.Outlined"/>
                 </MudItem>
             </CustomLabelAndInput>
             <CustomLabelAndLongField FirstText="Delivery Fees"
-                                     BindValue="@DeliveryFees" BindValueChanged="@((e) => DiscountOrDeliveryFeesValueChanged(e, false))"/>
+                                     BindValue="@DeliveryFees" BindValueChanged="@(e => DiscountOrDeliveryFeesValueChanged(e, false))"/>
 
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"/>
             @if (CustomerName is not null)
             {
-                <CustomLabelAndLabel FirstText="Total (With Existing)" SecondText="@($"{GrandTotal.ToString()} mmk")"></CustomLabelAndLabel>
+                <CustomLabelAndLabel FirstText="Total (With Existing)" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
                 <CustomLabelAndLongField
                     FirstText="Paid Total" BindValue="@PaidTotal" BindValueChanged="@TotalPaidValueChanged" Required="true"/>
             }
         </MudGrid>
         @if (CustomerName is not null)
         {
-            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText="Total Credit / Debit (Overall)"
                                      SecondText="@_creditDebitLeftString"
-                                     SecondTextColor="@(_totalCreditDebitLeft < 0 ? Color.Error : Color.Dark)">
-                </CustomLabelAndLabel>
+                                     SecondTextColor="@(_totalCreditDebitLeft < 0 ? Color.Error : Color.Dark)"/>
             </MudGrid>
         }
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndInput FirstText="Remark">
                 <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                     <MudTextField T="string" @bind-Value="Remark"
                                   FullWidth="true" InputType="InputType.Text"
-                                  Margin="Margin.Dense" Variant="Variant.Outlined">
-                    </MudTextField>
+                                  Margin="Margin.Dense" Variant="Variant.Outlined"/>
                 </MudItem>
             </CustomLabelAndInput>
         </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+        <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
     </DialogContent>
     <DialogActions>
         <CustomButton
@@ -125,7 +120,7 @@
         {
             PaidTotal = GrandTotal;
         }
-        
+
         CalculateCreditDebit(PaidTotal);
         StateHasChanged();
     }
@@ -155,12 +150,12 @@
         }
 
         GrandTotal = Total - CustomerExistingCreditDebit;
-        
+
         if (CustomerName is not null)
         {
             PaidTotal = GrandTotal;
         }
-        
+
         CalculateCreditDebit(PaidTotal);
         StateHasChanged();
     }
@@ -168,12 +163,12 @@
     void TotalPaidValueChanged(long value)
     {
         PaidTotal = value;
-        
+
         if (CustomerName is not null)
         {
             PaidTotal = GrandTotal;
         }
-        
+
         CalculateCreditDebit(PaidTotal);
         StateHasChanged();
     }

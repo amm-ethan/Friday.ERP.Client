@@ -14,12 +14,12 @@
         <MudText Class="mb-6" Typo="Typo.h5">Friday</MudText>
         <MudGrid>
             <CustomLabelAndStringField FirstSm="4" FirstMd="4"
-                                              SecondSm="8" SecondMd="8"
-                                              FirstText="Username" @bind-BindValue="@Username" Required="true"/>
+                                       SecondSm="8" SecondMd="8"
+                                       FirstText="Username" @bind-BindValue="@Username" Required="true"/>
             <CustomLabelAndFieldPassword FirstSm="4" FirstMd="4"
-                                                SecondSm="8" SecondMd="8"
-                                                FirstText="Password" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
-                                                AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
+                                         SecondSm="8" SecondMd="8"
+                                         FirstText="Password" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
+                                         AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
         </MudGrid>
         <MudGrid Class="mt-2">
             <MudItem xs="12" sm="12" md="12">
@@ -27,7 +27,7 @@
             </MudItem>
         </MudGrid>
     </MudForm>
-</MudPaper >
+</MudPaper>
 
 @code {
     MudForm? _form;
