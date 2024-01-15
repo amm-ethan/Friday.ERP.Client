@@ -4,32 +4,33 @@
             <CustomLabelAndLabel FirstText="SubTotal" SecondText="@SubTotal.ToString()"></CustomLabelAndLabel>
             <CustomLabelAndLabel FirstText="Discounts" SecondText="@Discount.ToString()"></CustomLabelAndLabel>
             <CustomLabelAndLabel FirstText="Discount Type" SecondText="@DiscountType"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Delivery Fees" SecondText="@DeliveryFees.ToString()"></CustomLabelAndLabel>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Total" SecondText="@Total.ToString()"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Grand Total" SecondText="@GrandTotal.ToString()"></CustomLabelAndLabel>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Paid Total" SecondText="@PaidTotal.ToString()"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Paid Total" SecondText="@PaidTotal.ToString()"/>
             <CustomLabelAndLabel FirstText="Credit / Debit Left"
-                                    SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Dark)"
-                                    SecondText="@CreditDebitLeft.ToString()">
-            </CustomLabelAndLabel>
+                                 SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Dark)"
+                                 SecondText="@CreditDebitLeft.ToString()"/>
+
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Remark" SecondText="@Remark"></CustomLabelAndLabel>
+            <CustomLabelAndLabel FirstText="Remark" SecondText="@Remark"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
         @if (IsPaid is not null)
         {
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText="IsPaid"
-                                        SecondText="@(IsPaid)">
-                </CustomLabelAndLabel>
+                                     SecondText="@(IsPaid)"/>
             </MudGrid>
-            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         }
     </DialogContent>
     <DialogActions>
@@ -41,12 +42,14 @@
 
     [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
 
-    [Parameter] public long? SubTotal { get; set; }
+    [Parameter] public long SubTotal { get; set; }
     [Parameter] public long? Discount { get; set; }
     [Parameter] public string? DiscountType { get; set; }
-    [Parameter] public long? Total { get; set; }
-    [Parameter] public long? PaidTotal { get; set; }
-    [Parameter] public long? CreditDebitLeft { get; set; }
+    [Parameter] public long DeliveryFees { get; set; }
+    [Parameter] public long Total { get; set; }
+    [Parameter] public long GrandTotal { get; set; }
+    [Parameter] public long PaidTotal { get; set; }
+    [Parameter] public long CreditDebitLeft { get; set; }
     [Parameter] public string? Remark { get; set; }
     [Parameter] public string? IsPaid { get; set; }
 

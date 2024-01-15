@@ -164,15 +164,13 @@
         _isLoading = true;
         StateHasChanged();
 
-        var categoryGuid = _categoryProductList.Where(c => c.Name == _categoryName)
-            .Select(c => c.Guid).SingleOrDefault();
-
+        var selectedCategory = _categoryProductList.SingleOrDefault(x => x.Name == _categoryName);
         var result = await HttpRepo.GetAllProducts(new ProductParameter
         {
             PageNumber = 1,
             PageSize = 20,
             SearchTerm = _searchTerm,
-            CategoryGuid = categoryGuid == Guid.Empty ? null : categoryGuid
+            CategoryGuid = selectedCategory?.Guid
         });
         if (result.isSuccess)
         {

@@ -46,7 +46,7 @@
                 {
                     <MudItem sm="3" md="2">
                         <CustomCardBox OnClick="@(() => OpenProductUpdateDialog(product))"
-                                       ProductCode="@product!.Code"
+                                       ProductCode="@product.Code"
                                        ProductImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
                                        ProductTotalStock="@product.TotalStockLeft"
                                        ProductName="@product.Name">
@@ -164,15 +164,13 @@
         _isLoading = true;
         StateHasChanged();
 
-        var categoryGuid = _categoryProductList.Where(x => x.Name == _categoryName)
-            .Select(c => c.Guid).SingleOrDefault();
-
+        var selectedCategory = _categoryProductList.SingleOrDefault(x => x.Name == _categoryName);
         var result = await HttpRepo.GetAllProducts(new ProductParameter
         {
             PageNumber = 1,
             PageSize = 20,
             SearchTerm = _searchTerm,
-            CategoryGuid = categoryGuid == Guid.Empty ? null : categoryGuid
+            CategoryGuid = selectedCategory?.Guid
         });
         if (result.isSuccess)
         {
