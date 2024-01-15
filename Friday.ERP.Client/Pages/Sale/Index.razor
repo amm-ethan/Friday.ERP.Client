@@ -355,7 +355,7 @@
         {
             { x => x.InvoiceNo, _invoiceNo },
             { x => x.CustomerName, selectedCustomerVendor?.Name },
-            { x => x.CustomerExistingCreditDebit, selectedCustomerVendor?.TotalCreditDebitLeft },
+            { x => x.CustomerExistingCreditDebit, selectedCustomerVendor?.TotalCreditDebitLeft ?? 0 },
             { x => x.SubTotal, SubTotal }
         };
 
@@ -381,7 +381,6 @@
             var invoiceToCreate = new InvoiceSaleCreateDto(
                 SubTotal,
                 invoiceSalePreCreateDto.Discount,
-                invoiceSalePreCreateDto.DiscountType,
                 invoiceSalePreCreateDto.DeliveryFees,
                 invoiceSalePreCreateDto.Total,
                 invoiceSalePreCreateDto.GrandTotal,

@@ -22,8 +22,10 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <CustomButton Color="Color.Default" OnClick="@Back" Variant="Variant.Text" FullWidth="false">Back</CustomButton>
-        <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Add Delivery Info</CustomButton>
+        <CustomButton
+            Label="Cancel" OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+        <CustomButton
+            Label="Make Purchase" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 

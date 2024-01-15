@@ -70,14 +70,15 @@ else
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </DialogContent>
         <DialogActions>
-            <CustomButton Color="Color.Default" OnClick="@Cancel" Variant="Variant.Text" FullWidth="false">Cancel</CustomButton>
             @if (IsUpdate)
             {
-                <CustomButton Color="Color.Error" OnClick="@Delete" Variant="Variant.Text" FullWidth="false">Remove</CustomButton>
+                <CustomButton
+                    Label="Remove From Cart" OnClick="@Delete" Color="Color.Error" Variant="Variant.Text" FullWidth="false"/>
             }
-            <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">
-                @(IsUpdate ? "Update" : "Add to Cart")
-            </CustomButton>
+            <CustomButton
+                Label="Cancel" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            <CustomButton
+                Label="@(IsUpdate ? "Update" : "Add to Cart")" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 }

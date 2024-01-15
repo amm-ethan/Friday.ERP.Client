@@ -1,5 +1,5 @@
-@using Friday.ERP.Shared.Enums
 @using Friday.ERP.Shared.DataTransferObjects
+
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
@@ -92,9 +92,9 @@
     string? _creditDebitLeftString = "0 mmk";
     string? _selectedDiscountType = "Flat";
     long _totalCreditDebitLeft;
+    long _discount;
 
     long Discount { get; set; }
-    DiscountTypeEnum DiscountType { get; set; } = DiscountTypeEnum.Flat;
     long DeliveryFees { get; set; }
     long Total { get; set; }
     long GrandTotal { get; set; }
@@ -116,7 +116,7 @@
         Total = SubTotal;
         GrandTotal = Total - CustomerExistingCreditDebit;
 
-        if (CustomerName is not null)
+        if (CustomerName is null)
         {
             PaidTotal = GrandTotal;
         }
@@ -129,7 +129,7 @@
     {
         if (isDiscountField)
         {
-            Discount = value;
+            _discount = value;
         }
         else
         {
@@ -138,20 +138,20 @@
 
         if (_selectedDiscountType == "Flat")
         {
-            DiscountType = DiscountTypeEnum.Flat;
+            Discount = _discount;
             Total = SubTotal + DeliveryFees - Discount;
         }
         else
         {
-            DiscountType = DiscountTypeEnum.Percent;
-            var discountPercent = (double)Discount / 100;
-            var discountAmount = SubTotal - SubTotal * discountPercent;
-            Total = Convert.ToInt64(discountAmount) + DeliveryFees;
+            var discountPercent = (double)_discount / 100;
+            var calculatedDiscount = SubTotal - SubTotal * discountPercent;
+            Discount = (long)calculatedDiscount;
+            Total = Convert.ToInt64(Discount) + DeliveryFees;
         }
 
         GrandTotal = Total - CustomerExistingCreditDebit;
 
-        if (CustomerName is not null)
+        if (CustomerName is null)
         {
             PaidTotal = GrandTotal;
         }
@@ -164,7 +164,7 @@
     {
         PaidTotal = value;
 
-        if (CustomerName is not null)
+        if (CustomerName is null)
         {
             PaidTotal = GrandTotal;
         }
@@ -196,7 +196,6 @@
     {
         var dataToReturn = new InvoiceSalePreCreateDto(
             Discount,
-            DiscountType,
             DeliveryFees,
             Total,
             GrandTotal,

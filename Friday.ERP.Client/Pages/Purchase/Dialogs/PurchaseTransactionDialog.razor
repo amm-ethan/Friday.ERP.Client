@@ -1,5 +1,5 @@
-@using Friday.ERP.Shared.Enums
 @using Friday.ERP.Shared.DataTransferObjects
+
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
@@ -39,7 +39,7 @@
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"/>
             <CustomLabelAndLabel FirstText="Total (With Existing)" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
-            <CustomLabelAndLongField FirstText="Paid Total" 
+            <CustomLabelAndLongField FirstText="Paid Total"
                                      BindValue="@PaidTotal" BindValueChanged="@TotalPaidValueChanged" Required="true"/>
             <CustomLableAndCheckbox FirstText="Is Paid" @bind-BindValue="IsPaid"/>
         </MudGrid>
@@ -82,9 +82,9 @@
     string? _creditDebitLeftString = "0 mmk";
     string? _selectedDiscountType = "Flat";
     long _totalCreditDebitLeft;
+    long _discount;
 
     long Discount { get; set; }
-    DiscountTypeEnum DiscountType { get; set; } = DiscountTypeEnum.Flat;
     long DeliveryFees { get; set; }
     long Total { get; set; }
     long GrandTotal { get; set; }
@@ -115,7 +115,7 @@
     {
         if (isDiscountField)
         {
-            Discount = value;
+            _discount = value;
         }
         else
         {
@@ -124,15 +124,16 @@
 
         if (_selectedDiscountType == "Flat")
         {
-            DiscountType = DiscountTypeEnum.Flat;
+            Discount = _discount;
             Total = SubTotal + DeliveryFees - Discount;
         }
         else
         {
-            DiscountType = DiscountTypeEnum.Percent;
-            var discountPercent = (double)Discount / 100;
-            var discountAmount = SubTotal - SubTotal * discountPercent;
-            Total = Convert.ToInt64(discountAmount) + DeliveryFees;
+            var discountPercent = (double)_discount / 100;
+            var calculatedDiscount = SubTotal - SubTotal * discountPercent;
+            Console.WriteLine(calculatedDiscount);
+            Discount = (long)calculatedDiscount;
+            Total = Convert.ToInt64(Discount) + DeliveryFees;
         }
 
         GrandTotal = Total - VendorExistingCreditDebit;
@@ -170,7 +171,6 @@
     {
         var dataToReturn = new InvoicePurchasePreCreateDto(
             Discount,
-            DiscountType,
             DeliveryFees,
             Total,
             GrandTotal,

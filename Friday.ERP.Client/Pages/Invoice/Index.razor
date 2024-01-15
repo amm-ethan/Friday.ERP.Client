@@ -206,7 +206,7 @@
 
                     <MudItem sm="6">
                         <CustomButton Variant="Variant.Filled"
-                                      Label="Show Invoice Info" IsLoading="_isLoading" OnClick="@ShowDeliveryInfo" Color="Color.Info"/>
+                                      Label="Show Invoice Info" IsLoading="_isLoading" OnClick="@(() => ShowInvoiceInfo(false))" Color="Color.Info"/>
                     </MudItem>
                     <MudItem sm="6">
                         <CustomButton Variant="Variant.Filled"
@@ -450,7 +450,6 @@
         {
             parameters.Add("SubTotal", _selectedInvoicePurchase!.SubTotal);
             parameters.Add("Discount", _selectedInvoicePurchase!.Discount);
-            parameters.Add("DiscountType", _selectedInvoicePurchase!.DiscountType!.ToString());
             parameters.Add("DeliveryFees", _selectedInvoicePurchase!.DeliveryFees);
             parameters.Add("Total", _selectedInvoicePurchase!.Total);
             parameters.Add("GrandTotal", _selectedInvoicePurchase!.GrandTotal);
@@ -463,7 +462,6 @@
         {
             parameters.Add("SubTotal", _selectedInvoiceSale!.SubTotal);
             parameters.Add("Discount", _selectedInvoiceSale!.Discount);
-            parameters.Add("DiscountType", _selectedInvoiceSale!.DiscountType!.ToString());
             parameters.Add("DeliveryFees", _selectedInvoicePurchase!.DeliveryFees);
             parameters.Add("Total", _selectedInvoicePurchase!.Total);
             parameters.Add("GrandTotal", _selectedInvoicePurchase!.GrandTotal);
