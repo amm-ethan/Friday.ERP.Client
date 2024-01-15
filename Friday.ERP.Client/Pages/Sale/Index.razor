@@ -328,14 +328,13 @@
                 { x => x.DeliveryServiceContactPerson, _deliveryInfo.DeliveryContactPerson },
                 { x => x.DeliveryServiceContactPhone, _deliveryInfo.DeliveryContactPhone },
                 { x => x.Remark, _deliveryInfo.Remark },
-                { x => x.DeliveryFees, _deliveryInfo.DeliveryFees }
             };
             var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
             result = await dialog.Result;
         }
         else
         {
-            var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Guid == _customerVendorGuid);
+            var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == _customerVendorName);
             var parameters = new DialogParameters<SaleTransactionDeliveryDialog>
             {
                 { x => x.Address, selectedCustomerVendor!.Address },
@@ -355,17 +354,12 @@
 
     async Task OpenTransactionCreateDialog()
     {
-        if (_productsInCartTemp.Count == 0)
-        {
-            Snackbar.Add("Add Items To Proceed To Sale!", Severity.Error);
-            return;
-        }
-
+        var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == _customerVendorName);
         var parameters = new DialogParameters<SaleTransactionDialog>
         {
             { x => x.InvoiceNo, _invoiceNo },
-            { x => x.CustomerName, _customerVendorName },
-            { x => x.CustomerExistingCreditDebit, _customerVendorCreditDebitLeft ?? 0 },
+            { x => x.CustomerName, selectedCustomerVendor?.Name },
+            { x => x.CustomerExistingCreditDebit, selectedCustomerVendor?.TotalCreditDebitLeft },
             { x => x.SubTotal, SubTotal }
         };
 
@@ -392,11 +386,13 @@
                 SubTotal,
                 invoiceSalePreCreateDto.Discount,
                 invoiceSalePreCreateDto.DiscountType,
+                invoiceSalePreCreateDto.DeliveryFees,
                 invoiceSalePreCreateDto.Total,
+                invoiceSalePreCreateDto.GrandTotal,
                 invoiceSalePreCreateDto.PaidTotal,
                 invoiceSalePreCreateDto.CreditDebitLeft,
                 invoiceSalePreCreateDto.Remark,
-                invoiceSalePreCreateDto,
+                selectedCustomerVendor?.Guid,
                 productsInCart,
                 _deliveryInfo
             );

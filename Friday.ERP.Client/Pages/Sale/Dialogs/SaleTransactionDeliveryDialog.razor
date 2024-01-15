@@ -1,105 +1,68 @@
-﻿@* @using Friday.ERP.Shared.DataTransferObjects *@
-@* <MudDialog> *@
-@*     <DialogContent> *@
-@*         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors"> *@
-@*             <MudGrid Spacing="2"> *@
-@*                 <CustomRowWithTwoLabels FirstText="Address" SecondText="@Address"></CustomRowWithTwoLabels> *@
-@*                 <CustomRowWithTwoLabels FirstText="Contact Person" SecondText="@ContactPerson"></CustomRowWithTwoLabels> *@
-@*                 <CustomRowWithTwoLabels FirstText="Contact Phone" SecondText="@ContactPhone"></CustomRowWithTwoLabels> *@
-@*             </MudGrid> *@
-@*             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
-@*             <MudGrid Spacing="2"> *@
-@*                 <CustomRowWithLabelsAndInput FirstText="Delivery Service Name"> *@
-@*                     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
-@*                         <MudTextField T="string" @bind-Value="@DeliveryServiceName" *@
-@*                                       FullWidth="true" InputType="InputType.Text" *@
-@*                                       Margin="Margin.Dense" Variant="Variant.Outlined"> *@
-@*                         </MudTextField> *@
-@*                     </MudItem> *@
-@*                 </CustomRowWithLabelsAndInput> *@
-@*                 <CustomRowWithLabelsAndInput FirstText="Contact Person"> *@
-@*                     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
-@*                         <MudTextField T="string" @bind-Value="@DeliveryServiceContactPerson" *@
-@*                                       FullWidth="true" InputType="InputType.Text" *@
-@*                                       Margin="Margin.Dense" Variant="Variant.Outlined"> *@
-@*                         </MudTextField> *@
-@*                     </MudItem> *@
-@*                 </CustomRowWithLabelsAndInput> *@
-@*                 <CustomRowWithLabelsAndInput FirstText="Contact Phone"> *@
-@*                     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
-@*                         <MudTextField T="string" @bind-Value="@DeliveryServiceContactPhone" *@
-@*                                       FullWidth="true" InputType="InputType.Text" *@
-@*                                       Margin="Margin.Dense" Variant="Variant.Outlined"> *@
-@*                         </MudTextField> *@
-@*                     </MudItem> *@
-@*                 </CustomRowWithLabelsAndInput> *@
-@*             </MudGrid> *@
-@*             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider> *@
-@*             <MudGrid Spacing="2"> *@
-@*                 <CustomRowWithLabelsAndInput FirstText="Remark"> *@
-@*                     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
-@*                         <MudTextField T="string" @bind-Value="@Remark" *@
-@*                                       FullWidth="true" InputType="InputType.Text" *@
-@*                                       Margin="Margin.Dense" Variant="Variant.Outlined"> *@
-@*                         </MudTextField> *@
-@*                     </MudItem> *@
-@*                 </CustomRowWithLabelsAndInput> *@
-@*                 <CustomRowWithLabelsAndInput FirstText="Delivery Fees"> *@
-@*                     <MudItem sm="7" md="7" lg="7" Class="align-self-center"> *@
-@*                         <MudTextField T="long?" @bind-Value="@DeliveryFees" *@
-@*                                       FullWidth="true" InputType="InputType.Number" *@
-@*                                       Margin="Margin.Dense" Variant="Variant.Outlined"> *@
-@*                         </MudTextField> *@
-@*                     </MudItem> *@
-@*                 </CustomRowWithLabelsAndInput> *@
-@*             </MudGrid> *@
-@*             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider> *@
-@*         </MudForm> *@
-@*     </DialogContent> *@
-@*     <DialogActions> *@
-@*         <CustomButton Color="Color.Default" OnClick="@Back" Variant="Variant.Text" FullWidth="false">Back</CustomButton> *@
-@*         <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Add Delivery Info</CustomButton> *@
-@*     </DialogActions> *@
-@* </MudDialog> *@
-@* *@
-@* @code { *@
-@* *@
-@*     [CascadingParameter] MudDialogInstance? MudDialog { get; set; } *@
-@* *@
-@*     [Parameter] public string? Address { get; set; } *@
-@*     [Parameter] public string? ContactPerson { get; set; } *@
-@*     [Parameter] public string? ContactPhone { get; set; } *@
-@*     [Parameter] public string? DeliveryServiceName { get; set; } *@
-@*     [Parameter] public string? DeliveryServiceContactPerson { get; set; } *@
-@*     [Parameter] public string? DeliveryServiceContactPhone { get; set; } *@
-@*     [Parameter] public string? Remark { get; set; } *@
-@*     [Parameter] public long? DeliveryFees { get; set; } *@
-@* *@
-@*     MudForm? _form; *@
-@*     bool _success; *@
-@*     string[] _errors = []; *@
-@* *@
-@*     async Task Submit() *@
-@*     { *@
-@*         await _form!.Validate(); *@
-@*         if (_form.IsValid) *@
-@*         { *@
-@*             var dataToReturn = new InvoiceSaleDeliveryCreateDto( *@
-@*                 Address!, *@
-@*                 ContactPerson!, *@
-@*                 ContactPhone!, *@
-@*                 DeliveryServiceName, *@
-@*                 DeliveryServiceContactPerson, *@
-@*                 DeliveryServiceContactPhone, *@
-@*                 Remark, *@
-@*                 DeliveryFees); *@
-@*             MudDialog!.Close(DialogResult.Ok(dataToReturn)); *@
-@*         } *@
-@*     } *@
-@* *@
-@*     void Back() *@
-@*     { *@
-@*         MudDialog!.Cancel(); *@
-@*     } *@
-@* *@
-@* } *@
+﻿@using Friday.ERP.Shared.DataTransferObjects
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+            <MudGrid Spacing="2">
+                <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address" Required="true"/>
+                <CustomLabelAndStringField FirstText="Contact Person" @bind-BindValue="@ContactPerson" Required="true"/>
+                <CustomLabelAndStringField FirstText="Contact Phone" @bind-BindValue="@ContactPhone" Required="true"/>
+
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudGrid Spacing="2">
+                <CustomLabelAndStringField FirstText="Delivery Service Name" @bind-BindValue="@DeliveryServiceName"/>
+                <CustomLabelAndStringField FirstText="Contact Person" @bind-BindValue="@DeliveryServiceContactPerson"/>
+                <CustomLabelAndStringField FirstText="Contact Phone" @bind-BindValue="@DeliveryServiceContactPhone"/>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="my-4"></MudDivider>
+            <MudGrid Spacing="2">
+                <CustomLabelAndStringField FirstText="Remark" @bind-BindValue="@Remark"/>
+            </MudGrid>
+            <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"></MudDivider>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <CustomButton Color="Color.Default" OnClick="@Back" Variant="Variant.Text" FullWidth="false">Back</CustomButton>
+        <CustomButton Color="Color.Primary" OnClick="@Submit" Variant="Variant.Text" FullWidth="false">Add Delivery Info</CustomButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    [Parameter] public string? Address { get; set; }
+    [Parameter] public string? ContactPerson { get; set; }
+    [Parameter] public string? ContactPhone { get; set; }
+    [Parameter] public string? DeliveryServiceName { get; set; }
+    [Parameter] public string? DeliveryServiceContactPerson { get; set; }
+    [Parameter] public string? DeliveryServiceContactPhone { get; set; }
+    [Parameter] public string? Remark { get; set; }
+
+    MudForm? _form;
+    bool _success;
+    string[] _errors = [];
+
+    async Task Submit()
+    {
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            var dataToReturn = new InvoiceSaleDeliveryCreateDto(
+                Address!,
+                ContactPerson!,
+                ContactPhone!,
+                DeliveryServiceName,
+                DeliveryServiceContactPerson,
+                DeliveryServiceContactPhone,
+                Remark);
+            MudDialog!.Close(DialogResult.Ok(dataToReturn));
+        }
+    }
+
+    void Back()
+    {
+        MudDialog!.Cancel();
+    }
+
+}
