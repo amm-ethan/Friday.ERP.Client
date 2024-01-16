@@ -7,26 +7,26 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="true"/>
-                <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
-                <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
+                <CustomLabelAndStringField FirstText="အမည်" @bind-BindValue="@Name" Required="true"/>
+                <CustomLabelAndStringField FirstText="ဖုန်း" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                <CustomLabelAndStringField FirstText="အီးမေးလ်" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address"/>
+                <CustomLabelAndStringField FirstText="နေရပ်" @bind-BindValue="@Address"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLongField FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
+                <CustomLabelAndLongField FirstText="ကျန်ငွေ/ပိုငွေ" @bind-BindValue="@TotalCreditDebit"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         </MudForm>
     </DialogContent>
     <DialogActions>
         <CustomButton
-            Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            Label="မလုပ်တော့ပါ" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         <CustomButton
-            Label="Create" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
+            Label="အသစ်ထည့်မည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 
