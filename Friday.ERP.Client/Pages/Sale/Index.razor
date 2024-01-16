@@ -350,6 +350,12 @@
 
     async Task OpenTransactionCreateDialog()
     {
+        if (_customerVendorName is null & _productsInCartTemp.Count == 0)
+        {
+            Snackbar.Add("Add Product To Make Sale!", Severity.Error);
+            return;
+            
+        }
         var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == _customerVendorName);
         var parameters = new DialogParameters<SaleTransactionDialog>
         {
