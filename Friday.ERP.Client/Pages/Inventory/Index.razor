@@ -16,7 +16,7 @@
     <CustomPage Sm="12" Md="12" IsLoading="@_isMainLoading">
         <MudGrid Spacing="2">
             <MudItem sm="12" Class="align-self-center">
-                <MudText Typo="Typo.h6">Categories</MudText>
+                <MudText Typo="Typo.h6">ပစ္စည်းအမျိုးအစားများ</MudText>
             </MudItem>
         </MudGrid>
         <MudGrid Spacing="2" Class="mb-2">
@@ -26,7 +26,7 @@
                     {
                         <CustomChip OnClick="@(() => OpenCategoryUpdateDialog(category))" Color="@category.Color">@category.Name</CustomChip>
                     }
-                    <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="create"/>
+                    <MudIconButton Disabled="_isLoading" OnClick="@OpenCategoryCreateDialog" Size="Size.Large" Icon="@Icons.Material.Rounded.AddCircle" Color="Color.Primary" aria-label="အသစ်ထည့်ရန်"/>
                 </div>
             </MudItem>
         </MudGrid>
@@ -39,7 +39,7 @@
                      ProductList="_productList">
             <CreateButton>
                 <CustomButton Variant="Variant.Filled"
-                              Label="Create New" IsLoading="_isLoading" OnClick="@OpenProductCreateDialog"/>
+                              Label="အသစ်ထည့်ရန်" IsLoading="_isLoading" OnClick="@OpenProductCreateDialog"/>
             </CreateButton>
             <ChildContent>
                 @foreach (var product in _productList)

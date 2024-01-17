@@ -9,7 +9,7 @@
     <MudDialog>
         <DialogContent>
             <MudText Typo="Typo.subtitle1">
-                <b>Remove Old Prices</b>
+                <b>အရင် ‌စျေးနှုန်းများ ကိုဖျက်ရန်</b>
             </MudText>
             <MudGrid Spacing="2" Class="mt-4">
                 <CustomLabelAndInput FirstText="Price">
@@ -20,10 +20,10 @@
                             Variant="Variant.Outlined">
                             @foreach (var price in _oldPrices)
                             {
-                                var label = $"{price.SalePrice} mmk";
+                                var label = $"{price.SalePrice} ကျပ်";
                                 if (price.IsWholeSale is true)
                                 {
-                                    label += " (Wholesale)";
+                                    label += " (လက်ကား)";
                                 }
 
                                 <MudSelectItem Value="@(price.SalePrice.ToString())">
@@ -40,11 +40,11 @@
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudText Typo="Typo.subtitle1">
-                <b>Create New Price</b>
+                <b>စျေးနှုန်းအသစ်ထည့်ရန်</b>
             </MudText>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2" Class="mt-4">
-                    <CustomLabelAndInput FirstText="Is Wholesale">
+                    <CustomLabelAndInput FirstText="လက်ကားစျေး">
                         <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                             <MudCheckBox T="bool" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"/>
                         </MudItem>
@@ -54,7 +54,7 @@
                 <MudGrid Spacing="2">
                     <MudItem sm="5" md="5" lg="5" Class="align-self-start">
                         <MudText Class="mt-3" Typo="@Typo.body1">
-                            New Price
+                            ‌စျေးနှုန်း
                         </MudText>
                     </MudItem>
                     <MudItem sm="6" Class="align-self-center">
@@ -74,7 +74,7 @@
         </DialogContent>
         <DialogActions>
             <CustomButton
-                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>

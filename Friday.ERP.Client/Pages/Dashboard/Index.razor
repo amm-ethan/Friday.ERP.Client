@@ -20,10 +20,10 @@
         }
         else
         {
-            <CustomInfoCard HeaderText="Sales Figures">
+            <CustomInfoCard HeaderText="စာရင်းများ">
                 <SubHeader>
                     <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
-                        <b>Last 6 Months</b>
+                        <b>၆လအတွင်း</b>
                     </MudText>
                 </SubHeader>
                 <ChildContent>
@@ -36,7 +36,7 @@
                     {
                         <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
                             <div class="align-self-center">
-                                <MudText Typo="Typo.caption">No Sales Summary Yet!</MudText>
+                                <MudText Typo="Typo.caption">ဒေတာမရှိသေးပါ</MudText>
                             </div>
                         </div>
                     }
@@ -54,7 +54,7 @@
         }
         else
         {
-            <CustomInfoCard HeaderText="Debits From Customers">
+            <CustomInfoCard HeaderText="အကြွေးစားရင်း">
                 <SubHeader>
                     <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Error">
                         <b>@_totalDebitOfCustomer</b>
@@ -65,10 +65,10 @@
                     {
                         <div class="d-flex justify-space-between mt-4">
                             <MudText Typo="Typo.caption">
-                                Customer
+                                စျေးဝယ်သူများ
                             </MudText>
                             <MudText Typo="Typo.caption">
-                                Total Amount
+                                အ‌ကြွေး
                             </MudText>
                         </div>
                         @foreach (var customer in _customersWithDebits)
@@ -81,7 +81,7 @@
                     {
                         <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
                             <div class="align-self-center">
-                                <MudText Typo="Typo.caption">No Data Yet!</MudText>
+                                <MudText Typo="Typo.caption">ဒေတာမရှိသေးပါ</MudText>
                             </div>
                         </div>
                     }
@@ -98,10 +98,10 @@
         }
         else
         {
-            <CustomInfoCard HeaderText="Top Selling Products">
+            <CustomInfoCard HeaderText="အရောင်းရဆုံးပစ္စည်းများ">
                 <SubHeader>
                     <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
-                        <b>Last 30 Days</b>
+                        <b>၁လအတွင်း</b>
                     </MudText>
                 </SubHeader>
                 <ChildContent>
@@ -109,10 +109,10 @@
                     {
                         <div class="d-flex justify-space-between mt-4">
                             <MudText Typo="Typo.caption">
-                                Product
+                                ပစ္စည်းများ
                             </MudText>
                             <MudText Typo="Typo.caption">
-                                Sales
+                                ကြိမ်
                             </MudText>
                         </div>
                         @foreach (var product in _topSellingProducts)
@@ -126,7 +126,7 @@
                     {
                         <div class="d-flex d-column justify-center flex-grow-1" style="height: 10vh;">
                             <div class="align-self-center">
-                                <MudText Typo="Typo.caption">No Data Yet!</MudText>
+                                <MudText Typo="Typo.caption">ဒေတာမရှိသေးပါ</MudText>
                             </div>
                         </div>
                     }

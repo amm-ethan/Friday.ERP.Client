@@ -14,7 +14,7 @@
 <CustomContainer>
     <CustomPage Sm="12" Md="12" IsLoading="@_isMainLoading">
         <MudTabs Elevation="0" Rounded="true" Centered="true">
-            <CustomTab TitleText="Customer"
+            <CustomTab TitleText="စျေးဝယ်သူများ"
                        IsLoading="@_isLoading"
                        OnTabClick="@(() => ChangeTab(true))">
                 <CustomHeader>
@@ -23,7 +23,7 @@
                     </MudItem>
                     <MudItem sm="6" md="3" Class="align-self-center">
                         <CustomButton
-                            Label="Create New"
+                            Label="အသစ်ဖန်တီးရန်"
                             IsLoading="_isLoading"
                             OnClick="@OpenCustomerVendorCreateDialog"
                             Variant="Variant.Filled"/>
@@ -35,7 +35,7 @@
                         {
                             <div class="d-flex d-column justify-center flex-grow-1" style="height: 54vh;">
                                 <div class="align-self-center">
-                                    <MudText Typo="Typo.caption">No Customers Yet!</MudText>
+                                    <MudText Typo="Typo.caption">စျေးဝယ်သူမရှိသေးပါ</MudText>
                                 </div>
                             </div>
                         }
@@ -45,12 +45,12 @@
                                       Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
                                       FixedHeader="true" Height="54vh">
                                 <HeaderContent>
-                                    <MudTh>#</MudTh>
-                                    <MudTh>Name</MudTh>
-                                    <MudTh>Phone</MudTh>
-                                    <MudTh>Email</MudTh>
-                                    <MudTh>Address</MudTh>
-                                    <MudTh>Total Credit Debit Left</MudTh>
+                                    <MudTh>ကုဒ်</MudTh>
+                                    <MudTh>အမည်</MudTh>
+                                    <MudTh>ဖုန်း</MudTh>
+                                    <MudTh>အီးမေးလ်</MudTh>
+                                    <MudTh>နေရပ်</MudTh>
+                                    <MudTh>ကျန်ငွေ/ပိုငွေ</MudTh>
                                     <MudTh>Action</MudTh>
                                 </HeaderContent>
                                 <RowTemplate>
@@ -62,7 +62,7 @@
                                     <MudTd DataLabel="Total Credit Debit Left">@context.TotalCreditDebitLeft</MudTd>
                                     <MudTd DataLabel="Action">
                                         <CustomButton
-                                            Label="Edit"
+                                            Label="ပြောင်းရန်"
                                             IsLoading="_isLoading" FullWidth="false"
                                             OnClick="@(() => OpenCustomerVendorUpdateDialog(context))"/>
                                     </MudTd>
@@ -77,7 +77,7 @@
                     </MudItem>
                 </CustomBody>
             </CustomTab>
-            <CustomTab TitleText="Vendor"
+            <CustomTab TitleText="စျေးရောင်းသူများ"
                        IsLoading="@_isLoading"
                        OnTabClick="@(() => ChangeTab(false))">
                 <CustomHeader>
@@ -86,7 +86,7 @@
                     </MudItem>
                     <MudItem sm="6" md="3" Class="align-self-center">
                         <CustomButton
-                            Label="Create New"
+                            Label="အသစ်ဖန်တီးရန်"
                             IsLoading="_isLoading"
                             OnClick="@OpenCustomerVendorCreateDialog"
                             Variant="Variant.Filled"/>
@@ -98,7 +98,7 @@
                         {
                             <div class="d-flex d-column justify-center flex-grow-1" style="height: 54vh;">
                                 <div class="align-self-center">
-                                    <MudText Typo="Typo.caption">No Customers Yet!</MudText>
+                                    <MudText Typo="Typo.caption">စျေးရောင်းသူမရှိသေးပါ</MudText>
                                 </div>
                             </div>
                         }
@@ -108,12 +108,12 @@
                                       Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
                                       FixedHeader="true" Height="54vh">
                                 <HeaderContent>
-                                    <MudTh>#</MudTh>
-                                    <MudTh>Name</MudTh>
-                                    <MudTh>Phone</MudTh>
-                                    <MudTh>Email</MudTh>
-                                    <MudTh>Address</MudTh>
-                                    <MudTh>Total Credit Debit Left</MudTh>
+                                    <MudTh>ကုဒ်</MudTh>
+                                    <MudTh>အမည်</MudTh>
+                                    <MudTh>ဖုန်း</MudTh>
+                                    <MudTh>အီးမေးလ်</MudTh>
+                                    <MudTh>နေရပ်</MudTh>
+                                    <MudTh>ကျန်ငွေ/ပိုငွေ</MudTh>
                                     <MudTh>Action</MudTh>
                                 </HeaderContent>
                                 <RowTemplate>
@@ -125,7 +125,7 @@
                                     <MudTd DataLabel="Total Credit Debit Left">@context.TotalCreditDebitLeft</MudTd>
                                     <MudTd DataLabel="Action">
                                         <CustomButton
-                                            Label="Edit"
+                                            Label="ပြောင်းရန်"
                                             IsLoading="_isLoading" FullWidth="false"
                                             OnClick="@(() => OpenCustomerVendorUpdateDialog(context))"/>
                                     </MudTd>
@@ -207,7 +207,7 @@
             { x => x.IsCustomer, _isCustomer }
         };
         var dialog = await DialogService.ShowAsync<CustomerVendorCreateDialog>(
-            _isCustomer ? "Create New Customer" : "Create New Vendor", parameters, options);
+            _isCustomer ? "ဈေးဝယ်သူအသစ်၏ ကိုယ်ရေးအချက်အလက်များ" : "ဈေးရောင်းသူအသစ်၏ ကိုယ်ရေးအချက်အလက်များ", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -230,7 +230,7 @@
             { x => x.TotalCreditDebit, customerVendorView.TotalCreditDebitLeft }
         };
         var dialog = await DialogService.ShowAsync<CustomerVendorUpdateDialog>(
-            _isCustomer ? "Update Customer" : "Update Vendor",
+            _isCustomer ? "ဈေးဝယ်သူ၏ ကိုယ်ရေးအချက်အလက်များ" : "ဈေးရောင်းသူ၏ ကိုယ်ရေးအချက်အလက်များ",
             parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)

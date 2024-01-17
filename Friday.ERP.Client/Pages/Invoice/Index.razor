@@ -16,12 +16,12 @@
 <CustomContainer>
     <CustomPage Sm="12" Md="5" IsLoading="@_isMainLoading">
         <MudTabs Elevation="0" Rounded="true" Centered="true">
-            <CustomTab TitleText="Sales" OnTabClick="@(() => ChangeTab(false))"
+            <CustomTab TitleText="အရောင်းစာရင်းများ" OnTabClick="@(() => ChangeTab(false))"
                        IsLoading="@_isLoading"
                        Height="60vh">
                 <CustomHeader>
                     <MudItem sm="4">
-                        <MudDatePicker Label="Sold At" Date="@_selectedDate" Margin="Margin.Dense"
+                        <MudDatePicker Label="နေ့စွဲ" Date="@_selectedDate" Margin="Margin.Dense"
                                        DateChanged="@ChangeDateValue"
                                        Clearable="true"
                                        MinDate="@(DateTime.Today.AddMonths(-6))"
@@ -30,7 +30,7 @@
                     </MudItem>
                     <MudItem sm="4">
                         <MudAutocomplete T="string?"
-                                         Label="Customer"
+                                         Label="စျေးဝယ်သူ"
                                          Clearable="true"
                                          ResetValueOnEmptyText="true"
                                          Dense="true"
@@ -50,7 +50,7 @@
                     {
                         <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
                             <div class="align-self-center">
-                                <MudText Typo="Typo.caption">No Sale Invoices Yet!</MudText>
+                                <MudText Typo="Typo.caption">စာရင်းမရှိသေးပါ</MudText>
                             </div>
                         </div>
                     }
@@ -61,7 +61,7 @@
                             <MudItem sm="12" md="12" lg="12">
                                 <CustomCardRectangle OnClick="@(() => ShowSaleInvoiceDetails(invoice))"
                                                      FirstMainText="@invoice.InvoiceNo"
-                                                     FirstSubText="@invoice.GrandTotal.ToString()"
+                                                     FirstSubText="@($"{invoice.GrandTotal.ToString()} ကျပ်")"
                                                      SecondMainText="@(invoice.CustomerName ?? "Walk-In")"
                                                      SecondSubText="@invoice.PurchasedAt.ToString("d")">
                                 </CustomCardRectangle>
@@ -70,12 +70,12 @@
                     }
                 </CustomBody>
             </CustomTab>
-            <CustomTab TitleText="Purchases" OnTabClick="@(() => ChangeTab(true))"
+            <CustomTab TitleText="အဝယ်စာရင်းများ" OnTabClick="@(() => ChangeTab(true))"
                        IsLoading="@_isLoading"
                        Height="60vh">
                 <CustomHeader>
                     <MudItem sm="4">
-                        <MudDatePicker Label="Purchased At" Date="@_selectedDate" Margin="Margin.Dense"
+                        <MudDatePicker Label="နေ့စွဲ" Date="@_selectedDate" Margin="Margin.Dense"
                                        DateChanged="@ChangeDateValue"
                                        Clearable="true"
                                        MinDate="@(DateTime.Today.AddMonths(-6))"
@@ -84,7 +84,7 @@
                     </MudItem>
                     <MudItem sm="4">
                         <MudAutocomplete T="string?"
-                                         Label="Customer"
+                                         Label="စျေးဝယ်သူ"
                                          Clearable="true"
                                          ResetValueOnEmptyText="true"
                                          Dense="true"
@@ -104,7 +104,7 @@
                     {
                         <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
                             <div class="align-self-center">
-                                <MudText Typo="Typo.caption">No Purchase Invoices Yet!</MudText>
+                                <MudText Typo="Typo.caption">စာရင်းမရှိသေးပါ</MudText>
                             </div>
                         </div>
                     }
@@ -115,7 +115,7 @@
                             <MudItem sm="12" md="12" lg="12">
                                 <CustomCardRectangle OnClick="@(() => ShowPurchaseInvoiceDetails(invoice))"
                                                      FirstMainText="@invoice.InvoiceNo"
-                                                     FirstSubText="@invoice.GrandTotal.ToString()"
+                                                     FirstSubText="@($"{invoice.GrandTotal.ToString()} ကျပ်")"
                                                      SecondMainText="@invoice.VendorName"
                                                      SecondSubText="@invoice.PurchasedAt.ToString("d")"/>
                             </MudItem>
@@ -130,20 +130,20 @@
         {
             <div class="d-flex d-column justify-center flex-grow-1" style="height: 50vh;">
                 <div class="align-self-center">
-                    <MudText Typo="Typo.caption">No Sales Summary Yet!</MudText>
+                    <MudText Typo="Typo.caption">စာရင်းအကြောင်းအရာများ</MudText>
                 </div>
             </div>
         }
         else
         {
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Invoice"
+                <CustomLabelAndLabel FirstText="စာရင်းနံပါတ်"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.InvoiceNo : _selectedInvoiceSale!.InvoiceNo)"
                                      SecondTextAlign="Align.End"/>
-                <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "Purchased At" : "Sold At")"
+                <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "နေ့စွဲ")"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.PurchasedAt.ToString("d") : _selectedInvoiceSale!.PurchasedAt.ToString("d"))"
                                      SecondTextAlign="Align.End"/>
-                <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "Vendor" : "Customer")"
+                <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "ရောင်းသူ" : "ဝယ်သူ")"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.Vendor.Name : _selectedInvoiceSale!.Customer is null ? "Walk-in" : _selectedInvoiceSale!.Customer.Name)"
                                      SecondTextAlign="Align.End"/>
             </MudGrid>
@@ -158,8 +158,8 @@
                                                  FirstMainText="@product.ProductName"
                                                  FirstSubText="@product.Quantity.ToString()"
                                                  ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
-                                                 SecondMainText="@product.BuyPrice.ToString()"
-                                                 SecondSubText="@product.Total.ToString()"/>
+                                                 SecondMainText="@($"{product.BuyPrice.ToString()} ကျပ်")"
+                                                 SecondSubText="@($"{product.Total.ToString()} ကျပ်")"/>
                         </MudItem>
                     }
                 }
@@ -172,8 +172,8 @@
                                                  FirstMainText="@product.ProductName"
                                                  FirstSubText="@product.Quantity.ToString()"
                                                  ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
-                                                 SecondMainText="@product.ProducePriceSalePrice.ToString()"
-                                                 SecondSubText="@product.Total.ToString()"/>
+                                                 SecondMainText="@($"{product.ProducePriceSalePrice.ToString()} ကျပ်")"
+                                                 SecondSubText="@($"{product.Total.ToString()} ကျပ်")"/>
                         </MudItem>
                     }
                 }
@@ -181,7 +181,7 @@
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Grand Total"
+                <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.GrandTotal.ToString() : _selectedInvoiceSale!.Total.ToString())"
                                      SecondTextAlign="Align.End"/>
             </MudGrid>
@@ -191,7 +191,7 @@
                 {
                     <MudItem sm="12">
                         <CustomButton Variant="Variant.Filled"
-                                      Label="Show Invoice Info" IsLoading="_isLoading" OnClick="@(() => ShowInvoiceInfo(true))" Color="Color.Info"/>
+                                      Label="စာရင်းအပြည့်အစုံကြည့်ရန်" IsLoading="_isLoading" OnClick="@(() => ShowInvoiceInfo(true))" Color="Color.Info"/>
                     </MudItem>
                 }
                 else
@@ -200,17 +200,17 @@
                     {
                         <MudItem sm="12">
                             <CustomButton Variant="Variant.Filled"
-                                          Label="Show Delivery Info" IsLoading="_isLoading" OnClick="@ShowDeliveryInfo" Color="Color.Secondary"/>
+                                          Label="Delivery ကြည့်ရန်" IsLoading="_isLoading" OnClick="@ShowDeliveryInfo" Color="Color.Secondary"/>
                         </MudItem>
                     }
 
                     <MudItem sm="6">
                         <CustomButton Variant="Variant.Filled"
-                                      Label="Show Invoice Info" IsLoading="_isLoading" OnClick="@(() => ShowInvoiceInfo(false))" Color="Color.Info"/>
+                                      Label="စာရင်းအပြည့်အစုံကြည့်ရန်" IsLoading="_isLoading" OnClick="@(() => ShowInvoiceInfo(false))" Color="Color.Info"/>
                     </MudItem>
                     <MudItem sm="6">
                         <CustomButton Variant="Variant.Filled"
-                                      Label="Download" IsLoading="_isLoading" OnClick="@DownloadInvoice"/>
+                                      Label="စာရင်းကို Download ဆွဲရန်" IsLoading="_isLoading" OnClick="@DownloadInvoice"/>
                     </MudItem>
                 }
 
@@ -427,7 +427,7 @@
         }
     }
 
-    async Task ShowDeliveryInfo()
+    void ShowDeliveryInfo()
     {
         var parameters = new DialogParameters<TransactionDeliveryDialog>
         {
@@ -440,10 +440,10 @@
             { x => x.Remark, _selectedInvoiceSale!.DeliveryInfo!.Remark }
         };
         var options = new DialogOptions();
-        await DialogService.ShowAsync<TransactionDeliveryDialog>("Delivery Info", parameters, options);
+        DialogService.Show<TransactionDeliveryDialog>("Delivery ကြည့်ရန်", parameters, options);
     }
 
-    private void ShowInvoiceInfo(bool isPurchaseInvoice)
+    void ShowInvoiceInfo(bool isPurchaseInvoice)
     {
         var parameters = new DialogParameters<TransactionInfoDialog>();
         if (isPurchaseInvoice)
@@ -474,7 +474,7 @@
         }
 
         var options = new DialogOptions();
-        DialogService.Show<TransactionInfoDialog>("Transaction Info", parameters, options);
+        DialogService.Show<TransactionInfoDialog>("စာရင်းအပြည့်အစုံကြည့်ရန်", parameters, options);
     }
 
     async Task DownloadInvoice()
