@@ -427,7 +427,7 @@
         }
     }
 
-    void ShowDeliveryInfo()
+    async Task ShowDeliveryInfo()
     {
         var parameters = new DialogParameters<TransactionDeliveryDialog>
         {
@@ -440,10 +440,10 @@
             { x => x.Remark, _selectedInvoiceSale!.DeliveryInfo!.Remark }
         };
         var options = new DialogOptions();
-        DialogService.Show<TransactionDeliveryDialog>("Delivery ကြည့်ရန်", parameters, options);
+        await DialogService.ShowAsync<TransactionDeliveryDialog>("Delivery ကြည့်ရန်", parameters, options);
     }
 
-    void ShowInvoiceInfo(bool isPurchaseInvoice)
+    async Task ShowInvoiceInfo(bool isPurchaseInvoice)
     {
         var parameters = new DialogParameters<TransactionInfoDialog>();
         if (isPurchaseInvoice)
@@ -474,7 +474,7 @@
         }
 
         var options = new DialogOptions();
-        DialogService.Show<TransactionInfoDialog>("စာရင်းအပြည့်အစုံကြည့်ရန်", parameters, options);
+        await DialogService.ShowAsync<TransactionInfoDialog>("စာရင်းအပြည့်အစုံကြည့်ရန်", parameters, options);
     }
 
     async Task DownloadInvoice()

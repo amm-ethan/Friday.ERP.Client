@@ -9,22 +9,22 @@
         <DialogContent>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2">
-                    <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="true"/>
-                    <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" Required="true" KeyboardInputType="InputType.Telephone"/>
-                    <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" Required="true" KeyboardInputType="InputType.Email"/>
+                    <CustomLabelAndStringField FirstText="အမည်" @bind-BindValue="@Name" Required="true"/>
+                    <CustomLabelAndStringField FirstText="ဖုန်း" @bind-BindValue="@Phone" Required="true" KeyboardInputType="InputType.Telephone"/>
+                    <CustomLabelAndStringField FirstText="အီးမေးလ်" @bind-BindValue="@Email" Required="true" KeyboardInputType="InputType.Email"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndStringField FirstText="Username" @bind-BindValue="@Username" Required="true"/>
+                    <CustomLabelAndStringField FirstText="လော့ဂ်အင်အမည်" @bind-BindValue="@Username" Required="true"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndFieldPassword FirstText="Password" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
+                    <CustomLabelAndFieldPassword FirstText="စကားဝှက်" @bind-BindValue="@Password" Required="true" KeyboardInputType="@_passwordInput"
                                                  AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
+                    <CustomLableAndAutocomplete FirstText="ရာထူး" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
                                                 OnClearButtonClick="() => { }"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
@@ -32,9 +32,9 @@
         </DialogContent>
         <DialogActions>
             <CustomButton
-                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="Create" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
+                Label="အသစ်ဖန်တီးမည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>
@@ -117,7 +117,7 @@
             var httpResult = await HttpRepo.CreateUser(dataToCreate);
             if (httpResult.isSuccess)
             {
-                Snackbar.Add("User Created!", Severity.Success);
+                Snackbar.Add("အသုံးပြုသူ အသစ်ဖန်တီး ပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));

@@ -9,37 +9,37 @@
         <DialogContent>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2">
-                    <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="true"/>
-                    <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
-                    <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
+                    <CustomLabelAndStringField FirstText="အမည်" @bind-BindValue="@Name" Required="true"/>
+                    <CustomLabelAndStringField FirstText="ဖုန်း" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                    <CustomLabelAndStringField FirstText="အီးမေးလ်" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndLabel FirstText="Username" SecondText="@Username"/>
+                    <CustomLabelAndLabel FirstText="လော့ဂ်အင်အမည်" SecondText="@Username"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLableAndCheckbox FirstText="Change Password" @bind-BindValue="IsChangePassword"/>
+                    <CustomLableAndCheckbox FirstText="စကားဝှက် ပြောင်းမည်" @bind-BindValue="IsChangePassword"/>
                     @if (IsChangePassword)
                     {
-                        <CustomLableAndCheckbox FirstText="Force Reset Password" @bind-BindValue="IsForceResetPassword"/>
+                        <CustomLableAndCheckbox FirstText="စကားဝှက်အ‌ဟောင်းမေ့နေသည်" @bind-BindValue="IsForceResetPassword"/>
                     }
                     @if (IsChangePassword && !IsForceResetPassword)
                     {
-                        <CustomLabelAndFieldPassword FirstText="Old Password" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
+                        <CustomLabelAndFieldPassword FirstText="စကားဝှက်အ‌ဟောင်း" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
                                                      KeyboardInputType="@_oldPasswordInput"
                                                      AdornmentIcon="@_oldPasswordInputIcon" OnAdornmentClick="@ShowOldPassword"/>
                     }
                     @if (IsChangePassword)
                     {
-                        <CustomLabelAndFieldPassword FirstText="New Password" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
+                        <CustomLabelAndFieldPassword FirstText="စကားဝှက်အ‌သစ်" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
                                                      KeyboardInputType="@_passwordInput"
                                                      AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                     }
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLableAndAutocomplete FirstText="Role" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
+                    <CustomLableAndAutocomplete FirstText="ရာထူး" Required="true" Value="@RoleName" SearchFuncWithCancel="@SearchUserRoles" ValueChanged="@RoleChange"
                                                 OnClearButtonClick="() => { }"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
@@ -47,9 +47,9 @@
         </DialogContent>
         <DialogActions>
             <CustomButton
-                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="Update" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
+                Label="ပြောင်းမည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>
@@ -139,7 +139,7 @@
 
             if (httpResult.isSuccess)
             {
-                Snackbar.Add("User Updated!", Severity.Success);
+                Snackbar.Add("အသုံးပြုသူ၏ကိုယ်ရေးအချက်အလက်ကို ပြောင်းပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));

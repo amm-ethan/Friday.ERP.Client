@@ -14,7 +14,7 @@
 <CustomContainer>
     <CustomPage Sm="12" Md="12" IsLoading="@_isMainLoading">
         <MudTabs Elevation="0" Rounded="true" Centered="true">
-            <CustomTab TitleText="User"
+            <CustomTab TitleText="အသုံးပြုသူ"
                        IsLoading="@_isLoading"
                        OnTabClick="() => { }">
                 <CustomHeader>
@@ -23,7 +23,7 @@
                     </MudItem>
                     <MudItem sm="6" md="3" Class="align-self-center">
                         <CustomButton
-                            Label="Create New"
+                            Label="အသစ်ဖန်တီးရန်"
                             IsLoading="_isLoading"
                             OnClick="@OpenUserCreateDialog"
                             Variant="Variant.Filled"/>
@@ -35,11 +35,11 @@
                                   Breakpoint="Breakpoint.Md" HorizontalScrollbar="true" LoadingProgressColor="Color.Info"
                                   FixedHeader="true" Height="54vh">
                             <HeaderContent>
-                                <MudTh>Name</MudTh>
-                                <MudTh>Phone</MudTh>
-                                <MudTh>Email</MudTh>
-                                <MudTh>Role Name</MudTh>
-                                <MudTh>Action</MudTh>
+                                <MudTh>အမည်</MudTh>
+                                <MudTh>ဖုန်း</MudTh>
+                                <MudTh>အီးမေးလ်</MudTh>
+                                <MudTh>ရာထူး</MudTh>
+                                <MudTh>-</MudTh>
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd DataLabel="Name">@context.Name</MudTd>
@@ -48,7 +48,7 @@
                                 <MudTd DataLabel="RoleName">@context.RoleName</MudTd>
                                 <MudTd DataLabel="Action">
                                     <CustomButton
-                                        Label="Edit"
+                                        Label="ပြောင်းရန်"
                                         IsLoading="_isLoading" FullWidth="false"
                                         OnClick="@(() => OpenUserUpdateDialog(context))"/>
                                 </MudTd>
@@ -118,7 +118,7 @@
     async Task OpenUserCreateDialog()
     {
         var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<UserCreateDialog>("Create New User", options);
+        var dialog = await DialogService.ShowAsync<UserCreateDialog>("အသုံးပြုသူအသစ်၏ ကိုယ်ရေးအချက်အလက်များ", options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -138,7 +138,7 @@
             { x => x.Username, userViewDto.Username },
             { x => x.RoleName, userViewDto.RoleName }
         };
-        var dialog = await DialogService.ShowAsync<UserUpdateDialog>("Update User", parameters, options);
+        var dialog = await DialogService.ShowAsync<UserUpdateDialog>("အသုံးပြုသူ၏ ကိုယ်ရေးအချက်အလက်များ", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
