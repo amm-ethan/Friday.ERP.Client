@@ -20,7 +20,7 @@
         }
         else
         {
-            <CustomInfoCard HeaderText="စာရင်းများ">
+            <CustomInfoCard HeaderText="အရောင်းအဝယ်စာရင်းများ">
                 <SubHeader>
                     <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
                         <b>၆လအတွင်း</b>
@@ -57,7 +57,7 @@
             <CustomInfoCard HeaderText="အကြွေးစားရင်း">
                 <SubHeader>
                     <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Error">
-                        <b>@_totalDebitOfCustomer</b>
+                        <b>@($"{_totalDebitOfCustomer * -1} ကျပ်")</b>
                     </MudText>
                 </SubHeader>
                 <ChildContent>
@@ -68,13 +68,13 @@
                                 စျေးဝယ်သူများ
                             </MudText>
                             <MudText Typo="Typo.caption">
-                                အ‌ကြွေး
+                                အ‌ကြွေး (ကျပ်)
                             </MudText>
                         </div>
                         @foreach (var customer in _customersWithDebits)
                         {
                             <CustomRowWithAvaterAndLabel AvatarColor="Color.Dark" AvatarText="@customer.CustomerName[0].ToString()"
-                                                         MainText="@customer.CustomerName" SubText="@customer.TotalCreditDebitLeft.ToString()"/>
+                                                         MainText="@customer.CustomerName" SubText="@($"{customer.TotalCreditDebitLeft * -1}")"/>
                         }
                     }
                     else
@@ -109,7 +109,7 @@
                     {
                         <div class="d-flex justify-space-between mt-4">
                             <MudText Typo="Typo.caption">
-                                ပစ္စည်းများ
+                                ပစ္စည်း
                             </MudText>
                             <MudText Typo="Typo.caption">
                                 ကြိမ်
@@ -144,10 +144,10 @@
         }
         else
         {
-            <CustomInfoCard HeaderText="Frequent Customers">
+            <CustomInfoCard HeaderText="မကြာခဏစျေးဝယ်သူများ">
                 <SubHeader>
                     <MudText Class="align-self-center" Align="Align.End" Typo="Typo.h6" Color="Color.Info">
-                        <b>Last 30 Days</b>
+                        <b>၁လအတွင်း</b>
                     </MudText>
                 </SubHeader>
                 <ChildContent>
@@ -155,10 +155,10 @@
                     {
                         <div class="d-flex justify-space-between mt-4">
                             <MudText Typo="Typo.caption">
-                                Customer
+                                စျေးဝယ်သူ
                             </MudText>
                             <MudText Typo="Typo.caption">
-                                Total Amount
+                                ကျပ်
                             </MudText>
                         </div>
                         @foreach (var customer in _frequentCustomer)
@@ -171,7 +171,7 @@
                     {
                         <div class="d-flex d-column justify-center flex-grow-1" style="height: 10vh;">
                             <div class="align-self-center">
-                                <MudText Typo="Typo.caption">No Data Yet!</MudText>
+                                <MudText Typo="Typo.caption">ဒေတာမရှိသေးပါ</MudText>
                             </div>
                         </div>
                     }
@@ -217,11 +217,11 @@
         if (result is { isSuccess: true, monthlySaleFigureViewDtos: not null })
         {
             var xAxisLabels = new List<string>();
-            var purchaseSeries = new ChartSeries { Name = "Purchase", Data = [] };
+            var purchaseSeries = new ChartSeries { Name = "အဝယ်", Data = [] };
             var purchaseData = new List<double>();
-            var saleSeries = new ChartSeries { Name = "Sale", Data = [] };
+            var saleSeries = new ChartSeries { Name = "အရောင်း", Data = [] };
             var saleData = new List<double>();
-            var profitSeries = new ChartSeries { Name = "Profit", Data = [] };
+            var profitSeries = new ChartSeries { Name = "အမြတ်", Data = [] };
             var profitData = new List<double>();
             foreach (var monthDetail in result.monthlySaleFigureViewDtos!)
             {

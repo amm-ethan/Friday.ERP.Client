@@ -18,19 +18,22 @@
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="ပေးငွေစုစုပေါင်း" SecondText="@($"{PaidTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
             <CustomLabelAndLabel FirstText="ကျန်ငွေ/ပိုငွေ စုစုပေါင်း"
-                                 SecondText="@($"{CreditDebitLeft.ToString()} ကျပ်")" SecondTextAlign="Align.End" 
+                                 SecondText="@($"{CreditDebitLeft.ToString()} ကျပ်")" SecondTextAlign="Align.End"
                                  SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Info)"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="မှတ်ချက်" SecondText="@Remark"/>
+            <CustomLabelAndLabel FirstText="မှတ်ချက်"
+                                 SecondText="@Remark"
+                                 SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         @if (IsPaid is not null)
         {
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText="ပေးချေပြီး"
-                                     SecondText="@(IsPaid)"/>
+                                     SecondText="@(IsPaid)"
+                                     SecondTextAlign="Align.End"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         }

@@ -9,10 +9,10 @@
     <MudDialog>
         <DialogContent>
             <MudText Typo="Typo.subtitle1">
-                <b>အရင် ‌စျေးနှုန်းများ ကိုဖျက်ရန်</b>
+                <b>အရင်‌စျေးနှုန်းများကိုဖျက်ရန်</b>
             </MudText>
             <MudGrid Spacing="2" Class="mt-4">
-                <CustomLabelAndInput FirstText="Price">
+                <CustomLabelAndInput FirstText="စျေး (ကျပ်)">
                     <MudItem sm="6" Class="align-self-center">
                         <MudSelect
                             @bind-Value="SelectedPrice"
@@ -20,7 +20,7 @@
                             Variant="Variant.Outlined">
                             @foreach (var price in _oldPrices)
                             {
-                                var label = $"{price.SalePrice} ကျပ်";
+                                var label = $"{price.SalePrice}";
                                 if (price.IsWholeSale is true)
                                 {
                                     label += " (လက်ကား)";
@@ -54,7 +54,7 @@
                 <MudGrid Spacing="2">
                     <MudItem sm="5" md="5" lg="5" Class="align-self-start">
                         <MudText Class="mt-3" Typo="@Typo.body1">
-                            ‌စျေးနှုန်း
+                            ‌စျေးနှုန်း (ကျပ်)
                         </MudText>
                     </MudItem>
                     <MudItem sm="6" Class="align-self-center">
@@ -96,7 +96,7 @@
 
     List<ProductPriceViewDto> _oldPrices = [];
     SuggestedProductPriceViewDto? _suggestPrice;
-    string _priceHelperText = "No Suggestion Yet!";
+    string _priceHelperText = "စျေးနှုန်း အကြံမပေးနိုင်သေးပါ";
 
     string? SelectedPrice { get; set; }
     bool IsWholesale { get; set; }
@@ -116,7 +116,7 @@
         if (result.isSuccess)
         {
             _suggestPrice = result.suggestedProductPriceViewDto!;
-            _priceHelperText = _suggestPrice.SalePrice != -1 ? $"Suggested Price is {_suggestPrice.SalePrice}" : "No Suggestion Yet!";
+            _priceHelperText = _suggestPrice.SalePrice != -1 ? $"{_suggestPrice.SalePrice} ကျပ်ဖြင့်ရောင်းနိုင်ပါသည်" : "စျေးနှုန်း အကြံမပေးနိုင်သေးပါ";
         }
 
         _isMainLoading = false;
@@ -127,9 +127,9 @@
     {
         IsWholesale = value;
         if (IsWholesale)
-            _priceHelperText = _suggestPrice!.SalePriceForWholeSale != -1 ? $"Suggested Price is {_suggestPrice.SalePriceForWholeSale}" : "No Suggestion Yet!";
+            _priceHelperText = _suggestPrice!.SalePriceForWholeSale != -1 ? $"{_suggestPrice.SalePriceForWholeSale} ကျပ်ဖြင့်ရောင်းနိုင်ပါသည်" : "စျေးနှုန်း အကြံမပေးနိုင်သေးပါ";
         else
-            _priceHelperText = _suggestPrice!.SalePrice != -1 ? $"Suggested Price is {_suggestPrice.SalePrice}" : "No Suggestion Yet!";
+            _priceHelperText = _suggestPrice!.SalePrice != -1 ? $"{_suggestPrice.SalePrice} ကျပ်ဖြင့်ရောင်းနိုင်ပါသည်" : "စျေးနှုန်း အကြံမပေးနိုင်သေးပါ";
         StateHasChanged();
     }
 
@@ -163,7 +163,7 @@
             { x => x.CategoryName, CategoryName }
         };
         var options = new DialogOptions();
-        await DialogService.ShowAsync<InventoryProductDialog>("Update Product", parameters, options);
+        await DialogService.ShowAsync<InventoryProductDialog>("ပစ္စည်းပြောင်းရန်", parameters, options);
     }
 
     async Task CreatePrice()
@@ -184,7 +184,7 @@
             if (result.isSuccess)
             {
                 NewPrice = null;
-                Snackbar.Add("Price Created!", Severity.Success);
+                Snackbar.Add("စျေးနှုန်းအသစ်ဖန်တီးပြီးပါပြီ!", Severity.Success);
                 await GetProductPrices();
             }
         }
@@ -208,7 +208,7 @@
         if (result)
         {
             SelectedPrice = null;
-            Snackbar.Add("Price Deleted!", Severity.Success);
+            Snackbar.Add("စျေးနှုန်းအဟောင်းဖျက်ပြီးပါပြီ", Severity.Success);
             await GetProductPrices();
         }
 

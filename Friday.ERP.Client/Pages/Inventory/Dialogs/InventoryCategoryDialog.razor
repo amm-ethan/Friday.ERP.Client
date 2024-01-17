@@ -7,7 +7,7 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomLabelAndInput FirstText="ပစ္စည်းအမျိုးအစား အ‌ရောင်">
+                <CustomLabelAndInput FirstText="အ‌ရောင်">
                     <MudItem sm="2" md="2" lg="2" Class="align-self-center">
                         <MudPaper Elevation="0" Style="@($"border: {CategoryColor}; background-color: {CategoryColor}")" Class="pa-2">&nbsp;</MudPaper>
                     </MudItem>
@@ -15,7 +15,7 @@
                         <MudColorPicker Required="@(!IsUpdate)" @bind-Text="CategoryColor" Margin="Margin.Dense" Variant="Variant.Outlined" ColorPickerView="ColorPickerView.Palette"/>
                     </MudItem>
                 </CustomLabelAndInput>
-                <CustomLabelAndStringField FirstText="ပစ္စည်းအမျိုးအစား အမည်" @bind-BindValue="@CategoryName" Required="@(!IsUpdate)"/>
+                <CustomLabelAndStringField FirstText="အမည်" @bind-BindValue="@CategoryName" Required="@(!IsUpdate)"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </MudForm>
@@ -116,7 +116,7 @@
             );
             if (result.isSuccess)
             {
-                Snackbar.Add("ရွေးချယ်ထားသော ပစ္စည်းအမျိုးအစား ကိုပြင်ပြီးပါပြီ", Severity.Success);
+                Snackbar.Add("ပစ္စည်းအမျိုးအစား ပြောင်းပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(result.isSuccess));

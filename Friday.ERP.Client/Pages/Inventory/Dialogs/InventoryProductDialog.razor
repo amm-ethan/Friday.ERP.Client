@@ -20,7 +20,7 @@
                                         {
                                             <div style="width: 100px;height: 100px" class="d-flex align-center">
                                                 <MudText Typo="Typo.body2">
-                                                    Click to upload image
+                                                    ဓာတ်ပုံတင်ရန်
                                                 </MudText>
                                             </div>
                                         }
@@ -38,22 +38,22 @@
                 <MudGrid Spacing="2">
                     @if (IsUpdate)
                     {
-                        <CustomLabelAndLabel FirstText="Code" SecondText="@Code"/>
+                        <CustomLabelAndLabel FirstText="ကုဒ်" SecondText="@Code"/>
                     }
                     else
                     {
-                        <CustomLabelAndStringField FirstText="Code" @bind-BindValue="@Code" Required="true"/>
+                        <CustomLabelAndStringField FirstText="ကုဒ်" @bind-BindValue="@Code" Required="true"/>
                     }
-                    <CustomLableAndAutocomplete FirstText="Category" Required="@(!IsUpdate)"
+                    <CustomLableAndAutocomplete FirstText="ပစ္စည်းအမျိုးအစား" Required="@(!IsUpdate)"
                                                 Value="@CategoryName"
                                                 SearchFuncWithCancel="@CategorySearch"
                                                 ValueChanged="@CategoryChange"
                                                 OnClearButtonClick="@CategoryClear"/>
-                    <CustomLabelAndStringField FirstText="Name" @bind-BindValue="@Name" Required="@(!IsUpdate)"/>
+                    <CustomLabelAndStringField FirstText="အမည်" @bind-BindValue="@Name" Required="@(!IsUpdate)"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndLongField FirstText="လက်ကျန်" @bind-BindValue="@Stock" Required="@(!IsUpdate)"/>
+                    <CustomLabelAndLongField FirstText="ပစ္စည်းလက်ကျန်" @bind-BindValue="@Stock" Required="@(!IsUpdate)"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
             </MudForm>
@@ -177,7 +177,7 @@
             );
             if (result.isSuccess)
             {
-                Snackbar.Add("Category Updated!", Severity.Success);
+                Snackbar.Add("ပစ္စည်းအသစ်ဖန်တီးပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(result.isSuccess));
@@ -206,7 +206,7 @@
             );
             if (result.isSuccess)
             {
-                Snackbar.Add("Category Updated!", Severity.Success);
+                Snackbar.Add("ပစ္စည်းပြောင်းပြီးပါပြီ!", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(result.isSuccess));
@@ -230,7 +230,7 @@
             { x => x.CategoryName, CategoryName }
         };
         var options = new DialogOptions();
-        await DialogService.ShowAsync<InventoryPriceCreateDialog>("Management Price", parameters, options);
+        await DialogService.ShowAsync<InventoryPriceCreateDialog>("ရောင်းစျေးပြင်ရန်", parameters, options);
     }
 
 }

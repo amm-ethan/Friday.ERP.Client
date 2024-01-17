@@ -13,7 +13,7 @@
         <MudGrid Spacing="2">
             <MudItem sm="12" md="12" lg="12" Class="align-self-center">
                 <MudText Typo="Typo.h6">
-                    Shop Info
+                    ဆိုင်အကြောင်း
                 </MudText>
             </MudItem>
         </MudGrid>
@@ -24,22 +24,22 @@
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Shop Name" SecondText="@ShopName"/>
+            <CustomLabelAndLabel FirstText="ဆိုင်အမည်" SecondText="@ShopName"/>
         </MudGrid>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Shop Description" SecondText="@ShopDescription"/>
-        </MudGrid>
-        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
-        <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Address One" SecondText="@AddressOne"/>
-            <CustomLabelAndLabel FirstText="Address Two" SecondText="@AddressTwo"/>
+            <CustomLabelAndLabel FirstText="ဆိုင်ဖော်ပြချက်" SecondText="@ShopDescription"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Phone One" SecondText="@PhoneOne"/>
-            <CustomLabelAndLabel FirstText="Phone Two" SecondText="@PhoneTwo"/>
-            <CustomLabelAndLabel FirstText="Phone Three" SecondText="@PhoneThree"/>
-            <CustomLabelAndLabel FirstText="Phone Four" SecondText="@PhoneFour"/>
+            <CustomLabelAndLabel FirstText="လိပ်စာ ၁" SecondText="@AddressOne"/>
+            <CustomLabelAndLabel FirstText="လိပ်စာ ၂" SecondText="@AddressTwo"/>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
+        <MudGrid Spacing="2">
+            <CustomLabelAndLabel FirstText="ဖုန်း ၁" SecondText="@PhoneOne"/>
+            <CustomLabelAndLabel FirstText="ဖုန်း ၂" SecondText="@PhoneTwo"/>
+            <CustomLabelAndLabel FirstText="ဖုန်း ၃" SecondText="@PhoneThree"/>
+            <CustomLabelAndLabel FirstText="ဖုန်း ၄" SecondText="@PhoneFour"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
     </CustomPage>
@@ -47,25 +47,25 @@
         <MudGrid Spacing="2">
             <MudItem sm="12" md="12" lg="12" Class="align-self-center">
                 <MudText Typo="Typo.h6">
-                    Settings
+                    ဆက်တင်များ
                 </MudText>
             </MudItem>
         </MudGrid>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomLabelAndLongField FirstText="Default Profit Percent"
+                <CustomLabelAndLongField FirstText="အမြတ်ရာခိုင်နှုန်း"
                                          @bind-BindValue="@DefaultProfitPercent"/>
-                <CustomLabelAndLongField FirstText="Default Profit Percent For Wholesale"
+                <CustomLabelAndLongField FirstText="အမြတ်ရာခိုင်နှုန်း (လက်ကားစျေး)"
                                          @bind-BindValue="@DefaultProfitPercentForWholeSale"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLongField FirstText="Stock Margin To Notify"
+                <CustomLabelAndLongField FirstText="အနည်းဆုံး ပစ္စည်းလက်ကျန်"
                                          @bind-BindValue="@MinimumStockMargin"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLableAndCheckbox FirstText="Suggest Sale Price" @bind-BindValue="SuggestSalePrice"/>
+                <CustomLableAndCheckbox FirstText="ရောင်းစျေး အကြံပေးရန်" @bind-BindValue="SuggestSalePrice"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2" Class="flex-grow-1">

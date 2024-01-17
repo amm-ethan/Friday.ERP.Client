@@ -140,7 +140,7 @@
                 <CustomLabelAndLabel FirstText="စာရင်းနံပါတ်"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.InvoiceNo : _selectedInvoiceSale!.InvoiceNo)"
                                      SecondTextAlign="Align.End"/>
-                <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "နေ့စွဲ")"
+                <CustomLabelAndLabel FirstText="နေ့စွဲ"
                                      SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.PurchasedAt.ToString("d") : _selectedInvoiceSale!.PurchasedAt.ToString("d"))"
                                      SecondTextAlign="Align.End"/>
                 <CustomLabelAndLabel FirstText="@(_isPurchaseInvoice ? "ရောင်းသူ" : "ဝယ်သူ")"
@@ -182,7 +182,7 @@
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ"
-                                     SecondText="@(_isPurchaseInvoice ? _selectedInvoicePurchase!.GrandTotal.ToString() : _selectedInvoiceSale!.Total.ToString())"
+                                     SecondText="@(_isPurchaseInvoice ? $"{_selectedInvoicePurchase!.GrandTotal.ToString()} ကျပ်" : $"{_selectedInvoiceSale!.Total.ToString()} ကျပ်")"
                                      SecondTextAlign="Align.End"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
