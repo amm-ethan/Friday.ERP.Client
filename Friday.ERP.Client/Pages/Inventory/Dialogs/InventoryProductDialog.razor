@@ -53,7 +53,7 @@
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <CustomLabelAndLongField FirstText="Stock" @bind-BindValue="@Stock" Required="@(!IsUpdate)"/>
+                    <CustomLabelAndLongField FirstText="လက်ကျန်" @bind-BindValue="@Stock" Required="@(!IsUpdate)"/>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
             </MudForm>
@@ -62,12 +62,12 @@
             @if (IsUpdate)
             {
                 <CustomButton
-                    Label="Manage Price" IsLoading="_isLoading" OnClick="@DialogSubmitPrice" Color="Color.Success" Variant="Variant.Text" FullWidth="false"/>
+                    Label="‌စျေးနှုန်းပြင်ရန်" IsLoading="_isLoading" OnClick="@DialogSubmitPrice" Color="Color.Success" Variant="Variant.Text" FullWidth="false"/>
             }
             <CustomButton
-                Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="@(IsUpdate ? "Update" : "Create")" IsLoading="_isLoading" OnClick="@(IsUpdate ? DialogUpdate : DialogSubmit)" Variant="Variant.Text" FullWidth="false"/>
+                Label="@(IsUpdate ? "ပြင်မည်" : "အသစ်ထည့်မည်")" IsLoading="_isLoading" OnClick="@(IsUpdate ? DialogUpdate : DialogSubmit)" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>

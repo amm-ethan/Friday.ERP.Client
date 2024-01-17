@@ -32,9 +32,9 @@
         </DialogContent>
         <DialogActions>
             <CustomButton
-                Label="မလုပ်တော့ပါ" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="အသစ်ထည့်မည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
+                Label="အသစ်ဖန်တီးမည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>
@@ -117,7 +117,7 @@
             var httpResult = await HttpRepo.CreateUser(dataToCreate);
             if (httpResult.isSuccess)
             {
-                Snackbar.Add("User Created!", Severity.Success);
+                Snackbar.Add("အသုံးပြုသူ အသစ်ဖန်တီး ပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));

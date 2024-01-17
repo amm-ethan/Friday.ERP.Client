@@ -7,31 +7,31 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText=@(IsCustomer ? "Customer Code" : "Vendor Code")
+                <CustomLabelAndLabel FirstText=@(IsCustomer ? "ဈေးဝယ်သူကုဒ်" : "ဈေးရောင်းသူကုဒ်")
                                      SecondText="@Code"/>
-                <CustomLabelAndLabel FirstText=@(IsCustomer ? "Customer Name" : "Vendor Name")
+                <CustomLabelAndLabel FirstText="အမည်"
                                      SecondText="@Name"/>
             </MudGrid>
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Phone" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
-                <CustomLabelAndStringField FirstText="Email" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
+                <CustomLabelAndStringField FirstText="ဖုန်း" @bind-BindValue="@Phone" KeyboardInputType="InputType.Telephone"/>
+                <CustomLabelAndStringField FirstText="အီးမေးလ်" @bind-BindValue="@Email" KeyboardInputType="InputType.Email"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address"/>
+                <CustomLabelAndStringField FirstText="နေရပ်" @bind-BindValue="@Address"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLongField FirstText="Total Credit / Debit" @bind-BindValue="@TotalCreditDebit"/>
+                <CustomLabelAndLongField FirstText="ကျန်ငွေ/ပိုငွေ" @bind-BindValue="@TotalCreditDebit"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         </MudForm>
     </DialogContent>
     <DialogActions>
         <CustomButton
-            Label="Cancel" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         <CustomButton
-            Label="Update" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
+            Label="ပြောင်းမည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 
@@ -82,7 +82,7 @@
 
             if (httpResult.isSuccess)
             {
-                Snackbar.Add(IsCustomer ? "Customer Created!" : "Vendor Created!", Severity.Success);
+                Snackbar.Add(IsCustomer ? "ဈေးဝယ်သူ၏ကိုယ်ရေးအချက်အလက်ကို ပြောင်းပြီးပါပြီ" : "ဈေးရောင်းသူ၏ကိုယ်ရေးအချက်အလက်ကို ပြောင်းပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));

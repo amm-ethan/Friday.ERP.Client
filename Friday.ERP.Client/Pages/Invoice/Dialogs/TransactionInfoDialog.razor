@@ -1,42 +1,42 @@
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="SubTotal" SecondText="@($"{SubTotal.ToString()} mmk")"/>
-            <CustomLabelAndLabel FirstText="Discount" SecondText="@($"- {Discount.ToString()} mmk")" SecondTextColor="Color.Error"/>
-            <CustomLabelAndLabel FirstText="Delivery Fees" SecondText="@($"{DeliveryFees.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="ကျသင့်‌ငွေ" SecondText="@($"{SubTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="လျော့စျေး" SecondText="@($"- {Discount.ToString()} ကျပ်")" SecondTextAlign="Align.End" SecondTextColor="Color.Error"/>
+            <CustomLabelAndLabel FirstText="လုပ်သားခ" SecondText="@($"{DeliveryFees.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"/>
-            <CustomLabelAndLabel FirstText="Existing Credit Debit" SecondText="@($"{(ExistingCreditDebit * -1).ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ" SecondText="@($"{Total.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="ယခင်ကြွေးကျန်/ပိုငွေ" SecondText="@($"{(ExistingCreditDebit * -1).ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Grand Total" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Paid Total" SecondText="@($"{PaidTotal.ToString()} mmk")"/>
-            <CustomLabelAndLabel FirstText="Credit / Debit Left"
-                                 SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Info)"
-                                 SecondText="@($"{CreditDebitLeft.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="ပေးငွေစုစုပေါင်း" SecondText="@($"{PaidTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="ကျန်ငွေ/ပိုငွေ စုစုပေါင်း"
+                                 SecondText="@($"{CreditDebitLeft.ToString()} ကျပ်")" SecondTextAlign="Align.End" 
+                                 SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Info)"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Remark" SecondText="@Remark"/>
+            <CustomLabelAndLabel FirstText="မှတ်ချက်" SecondText="@Remark"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         @if (IsPaid is not null)
         {
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="IsPaid"
+                <CustomLabelAndLabel FirstText="ပေးချေပြီး"
                                      SecondText="@(IsPaid)"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         }
     </DialogContent>
     <DialogActions>
-        <CustomButton Label="Back" OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+        <CustomButton Label="ထွက်မည်" OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 

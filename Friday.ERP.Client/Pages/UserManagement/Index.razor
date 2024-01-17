@@ -23,7 +23,7 @@
                     </MudItem>
                     <MudItem sm="6" md="3" Class="align-self-center">
                         <CustomButton
-                            Label="အသစ်ထည့်ရန်"
+                            Label="အသစ်ဖန်တီးရန်"
                             IsLoading="_isLoading"
                             OnClick="@OpenUserCreateDialog"
                             Variant="Variant.Filled"/>
@@ -48,7 +48,7 @@
                                 <MudTd DataLabel="RoleName">@context.RoleName</MudTd>
                                 <MudTd DataLabel="Action">
                                     <CustomButton
-                                        Label="ပြင်ရန်"
+                                        Label="ပြောင်းရန်"
                                         IsLoading="_isLoading" FullWidth="false"
                                         OnClick="@(() => OpenUserUpdateDialog(context))"/>
                                 </MudTd>
@@ -118,7 +118,7 @@
     async Task OpenUserCreateDialog()
     {
         var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<UserCreateDialog>("အသစ်ထည့်ရန်", options);
+        var dialog = await DialogService.ShowAsync<UserCreateDialog>("အသုံးပြုသူအသစ်၏ ကိုယ်ရေးအချက်အလက်များ", options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -138,7 +138,7 @@
             { x => x.Username, userViewDto.Username },
             { x => x.RoleName, userViewDto.RoleName }
         };
-        var dialog = await DialogService.ShowAsync<UserUpdateDialog>("ကိုယ်ရေးအချက်အလက်များ ပြောင်းရန်", parameters, options);
+        var dialog = await DialogService.ShowAsync<UserUpdateDialog>("အသုံးပြုသူ၏ ကိုယ်ရေးအချက်အလက်များ", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

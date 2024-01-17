@@ -22,17 +22,17 @@
                     <CustomLableAndCheckbox FirstText="စကားဝှက် ပြောင်းမည်" @bind-BindValue="IsChangePassword"/>
                     @if (IsChangePassword)
                     {
-                        <CustomLableAndCheckbox FirstText="စကားဝှက်အဟောင်း မေ့နေသည်" @bind-BindValue="IsForceResetPassword"/>
+                        <CustomLableAndCheckbox FirstText="စကားဝှက်အ‌ဟောင်းမေ့နေသည်" @bind-BindValue="IsForceResetPassword"/>
                     }
                     @if (IsChangePassword && !IsForceResetPassword)
                     {
-                        <CustomLabelAndFieldPassword FirstText="စကားဝှက် အဟောင်း" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
+                        <CustomLabelAndFieldPassword FirstText="စကားဝှက်အ‌ဟောင်း" @bind-BindValue="@OldPassword" Required="@(IsChangePassword && !IsForceResetPassword)"
                                                      KeyboardInputType="@_oldPasswordInput"
                                                      AdornmentIcon="@_oldPasswordInputIcon" OnAdornmentClick="@ShowOldPassword"/>
                     }
                     @if (IsChangePassword)
                     {
-                        <CustomLabelAndFieldPassword FirstText="စကားဝှက် အသစ်" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
+                        <CustomLabelAndFieldPassword FirstText="စကားဝှက်အ‌သစ်" @bind-BindValue="@NewPassword" Required="@(IsChangePassword)"
                                                      KeyboardInputType="@_passwordInput"
                                                      AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="@ShowPassword"/>
                     }
@@ -47,7 +47,7 @@
         </DialogContent>
         <DialogActions>
             <CustomButton
-                Label="မလုပ်တော့ပါ" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
                 Label="ပြောင်းမည်" IsLoading="_isLoading" OnClick="@DialogSubmit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
@@ -139,7 +139,7 @@
 
             if (httpResult.isSuccess)
             {
-                Snackbar.Add("User Updated!", Severity.Success);
+                Snackbar.Add("အသုံးပြုသူ၏ကိုယ်ရေးအချက်အလက်ကို ပြောင်းပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(httpResult.isSuccess));
