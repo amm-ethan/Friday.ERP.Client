@@ -3,29 +3,29 @@
     <DialogContent>
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Address" @bind-BindValue="@Address" Required="true"/>
-                <CustomLabelAndStringField FirstText="Contact Person" @bind-BindValue="@ContactPerson" Required="true"/>
-                <CustomLabelAndStringField FirstText="Contact Phone" @bind-BindValue="@ContactPhone" Required="true"/>
+                <CustomLabelAndStringField FirstText="လိပ်စာ" @bind-BindValue="@Address" Required="true"/>
+                <CustomLabelAndStringField FirstText="ဆက်သွယ်ရန်" @bind-BindValue="@ContactPerson" Required="true"/>
+                <CustomLabelAndStringField FirstText="ဆက်သွယ်ရန်ဖုန်း" @bind-BindValue="@ContactPhone" Required="true"/>
 
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Delivery Service Name" @bind-BindValue="@DeliveryServiceName"/>
-                <CustomLabelAndStringField FirstText="Contact Person" @bind-BindValue="@DeliveryServiceContactPerson"/>
-                <CustomLabelAndStringField FirstText="Contact Phone" @bind-BindValue="@DeliveryServiceContactPhone"/>
+                <CustomLabelAndStringField FirstText="ကားဂိတ်/delivery အမည်" @bind-BindValue="@DeliveryServiceName"/>
+                <CustomLabelAndStringField FirstText="ဆက်သွယ်ရန်" @bind-BindValue="@DeliveryServiceContactPerson"/>
+                <CustomLabelAndStringField FirstText="ဆက်သွယ်ရန်ဖုန်း" @bind-BindValue="@DeliveryServiceContactPhone"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndStringField FirstText="Remark" @bind-BindValue="@Remark"/>
+                <CustomLabelAndStringField FirstText="မှတ်ချက်" @bind-BindValue="@Remark"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </MudForm>
     </DialogContent>
     <DialogActions>
         <CustomButton
-            Label="Cancel" OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            Label="ထွက်မည်" OnClick="@Back" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         <CustomButton
-            Label="Make Purchase" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
+            Label="Delivery အကြောင်းအရာထည့်မည်" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 

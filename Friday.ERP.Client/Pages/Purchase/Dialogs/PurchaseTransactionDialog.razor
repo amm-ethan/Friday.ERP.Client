@@ -3,24 +3,24 @@
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Invoice No." SecondText="@InvoiceNo"/>
-            <CustomLabelAndLabel FirstText="Vendor" SecondText="@VendorName"/>
-            <CustomLabelAndLabel FirstText="Existing Credit / Debit"
+            <CustomLabelAndLabel FirstText="ဘောင်ချာနံပါတ်." SecondText="@InvoiceNo"/>
+            <CustomLabelAndLabel FirstText="စျေးရောင်းသူ" SecondText="@VendorName"/>
+            <CustomLabelAndLabel FirstText="အကြွေး/ပိုငွေ"
                                  SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Info)"
                                  SecondText="@_vendorExistingCreditDebitString"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="ကျသင့်‌ငွေ" SecondText="@($"{SubTotal.ToString()} ကျပ်")"/>
             @* Todo *@
-            <CustomLabelAndInput FirstText="Discount">
+            <CustomLabelAndInput FirstText="လျော့စျေး">
                 <MudItem sm="3" md="3" lg="3" Class="align-self-center">
                     <MudSelect T="string"
                               ValueChanged="DiscountTypeValueChanged"
                                FullWidth="true"
                                Margin="Margin.Dense"
                                Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("Flat")"/>
+                        <MudSelectItem Value="@("ကျပ်")"/>
                         <MudSelectItem Value="@("%")"/>
                     </MudSelect>
                 </MudItem>
@@ -34,26 +34,26 @@
                                   Variant="Variant.Outlined"/>
                 </MudItem>
             </CustomLabelAndInput>
-            <CustomLabelAndLongField FirstText="Delivery Fees"
+            <CustomLabelAndLongField FirstText="လုပ်သားခ"
                                      BindValue="@DeliveryFees" BindValueChanged="@(e => DiscountOrDeliveryFeesValueChanged(e, false))"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Total" SecondText="@($"{Total.ToString()} mmk")"/>
-            <CustomLabelAndLabel FirstText="Total (With Existing)" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
-            <CustomLabelAndLongField FirstText="Paid Total"
+            <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ" SecondText="@($"{Total.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
+            <CustomLabelAndLongField FirstText="ပေးငွေစုစုပေါင်း"
                                      BindValue="@PaidTotal" BindValueChanged="@TotalPaidValueChanged" Required="true"/>
-            <CustomLableAndCheckbox FirstText="Is Paid" @bind-BindValue="IsPaid"/>
+            <CustomLableAndCheckbox FirstText="ပေးချေပြီးပြီ" @bind-BindValue="IsPaid"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Total Credit / Debit (Overall)"
+            <CustomLabelAndLabel FirstText="လက်ကျန် အကြွေး/ပိုငွေ"
                                  SecondText="@_totalCreditDebitLeftString"
                                  SecondTextColor="@(CreditDebitLeftTransaction < 0 ? Color.Error : Color.Info)"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndInput FirstText="Remark">
+            <CustomLabelAndInput FirstText="မှတ်ချက်">
                 <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                     <MudTextField T="string" @bind-Value="Remark"
                                   FullWidth="true" InputType="InputType.Text"
@@ -65,9 +65,9 @@
     </DialogContent>
     <DialogActions>
         <CustomButton
-            Label="Cancel" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+            Label="ထွက်မည်" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
         <CustomButton
-            Label="Make Purchase" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
+            Label="ဝယ်မည်" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
     </DialogActions>
 </MudDialog>
 
@@ -81,8 +81,8 @@
     [Parameter] public long SubTotal { get; set; }
 
     string? _vendorExistingCreditDebitString;
-    string? _totalCreditDebitLeftString = "0 mmk";
-    string? _selectedDiscountType = "Flat";
+    string? _totalCreditDebitLeftString = "0 ကျပ်";
+    string? _selectedDiscountType = "ကျပ်";
 
     long _discount;
 
@@ -100,11 +100,11 @@
         base.OnParametersSet();
         _vendorExistingCreditDebitString = VendorExistingCreditDebit.ToString();
         if (VendorExistingCreditDebit < 0)
-            _vendorExistingCreditDebitString += " mmk (Debit)";
+            _vendorExistingCreditDebitString += " ကျပ် (အကြွေး)";
         else if (VendorExistingCreditDebit == 0)
-            _vendorExistingCreditDebitString += " mmk";
+            _vendorExistingCreditDebitString += " ကျပ်";
         else
-            _vendorExistingCreditDebitString += " mmk (Credit)";
+            _vendorExistingCreditDebitString += " ကျပ် (ပိုငွေ)";
 
         Total = SubTotal;
         GrandTotal = Total - VendorExistingCreditDebit;
@@ -130,7 +130,7 @@
             DeliveryFees = value;
         }
 
-        if (_selectedDiscountType == "Flat")
+        if (_selectedDiscountType == "ကျပ်")
         {
             Discount = _discount;
         }
@@ -160,11 +160,11 @@
         CreditDebitLeftTransaction = longValue - GrandTotal;
         _totalCreditDebitLeftString = CreditDebitLeftTransaction.ToString();
         if (CreditDebitLeftTransaction < 0)
-            _totalCreditDebitLeftString += " mmk (Debit)";
+            _totalCreditDebitLeftString += " ကျပ် (အကြွေး)";
         else if (CreditDebitLeftTransaction == 0)
-            _totalCreditDebitLeftString += " mmk";
+            _totalCreditDebitLeftString += " ကျပ်";
         else
-            _totalCreditDebitLeftString += " mmk (Credit)";
+            _totalCreditDebitLeftString += " ကျပ် (ပိုငွေ)";
     }
 
     void Cancel()

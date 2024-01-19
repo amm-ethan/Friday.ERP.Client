@@ -15,18 +15,18 @@
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4 mb-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Last Purchase Price" SecondText="@($"{_lastPrice.ToString()} mmk")"/>
+                <CustomLabelAndLabel FirstText="အရင်ဝယ်စျေး" SecondText="@($"{_lastPrice.ToString()} mmk")"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndLongField
-                    FirstText="Purchase Price" BindValue="@Price" BindValueChanged="@ValueChangedPrice" Required="true"/>
+                    FirstText="ဝယ်စျေး" BindValue="@Price" BindValueChanged="@ValueChangedPrice" Required="true"/>
                 <CustomLabelAndLongField
-                    FirstText="Quantity" BindValue="@Quantity" BindValueChanged="@ValueChangedQuantity" Required="true"/>
+                    FirstText="ခု" BindValue="@Quantity" BindValueChanged="@ValueChangedQuantity" Required="true"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"/>
+                <CustomLabelAndLabel FirstText="စုစုပေါင်း" SecondText="@($"{TotalPrice} mmk")"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </DialogContent>
@@ -34,13 +34,13 @@
             @if (IsUpdate)
             {
                 <CustomButton
-                    Label="Remove From Cart" OnClick="@Delete" Color="Color.Error" Variant="Variant.Text" FullWidth="false"/>
+                    Label="စျေးခြင်းထဲ့မှဖယ်ရန်" OnClick="@Delete" Color="Color.Error" Variant="Variant.Text" FullWidth="false"/>
             }
             <CustomButton
-                Label="Cancel" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
 
             <CustomButton
-                Label=@(IsUpdate ? "Update" : "Add to Cart") OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
+                Label=@("စျေးခြင်းထဲ့ထည့်ရန်") OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
 </CustomDialog>
@@ -97,7 +97,7 @@
     {
         if (TotalPrice == 0)
         {
-            Snackbar.Add("Total Price Must Not Be 0 !", Severity.Error);
+            Snackbar.Add("စျေးနှုန်းထည့်ပါ", Severity.Error);
         }
         else
         {

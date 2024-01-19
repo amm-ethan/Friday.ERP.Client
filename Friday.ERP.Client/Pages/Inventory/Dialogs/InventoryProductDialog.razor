@@ -59,13 +59,13 @@
             </MudForm>
         </DialogContent>
         <DialogActions>
+            <CustomButton
+                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             @if (IsUpdate)
             {
                 <CustomButton
                     Label="‌စျေးနှုန်းပြင်ရန်" IsLoading="_isLoading" OnClick="@DialogSubmitPrice" Color="Color.Success" Variant="Variant.Text" FullWidth="false"/>
             }
-            <CustomButton
-                Label="ထွက်မည်" IsLoading="_isLoading" OnClick="@DialogCancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
                 Label="@(IsUpdate ? "ပြင်မည်" : "အသစ်ထည့်မည်")" IsLoading="_isLoading" OnClick="@(IsUpdate ? DialogUpdate : DialogSubmit)" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>

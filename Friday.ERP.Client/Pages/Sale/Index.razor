@@ -41,8 +41,8 @@
     </CustomPage>
     <CustomPage Sm="12" Md="5" IsLoading="@_isMainLoading">
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Invoice" SecondText="@_invoiceNo" SecondTextAlign="Align.End"/>
-            <CustomLabelAndLabel FirstText="Date & Time" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="ဘောင်ချာနံပါတ်" SecondText="@_invoiceNo" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="နေ့စွဲ" SecondText="@(DateTime.Now.ToString("d"))" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2" Justify="Justify.FlexStart" Style="overflow-y: auto;height: 100%;align-content: baseline;">
@@ -51,7 +51,7 @@
                 <MudItem sm="12">
                     <div class="d-flex d-column justify-center flex-grow-1" style="height: 40vh;">
                         <div class="align-self-center">
-                            <MudText Typo="Typo.caption">No Product In Cart!</MudText>
+                            <MudText Typo="Typo.caption">ပစ္စည်းများစျေးခြင်းထဲတွင်မရှိသေးပါ</MudText>
                         </div>
                     </div>
                 </MudItem>
@@ -72,14 +72,14 @@
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLableAndAutocomplete FirstText="Customer"
+            <CustomLableAndAutocomplete FirstText="စျေးဝယ်သူ"
                                         Value="@_customerVendorName" SearchFuncWithCancel="@CustomerVendorSearch"
                                         ValueChanged="@CustomerVendorChange"
                                         OnClearButtonClick="@CustomerVendorClear"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="Subtotal" SecondText="@($"{SubTotal} mmk")" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="ကျသင့်‌ငွေ" SecondText="@($"{SubTotal} ကျပ်")" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
@@ -87,12 +87,12 @@
             {
                 <MudItem sm="6" md="6" lg="6">
                     <CustomButton
-                        Label="Add Delivery Info" IsLoading="_isLoading" OnClick="@AddDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary"/>
+                        Label="Delivery အကြောင်းအရာထည့်ရန်" IsLoading="_isLoading" OnClick="@AddDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary"/>
                 </MudItem>
             }
             <MudItem sm="@(_customerVendorName is not null ? 6 : 12)">
                 <CustomButton
-                    Label="Proceed to Sale" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" Variant="Variant.Filled"/>
+                    Label="ရောင်းရန်" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" Variant="Variant.Filled"/>
             </MudItem>
         </MudGrid>
     </CustomPage>
@@ -233,7 +233,7 @@
     {
         if (_productsInCartTemp.Select(c => c.ProductGuid).ToList().Contains(productViewDto.Guid))
         {
-            Snackbar.Add("Product Already In Cart!", Severity.Error);
+            Snackbar.Add("စျေးခြင်းထဲတွင်ပစ္စည်းရှိပြီးသားဖြစ်နေသည်", Severity.Error);
             return;
         }
 
@@ -247,7 +247,7 @@
             { x => x.Name, productViewDto.Name },
             { x => x.Stock, productViewDto.TotalStockLeft }
         };
-        var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("Add to Cart", parameters, options);
+        var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("စျေးခြင်းထဲထည့်ရန်", parameters, options);
 
         var result = await dialog.Result;
         if (!result.Canceled)
@@ -255,7 +255,7 @@
             var addedProduct = (ProductSaleAddToCartViewDto)result.Data;
             _productsInCartTemp.Add(addedProduct);
 
-            Snackbar.Add("Product Added To Cart!", Severity.Success);
+            Snackbar.Add("စျေးခြင်းထဲထည့်ပြီးပြီ", Severity.Success);
             SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
         }
     }
@@ -278,7 +278,7 @@
         };
 
         var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("Update Cart", parameters, options);
+        var dialog = await DialogService.ShowAsync<SaleProductCartDialog>("ပြောင်းရန်", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -289,7 +289,7 @@
                 if (productToRemove is not null)
                     _productsInCartTemp.Remove(productToRemove);
 
-                Snackbar.Add("Product Removed From Cart!", Severity.Success);
+                Snackbar.Add("စျေးခြင်းမှဖယ်ရှားပြီးပြီ", Severity.Success);
             }
             else
             {
@@ -301,7 +301,7 @@
                     _productsInCartTemp.Add(addedProduct);
                 }
 
-                Snackbar.Add("Product Updated To Cart!", Severity.Success);
+                Snackbar.Add("စျေးခြင်းထဲ့ထည့်ပြီးပြီ", Severity.Success);
             }
 
             SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
@@ -325,7 +325,7 @@
                 { x => x.DeliveryServiceContactPhone, _deliveryInfo.DeliveryContactPhone },
                 { x => x.Remark, _deliveryInfo.Remark }
             };
-            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
+            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery အကြောင်းအရာ", parameters, options);
             result = await dialog.Result;
         }
         else
@@ -337,14 +337,14 @@
                 { x => x.ContactPhone, selectedCustomerVendor.Phone },
                 { x => x.ContactPerson, selectedCustomerVendor.Name }
             };
-            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery Info ", parameters, options);
+            var dialog = await DialogService.ShowAsync<SaleTransactionDeliveryDialog>("Delivery အကြောင်းအရာ", parameters, options);
             result = await dialog.Result;
         }
 
         if (!result.Canceled)
         {
             _deliveryInfo = (InvoiceSaleDeliveryCreateDto)result.Data;
-            Snackbar.Add("Delivery Info Added!", Severity.Success);
+            Snackbar.Add("Delivery အကြောင်းအရာထည့်ပြီးပြီ", Severity.Success);
         }
     }
 
@@ -352,7 +352,7 @@
     {
         if (_customerVendorName is null & _productsInCartTemp.Count == 0)
         {
-            Snackbar.Add("Add Product To Make Sale!", Severity.Error);
+            Snackbar.Add("ရောင်းရန်ပစ္စည်းထည့်ပါ", Severity.Error);
             return;
             
         }
@@ -366,7 +366,7 @@
         };
 
         var options = new DialogOptions();
-        var dialog = await DialogService.ShowAsync<SaleTransactionDialog>("Make Sale", parameters, options);
+        var dialog = await DialogService.ShowAsync<SaleTransactionDialog>("ရောင်းရန်", parameters, options);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
@@ -406,7 +406,7 @@
 
             if (httpResult.isSuccess)
             {
-                Snackbar.Add("Sale Completed!", Severity.Success);
+                Snackbar.Add("စျေးရောင်းခြင်းအောင်မြင်သည်", Severity.Success);
                 var fileName = $"{_invoiceNo}.pdf";
 
                 using var streamRef = new DotNetStreamReference(httpResult.stream!);

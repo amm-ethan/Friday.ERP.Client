@@ -4,20 +4,7 @@
 @inject IHttpRepository HttpRepo
 @inject ISnackbar Snackbar
 
-@if (_isMainLoading)
-{
-    <MudDialog>
-        <DialogContent>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="25vh"/>
-        </DialogContent>
-        <DialogActions>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="10vh" Height="4vh"/>
-        </DialogActions>
-    </MudDialog>
-}
-else
-{
+<CustomDialog IsLoading="@_isMainLoading">
     <MudDialog>
         <DialogContent>
             <MudGrid Spacing="2">
@@ -28,7 +15,7 @@ else
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mb-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndInput FirstText="Sale Price">
+                <CustomLabelAndInput FirstText="ရောင်းစျေး">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                         <MudSelect
                             T="long"
@@ -38,10 +25,10 @@ else
                             Variant="Variant.Outlined">
                             @foreach (var price in _oldPrices)
                             {
-                                var label = $"{price.SalePrice} mmk";
+                                var label = $"{price.SalePrice} ကျပ်";
                                 if (price.IsWholeSale is true)
                                 {
-                                    label += " (Wholesale)";
+                                    label += " (လက်ကား)";
                                 }
 
                                 <MudSelectItem Value="@(price.SalePrice)">
@@ -51,7 +38,7 @@ else
                         </MudSelect>
                     </MudItem>
                 </CustomLabelAndInput>
-                <CustomLabelAndInput FirstText="Quantity">
+                <CustomLabelAndInput FirstText="နှုန်း">
                     <MudItem sm="7" md="7" lg="7" Class="align-self-center">
                         <MudTextField
                             @ref="QuantityTextField"
@@ -65,7 +52,7 @@ else
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="Total Price" SecondText="@($"{TotalPrice} mmk")"/>
+                <CustomLabelAndLabel FirstText="စုစုပေါင်း" SecondText="@($"{TotalPrice} mmk")"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </DialogContent>
@@ -73,15 +60,15 @@ else
             @if (IsUpdate)
             {
                 <CustomButton
-                    Label="Remove From Cart" OnClick="@Delete" Color="Color.Error" Variant="Variant.Text" FullWidth="false"/>
+                    Label="စျေးခြင်းထဲ့မှဖယ်ရန်" OnClick="@Delete" Color="Color.Error" Variant="Variant.Text" FullWidth="false"/>
             }
             <CustomButton
-                Label="Cancel" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
+                Label="ထွက်မည်" OnClick="@Cancel" Color="Color.Default" Variant="Variant.Text" FullWidth="false"/>
             <CustomButton
-                Label="@(IsUpdate ? "Update" : "Add to Cart")" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
+                Label="စျေးခြင်းထဲ့ထည့်ရန်" OnClick="@Submit" Variant="Variant.Text" FullWidth="false"/>
         </DialogActions>
     </MudDialog>
-}
+</CustomDialog>
 
 @code {
 
@@ -117,10 +104,10 @@ else
 
         if (IsUpdate)
         {
-            var label = $"{SelectedPrice} mmk";
+            var label = $"{SelectedPrice} ကျပ်";
             if (SelectedPriceIsWholeSale)
             {
-                label += " (Wholesale)";
+                label += " (လက်ကား)";
             }
 
             PriceSelect.Text = label;
@@ -170,13 +157,13 @@ else
     {
         if (TotalPrice == 0)
         {
-            Snackbar.Add("Total Price Must Not Be 0!", Severity.Error);
+            Snackbar.Add("စျေးနှုန်းထည့်ပါ", Severity.Error);
             return;
         }
 
         if (Quantity > Stock)
         {
-            Snackbar.Add("Quantity Must Not Be Larger Than In Stock!", Severity.Error);
+            Snackbar.Add("လက်ကျန်ထက်ပိုဝယ်၍မရပါ", Severity.Error);
             return;
         }
 
