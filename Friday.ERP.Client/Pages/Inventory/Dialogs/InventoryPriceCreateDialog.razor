@@ -17,6 +17,7 @@
                         <MudSelect
                             @bind-Value="SelectedPrice"
                             Margin="Margin.Dense" Dense="true"
+                            Clearable="true"
                             Variant="Variant.Outlined">
                             @foreach (var price in _oldPrices)
                             {
@@ -46,7 +47,7 @@
                 <MudGrid Spacing="2" Class="mt-4">
                     <CustomLabelAndInput FirstText="လက်ကားစျေး">
                         <MudItem sm="7" md="7" lg="7" Class="align-self-center">
-                            <MudCheckBox T="bool" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"/>
+                            <MudCheckBox T="bool" Value="@IsWholesale" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"/>
                         </MudItem>
                     </CustomLabelAndInput>
                 </MudGrid>
@@ -184,6 +185,7 @@
             if (result.isSuccess)
             {
                 NewPrice = null;
+                IsWholesale = false;
                 Snackbar.Add("စျေးနှုန်းအသစ်ဖန်တီးပြီးပါပြီ!", Severity.Success);
                 await GetProductPrices();
             }
@@ -208,6 +210,7 @@
         if (result)
         {
             SelectedPrice = null;
+            IsWholesale = false;
             Snackbar.Add("စျေးနှုန်းအဟောင်းဖျက်ပြီးပါပြီ", Severity.Success);
             await GetProductPrices();
         }

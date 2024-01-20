@@ -19,6 +19,28 @@
     CloseOnEscapeKey="true"/>
 <MudSnackbarProvider/>
 
+<style>
+      .new_notification{
+      background-color:ghostwhite;
+      border-radius: 5px;
+      margin-bottom:5px;
+      }
+      .new_notification:hover {
+      background-color: whitesmoke;
+      border-radius: 5px;
+            margin-bottom:5px;
+            }
+    .old_notification{
+          background-color:white;
+          border-radius: 5px;
+          margin-bottom:5px;
+          }
+          .old_notification:hover {
+          background-color: whitesmoke;
+          border-radius: 5px;
+                margin-bottom:5px;
+        }
+</style>
 <MudLayout>
     <MudAppBar Elevation="0" Color="Color.Transparent">
         <MudIconButton Icon="@Icons.Material.TwoTone.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="@DrawerToggle"/>
@@ -29,7 +51,38 @@
                     <MudIconButton Icon="@Icons.Material.TwoTone.Notifications" Color="Color.Primary" Size="Size.Medium"/>
                 </ActivatorContent>
                 <ChildContent>
-                    <NotificationBox NotificationList="_notificationList"></NotificationBox>
+                    <MudContainer Class="my-1" Style="width:25vw;">
+                        <MudGrid>
+                            <MudItem xs="6" Class="align-self-center">
+                                <MudText Typo="Typo.subtitle1">အသိပေးချက်များ</MudText>
+                            </MudItem>
+                        </MudGrid>
+                        <MudDivider Class="my-2"/>
+                        @if (_notificationList.Count == 0)
+                        {
+                            <MudMenuItem Class="py-1 px-2" Disabled="true">
+                                <MudGrid>
+                                    <MudItem xs="12" Class="d-flex justify-center">
+                                        <MudText Typo="Typo.body2">No New Notifications</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudMenuItem>
+                        }
+                        else
+                        {
+                            foreach (var notification in _notificationList)
+                            {
+                                <MudMenuItem OnClick="() => ReadNotifications(notification.Guid)" Class="@(notification.HaveRead ? "old_notification" : "new_notification")">
+                                    <div class="d-flex flex-row justify-space-between">
+                                        <MudText Typo="@Typo.body1" Style="font-weight:bold">@notification.Heading</MudText>
+                                        <MudText Align="Align.Right" Typo="@Typo.caption">@notification.SentAt.ToString("yyyy-MM-dd HH:mm:ss")</MudText>
+                                    </div>
+                                    <MudText Typo="@Typo.subtitle2" Style="font-weight:lighter">@notification.Body</MudText>
+                                </MudMenuItem>
+                                <MudDivider Class="my-2"/>
+                            }
+                        }
+                    </MudContainer>
                 </ChildContent>
             </MudMenu>
         </MudBadge>
@@ -86,13 +139,15 @@
         _hubConnection.On<string>("ReceiveNotification", message =>
         {
             var messageObject = JsonConvert.DeserializeObject<NotificationViewDto>(message);
-            _hasNewNotification = true;
             _notificationList.Add(messageObject!);
             _ = _notificationList.OrderByDescending(c => c.SentAt);
             Snackbar.Add($"{messageObject!.Heading}", Severity.Info);
+            CheckNewNotificationExists();
             StateHasChanged();
         });
-
+        
+        CheckNewNotificationExists();
+        StateHasChanged();
         await _hubConnection.StartAsync();
         await _hubConnection.InvokeAsync("GetConnectionId");
     }
@@ -107,6 +162,26 @@
         var result = await HttpRepo.Logout();
         if (result)
             Snackbar.Add("Logout Successful", Severity.Success);
+    }
+
+    async Task ReadNotifications(Guid guid)
+    {
+        _ = await HttpRepo.ReadNotificationByGuid(guid);
+        var selectedNotification = _notificationList.SingleOrDefault(c => c.Guid == guid);
+        selectedNotification!.HaveRead = true;
+        CheckNewNotificationExists();
+        StateHasChanged();
+    }
+
+    void CheckNewNotificationExists()
+    {
+        _hasNewNotification = false;
+        foreach (var notification in _notificationList)
+        {
+            if (notification.HaveRead) continue;
+            _hasNewNotification = true;
+            break;
+        }
     }
 
 }

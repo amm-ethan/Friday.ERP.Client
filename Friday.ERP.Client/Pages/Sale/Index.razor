@@ -87,7 +87,7 @@
             {
                 <MudItem sm="6" md="6" lg="6">
                     <CustomButton
-                        Label="Delivery အကြောင်းအရာထည့်ရန်" IsLoading="_isLoading" OnClick="@AddDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary"/>
+                        Label="Delivery" IsLoading="_isLoading" OnClick="@AddDeliveryInfo" Variant="Variant.Filled" Color="Color.Secondary"/>
                 </MudItem>
             }
             <MudItem sm="@(_customerVendorName is not null ? 6 : 12)">
@@ -350,12 +350,12 @@
 
     async Task OpenTransactionCreateDialog()
     {
-        if (_customerVendorName is null & _productsInCartTemp.Count == 0)
+        if (_customerVendorName is null & (_productsInCartTemp.Count == 0))
         {
             Snackbar.Add("ရောင်းရန်ပစ္စည်းထည့်ပါ", Severity.Error);
             return;
-            
         }
+
         var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == _customerVendorName);
         var parameters = new DialogParameters<SaleTransactionDialog>
         {

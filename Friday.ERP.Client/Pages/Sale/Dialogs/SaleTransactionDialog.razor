@@ -1,5 +1,4 @@
 @using Friday.ERP.Shared.DataTransferObjects
-
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
@@ -30,7 +29,7 @@
                     </MudSelect>
                 </MudItem>
                 <MudItem sm="4" md="4" lg="4" Class="align-self-center">
-                    <MudTextField T="long" 
+                    <MudTextField T="long"
                                   Value="@_discount"
                                   ValueChanged="@(e => DiscountOrDeliveryFeesValueChanged(e, true))"
                                   Immediate="true"
@@ -94,7 +93,7 @@
     string? _customerExistingCreditDebitString;
     string? _totalCreditDebitLeftString = "0 ကျပ်";
     string? _selectedDiscountType = "ကျပ်";
-    
+
     long _discount;
 
     long Discount { get; set; }
@@ -133,7 +132,7 @@
         _selectedDiscountType = value;
         DiscountOrDeliveryFeesValueChanged(0, true);
     }
-    
+
     void DiscountOrDeliveryFeesValueChanged(long value, bool isDiscountField)
     {
         if (isDiscountField)
@@ -155,8 +154,8 @@
             var calculatedDiscount = SubTotal - SubTotal * discountPercent;
             calculatedDiscount = SubTotal - calculatedDiscount;
             Discount = (long)calculatedDiscount;
-            
         }
+
         Total = SubTotal + DeliveryFees - Convert.ToInt64(Discount);
         GrandTotal = Total - CustomerExistingCreditDebit;
 
@@ -213,4 +212,5 @@
         );
         MudDialog!.Close(DialogResult.Ok(dataToReturn));
     }
+
 }

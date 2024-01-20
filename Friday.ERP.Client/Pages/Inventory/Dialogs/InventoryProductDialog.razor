@@ -141,11 +141,6 @@
         StateHasChanged();
     }
 
-    void DialogCancel()
-    {
-        MudDialog!.Cancel();
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -157,6 +152,11 @@
                 _image = $"data:image/png;base64, {RawImage}";
             }
         }
+    }
+
+    void DialogCancel()
+    {
+        MudDialog!.Cancel();
     }
 
     async Task DialogUpdate()
@@ -177,7 +177,7 @@
             );
             if (result.isSuccess)
             {
-                Snackbar.Add("ပစ္စည်းအသစ်ဖန်တီးပြီးပါပြီ", Severity.Success);
+                Snackbar.Add("ပစ္စည်းပြောင်းပြီးပါပြီ!", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(result.isSuccess));
@@ -206,7 +206,7 @@
             );
             if (result.isSuccess)
             {
-                Snackbar.Add("ပစ္စည်းပြောင်းပြီးပါပြီ!", Severity.Success);
+                Snackbar.Add("ပစ္စည်းအသစ်ဖန်တီးပြီးပါပြီ", Severity.Success);
             }
 
             MudDialog!.Close(DialogResult.Ok(result.isSuccess));
