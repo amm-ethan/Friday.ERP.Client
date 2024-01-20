@@ -1,4 +1,4 @@
-﻿#cd ..
+﻿# cd ..
 # docker buildx build -t friday-client:1.0.1 -f Friday.ERP.Client/Dockerfile .
  
 FROM nginx:alpine AS base
