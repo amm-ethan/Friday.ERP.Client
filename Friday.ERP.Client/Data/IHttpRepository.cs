@@ -94,6 +94,8 @@ public interface IHttpRepository
     public Task<(bool isSuccess, ProductViewDto? productViewDto)> CreateProduct(
         ProductCreateDto productCreateDto);
 
+    public Task<(bool isSuccess, ProductViewDto? productViewDto)> GetProductByGuid(Guid guid);
+
     public Task<(bool isSuccess, PagingResponse<ProductViewDto>? productViewDtos)> GetAllProducts(
         ProductParameter productParameter);
 

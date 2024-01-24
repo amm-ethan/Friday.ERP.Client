@@ -9,7 +9,7 @@
         <DialogContent>
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2">
-                    <MudItem sm="12" md="12" lg="12" Class="d-flex justify-center">
+                    <MudItem sm="12" md="12" Class="d-flex justify-center">
                         <div class="d-flex flex-column">
                             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
                                 <ButtonTemplate>

@@ -1,4 +1,4 @@
-@page "/invoice"
+@page "/invoice/{id:guid?}"
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Invoice.Dialogs
@@ -9,6 +9,7 @@
 @inject IHttpRepository HttpRepo
 @inject IDialogService DialogService
 @inject IJSRuntime Js
+@inject NavigationManager NavManager
 
 @layout MainLayout
 @attribute [Authorize]
@@ -58,13 +59,13 @@
                     {
                         @foreach (var invoice in _invoiceSaleTableList)
                         {
-                            <MudItem sm="12" md="12" lg="12">
+                            <MudItem sm="12" md="12">
                                 <CustomCardRectangle OnClick="@(() => ShowSaleInvoiceDetails(invoice))"
                                                      FirstMainText="@invoice.InvoiceNo"
                                                      FirstSubText="@($"{invoice.GrandTotal.ToString()} ကျပ်")"
                                                      SecondMainText="@(invoice.CustomerName ?? "Walk-In")"
-                                                     SecondSubText="@invoice.PurchasedAt.ToString("d")">
-                                </CustomCardRectangle>
+                                                     SecondSubText="@invoice.PurchasedAt.ToString("d")"
+                                                     IsSelected="@(_selectedInvoiceGuid == invoice.Guid)"/>
                             </MudItem>
                         }
                     }
@@ -112,12 +113,13 @@
                     {
                         @foreach (var invoice in _invoicePurchaseTableList)
                         {
-                            <MudItem sm="12" md="12" lg="12">
+                            <MudItem sm="12" md="12">
                                 <CustomCardRectangle OnClick="@(() => ShowPurchaseInvoiceDetails(invoice))"
                                                      FirstMainText="@invoice.InvoiceNo"
                                                      FirstSubText="@($"{invoice.GrandTotal.ToString()} ကျပ်")"
                                                      SecondMainText="@invoice.VendorName"
-                                                     SecondSubText="@invoice.PurchasedAt.ToString("d")"/>
+                                                     SecondSubText="@invoice.PurchasedAt.ToString("d")"
+                                                     IsSelected="@(_selectedInvoiceGuid == invoice.Guid)"/>
                             </MudItem>
                         }
                     }
@@ -153,7 +155,7 @@
                 {
                     @foreach (var product in _selectedInvoicePurchase!.PurchasedProducts)
                     {
-                        <MudItem sm="12" md="12" lg="12">
+                        <MudItem sm="12" md="12">
                             <CustomCardRectangle OnClick="() => { }"
                                                  FirstMainText="@product.ProductName"
                                                  FirstSubText="@product.Quantity.ToString()"
@@ -167,7 +169,7 @@
                 {
                     @foreach (var product in _selectedInvoiceSale!.SoldProducts)
                     {
-                        <MudItem sm="12" md="12" lg="12">
+                        <MudItem sm="12" md="12">
                             <CustomCardRectangle OnClick="() => { }"
                                                  FirstMainText="@product.ProductName"
                                                  FirstSubText="@product.Quantity.ToString()"
@@ -198,20 +200,27 @@
                 {
                     if (_selectedInvoiceSale!.DeliveryInfo is not null)
                     {
-                        <MudItem sm="12">
+                        <MudItem sm="12" md="12">
                             <CustomButton Variant="Variant.Filled"
                                           Label="Delivery ကြည့်ရန်" IsLoading="_isLoading" OnClick="@ShowDeliveryInfo" Color="Color.Secondary"/>
                         </MudItem>
                     }
 
-                    <MudItem sm="6">
+                    <MudItem sm="4" md="@(_selectedInvoiceSale!.Customer is not null ? 4 : 6)">
                         <CustomButton Variant="Variant.Filled"
                                       Label="စာရင်းအပြည့်အစုံကြည့်ရန်" IsLoading="_isLoading" OnClick="@(() => ShowInvoiceInfo(false))" Color="Color.Info"/>
                     </MudItem>
-                    <MudItem sm="6">
+                    <MudItem sm="4" md="@(_selectedInvoiceSale!.Customer is not null ? 4 : 6)">
                         <CustomButton Variant="Variant.Filled"
-                                      Label="စာရင်းကို Download ဆွဲရန်" IsLoading="_isLoading" OnClick="@DownloadInvoice"/>
+                                      Label="Download" IsLoading="_isLoading" OnClick="@DownloadInvoice"/>
                     </MudItem>
+                    if (_selectedInvoiceSale!.Customer is not null)
+                    {
+                        <MudItem sm="4" md="4">
+                            <CustomButton Variant="Variant.Filled" Color="Color.Dark"
+                                          Label="ပြင်ရန်" IsLoading="_isLoading" OnClick="@Edit"/>
+                        </MudItem>
+                    }
                 }
 
             </MudGrid>
@@ -234,6 +243,8 @@
 </script>
 
 @code {
+    [Parameter] public Guid? Id { get; set; }
+    
     bool _isMainLoading;
     bool _isLoading;
 
@@ -285,9 +296,20 @@
     {
         _isMainLoading = true;
         StateHasChanged();
-
+    
         await GetInvoiceSalesData();
         await GetCustomerVendorData(null);
+
+        if (Id is not null)
+        {
+            _isPurchaseInvoice = false;
+            var result = await HttpRepo.GetSaleInvoice(Id ?? Guid.Empty);
+            if (result.isSuccess)
+            {
+                _selectedInvoiceSale = result.invoiceSaleViewDto!;
+                _selectedInvoiceGuid = Id;
+            }
+        }
 
         _isMainLoading = false;
         StateHasChanged();
@@ -477,6 +499,11 @@
         await DialogService.ShowAsync<TransactionInfoDialog>("စာရင်းအပြည့်အစုံကြည့်ရန်", parameters, options);
     }
 
+    void Edit()
+    {
+        NavManager.NavigateTo($"/sale/update/{_selectedInvoiceSale!.Guid.ToString()}");
+    }
+
     async Task DownloadInvoice()
     {
         var httpResult = await HttpRepo.DownloadSaleInvoice(_selectedInvoiceSale!.Guid);
@@ -492,5 +519,4 @@
             await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
         }
     }
-
 }

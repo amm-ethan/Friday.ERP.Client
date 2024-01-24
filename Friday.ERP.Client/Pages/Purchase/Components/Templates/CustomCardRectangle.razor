@@ -1,5 +1,5 @@
 <MudButton OnClick="@OnClick" FullWidth="true"
-           Style="background-color: whitesmoke;border-radius: 5px;"
+           Style="@_style"
            class="px-4 py-2" DisableElevation="true">
     <div style="width: 100%;">
         <div class="d-flex justify-space-between px-2">
@@ -63,4 +63,14 @@
     [Parameter] public string? SecondMainText { get; set; }
 
     [Parameter] public string? SecondSubText { get; set; }
+
+    [Parameter] public bool IsSelected { get; set; }
+
+    string? _style = "background-color: whitesmoke;border-radius: 5px;";
+
+    protected override void OnParametersSet()
+    {
+        _style = IsSelected ? "background-color: gainsboro;border-radius: 5px;" : "background-color: whitesmoke;border-radius: 5px;";
+    }
+
 }

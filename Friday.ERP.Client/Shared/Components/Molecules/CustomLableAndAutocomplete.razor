@@ -3,6 +3,7 @@
         <MudAutocomplete T="string?" Required="@Required" Dense="true" FullWidth="true" ResetValueOnEmptyText="true" Immediate="true"
                          Clearable="@Clearable" OnClearButtonClick="@OnClearButtonClick"
                          Variant="Variant.Outlined" Margin="Margin.Dense" Value="@Value"
+                         ReadOnly="@ReadOnly" Disabled="@Disabled"
                          SearchFuncWithCancel="@SearchFuncWithCancel" ValueChanged="@ValueChanged"/>
     </MudItem>
 </CustomLabelAndInput>
@@ -21,6 +22,10 @@
 
     [Parameter] public Typo Typo { get; set; } = Typo.body1;
 
+    [Parameter] public bool Disabled { get; set; }
+    
+    [Parameter] public bool ReadOnly { get; set; }
+    
     [Parameter] public bool Clearable { get; set; }
 
     [Parameter] public bool Required { get; set; }

@@ -1,4 +1,4 @@
-﻿@page "/sale"
+﻿@page "/sale/update/{id:guid}"
 @using Friday.ERP.Shared.DataTransferObjects
 @using Friday.ERP.Client.Data
 @using Friday.ERP.Client.Pages.Inventory.Components.Moledules
@@ -73,6 +73,7 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLableAndAutocomplete FirstText="စျေးဝယ်သူ"
+                                        ReadOnly="true" Disabled="true"
                                         Value="@_customerVendorName" SearchFuncWithCancel="@CustomerVendorSearch"
                                         ValueChanged="@CustomerVendorChange"
                                         OnClearButtonClick="@CustomerVendorClear"/>
@@ -94,6 +95,10 @@
                 <CustomButton
                     Label="ရောင်းရန်" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" Variant="Variant.Filled"/>
             </MudItem>
+            <MudItem sm="12">
+                <CustomButton
+                    Label="နောက်သို့" IsLoading="_isLoading" OnClick="@Back" Variant="Variant.Filled" Color="Color.Dark"/>
+            </MudItem>
         </MudGrid>
     </CustomPage>
 </CustomContainer>
@@ -113,6 +118,8 @@
 </script>
 
 @code {
+    [Parameter] public Guid Id { get; set; }
+
     bool _isMainLoading;
     bool _isLoading;
 
@@ -129,6 +136,7 @@
     long _subTotal;
 
     InvoiceSaleDeliveryCreateDto? _deliveryInfo;
+    InvoiceSalePreCreateDto? _invoiceSalePreCreateDto;
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,12 +145,59 @@
 
         await GetProductData();
         await GetCategoryProductData(null);
-
-        var result = await HttpRepo.GetNextSaleInvoiceNumber();
+        var result = await HttpRepo.GetSaleInvoice(Id);
         if (result.isSuccess)
         {
-            _invoiceNo = result!.invoiceIdViewDto!.InvoiceNo;
+            _subTotal = result!.invoiceSaleViewDto!.SubTotal;
+            _invoiceNo = result!.invoiceSaleViewDto!.InvoiceNo;
+            _customerVendorName = result.invoiceSaleViewDto.Customer!.Name;
+            _invoiceSalePreCreateDto = new InvoiceSalePreCreateDto(
+                result.invoiceSaleViewDto.Discount,
+                result.invoiceSaleViewDto.DeliveryFees,
+                result.invoiceSaleViewDto.Total,
+                result.invoiceSaleViewDto.GrandTotal,
+                result.invoiceSaleViewDto.PaidTotal,
+                result.invoiceSaleViewDto.ExistingCreditDebit,
+                result.invoiceSaleViewDto.CreditDebitLeft,
+                result.invoiceSaleViewDto.Remark
+            );
+
+            if (result.invoiceSaleViewDto.DeliveryInfo is not null)
+            {
+                _deliveryInfo = new InvoiceSaleDeliveryCreateDto
+                (
+                    result.invoiceSaleViewDto.DeliveryInfo.Address,
+                    result.invoiceSaleViewDto.DeliveryInfo.ContactPerson,
+                    result.invoiceSaleViewDto.DeliveryInfo.ContactPhone,
+                    result.invoiceSaleViewDto.DeliveryInfo.DeliveryServiceName,
+                    result.invoiceSaleViewDto.DeliveryInfo.DeliveryContactPerson,
+                    result.invoiceSaleViewDto.DeliveryInfo.DeliveryContactPhone,
+                    result.invoiceSaleViewDto.DeliveryInfo.Remark
+                );
+            }
+
+            foreach (var product in result.invoiceSaleViewDto.SoldProducts)
+            {
+                var productInfoResult = await HttpRepo.GetProductByGuid(product.ProductGuid);
+                if (productInfoResult.isSuccess)
+                {
+                    _productsInCartTemp.Add(
+                        new ProductSaleAddToCartViewDto
+                        {
+                            ProductGuid = product.ProductGuid,
+                            Image = product.Image,
+                            Code = productInfoResult.productViewDto!.Code,
+                            Stock = productInfoResult.productViewDto!.TotalStockLeft,
+                            Name = product.ProductName,
+                            SalePrice = product.ProducePriceSalePrice,
+                            Quantity = product.Quantity,
+                            SalePriceGuid = product.ProducePriceGuid,
+                            TotalPrice = product.Total,
+                        });
+                }
+            }
         }
+
 
         _isMainLoading = false;
         StateHasChanged();
@@ -360,9 +415,16 @@
         var parameters = new DialogParameters<SaleTransactionDialog>
         {
             { x => x.InvoiceNo, _invoiceNo },
-            { x => x.CustomerName, selectedCustomerVendor?.Name },
-            { x => x.CustomerExistingCreditDebit, selectedCustomerVendor?.TotalCreditDebitLeft ?? 0 },
-            { x => x.SubTotal, _subTotal }
+            { x => x.CustomerName, _customerVendorName },
+            { x => x.CustomerExistingCreditDebit, _invoiceSalePreCreateDto!.ExistingCreditDebit },
+            { x => x.SubTotal, _subTotal },
+            { x => x.Discount, _invoiceSalePreCreateDto!.Discount },
+            { x => x.DeliveryFees, _invoiceSalePreCreateDto.DeliveryFees },
+            { x => x.Total, _invoiceSalePreCreateDto.Total },
+            { x => x.GrandTotal, _invoiceSalePreCreateDto.GrandTotal },
+            { x => x.PaidTotal, _invoiceSalePreCreateDto.PaidTotal },
+            { x => x.CreditDebitLeftTransaction, _invoiceSalePreCreateDto.CreditDebitLeft },
+            { x => x.Remark, _invoiceSalePreCreateDto.Remark },
         };
 
         var options = new DialogOptions();
@@ -414,6 +476,11 @@
                 NavManager.NavigateTo("/loading/sale");
             }
         }
+    }
+
+    void Back()
+    {
+        NavManager.NavigateTo($"/invoice/{Id}", replace: true);
     }
 
 }

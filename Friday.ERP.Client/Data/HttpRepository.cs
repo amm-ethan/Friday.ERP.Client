@@ -396,6 +396,11 @@ public class HttpRepository(
             productCreateDto);
     }
 
+    public async Task<(bool isSuccess, ProductViewDto? productViewDto)> GetProductByGuid(Guid guid)
+    {
+        return await CustomHttpGet<ProductViewDto>($"inventory-management/products/{guid}");
+    }
+
     public async Task<(bool isSuccess, PagingResponse<ProductViewDto>? productViewDtos)> GetAllProducts(
         ProductParameter productParameter)
     {

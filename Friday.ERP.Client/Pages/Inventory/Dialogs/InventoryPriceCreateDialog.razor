@@ -46,14 +46,14 @@
             <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
                 <MudGrid Spacing="2" Class="mt-4">
                     <CustomLabelAndInput FirstText="လက်ကားစျေး">
-                        <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                        <MudItem sm="7" md="7" Class="align-self-center">
                             <MudCheckBox T="bool" Value="@IsWholesale" ValueChanged="@IsWholeSaleValueChanged" Color="Color.Default"/>
                         </MudItem>
                     </CustomLabelAndInput>
                 </MudGrid>
                 <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
                 <MudGrid Spacing="2">
-                    <MudItem sm="5" md="5" lg="5" Class="align-self-start">
+                    <MudItem sm="5" md="5" Class="align-self-start">
                         <MudText Class="mt-3" Typo="@Typo.body1">
                             ‌စျေးနှုန်း (ကျပ်)
                         </MudText>

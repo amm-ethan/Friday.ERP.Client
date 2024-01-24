@@ -8,10 +8,10 @@
         <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
             <MudGrid Spacing="2">
                 <CustomLabelAndInput FirstText="အ‌ရောင်">
-                    <MudItem sm="2" md="2" lg="2" Class="align-self-center">
+                    <MudItem sm="2" md="2" Class="align-self-center">
                         <MudPaper Elevation="0" Style="@($"border: {CategoryColor}; background-color: {CategoryColor}")" Class="pa-2">&nbsp;</MudPaper>
                     </MudItem>
-                    <MudItem sm="5" md="5" lg="5">
+                    <MudItem sm="5" md="5">
                         <MudColorPicker Required="@(!IsUpdate)" @bind-Text="CategoryColor" Margin="Margin.Dense" Variant="Variant.Outlined" ColorPickerView="ColorPickerView.Palette"/>
                     </MudItem>
                 </CustomLabelAndInput>

@@ -13,7 +13,7 @@
             <CustomLabelAndLabel FirstText="ကျသင့်‌ငွေ" SecondText="@($"{SubTotal.ToString()} ကျပ်")"/>
             @* Todo *@
             <CustomLabelAndInput FirstText="လျော့စျေး">
-                <MudItem sm="3" md="3" lg="3" Class="align-self-center">
+                <MudItem sm="3" md="3" Class="align-self-center">
                     <MudSelect T="string"
                                Value="_selectedDiscountType"
                                ValueChanged="DiscountTypeValueChanged"
@@ -24,7 +24,7 @@
                         <MudSelectItem Value="@("%")"/>
                     </MudSelect>
                 </MudItem>
-                <MudItem sm="4" md="4" lg="4" Class="align-self-center">
+                <MudItem sm="4" md="4" Class="align-self-center">
                     <MudTextField T="long"
                                   Value="@_discount"
                                   ValueChanged="@(e => DiscountOrDeliveryFeesValueChanged(e, true))"
@@ -39,8 +39,8 @@
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ" SecondText="@($"{Total.ToString()} mmk")"/>
-            <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} mmk")"/>
+            <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ" SecondText="@($"{Total.ToString()} ကျပ်")"/>
+            <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} ကျပ်")"/>
             <CustomLabelAndLongField FirstText="ပေးငွေစုစုပေါင်း"
                                      BindValue="@PaidTotal" BindValueChanged="@TotalPaidValueChanged" Required="true"/>
             <CustomLableAndCheckbox FirstText="ပေးချေပြီးပြီ" @bind-BindValue="IsPaid"/>
@@ -54,7 +54,7 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndInput FirstText="မှတ်ချက်">
-                <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                <MudItem sm="7" md="7" Class="align-self-center">
                     <MudTextField T="string" @bind-Value="Remark"
                                   FullWidth="true" InputType="InputType.Text"
                                   Margin="Margin.Dense" Variant="Variant.Outlined"/>

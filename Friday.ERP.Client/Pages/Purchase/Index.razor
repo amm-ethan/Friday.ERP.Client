@@ -59,7 +59,7 @@
             {
                 @foreach (var product in _productsInCartTemp)
                 {
-                    <MudItem sm="12" md="12" lg="12">
+                    <MudItem sm="12" md="12">
                         <CustomCardRectangle OnClick="@(() => OpenUpdateProductPurchaseAddToCartDialog(product))"
                                              FirstMainText="@product.Name" FirstSubText="@product.Quantity.ToString()"
                                              ImageSrc="@(product.Image is not null ? $"data:image/png;base64, {product.Image!}" : "product_png/placeholder.png")"
@@ -78,11 +78,11 @@
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="ကျသင့်‌ငွေ" SecondText="@($"{SubTotal} ကျပ်")" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="ကျသင့်‌ငွေ" SecondText="@($"{_subTotal} ကျပ်")" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <MudItem sm="12" md="12" lg="12">
+            <MudItem sm="12" md="12">
                 <CustomButton
                     Label="ဝယ်ရန်" IsLoading="_isLoading" OnClick="@OpenTransactionCreateDialog" Variant="Variant.Filled"/>
             </MudItem>
@@ -104,7 +104,7 @@
     string? _customerVendorName;
 
     readonly List<ProductPurchaseAddToCartViewDto> _productsInCartTemp = [];
-    long SubTotal { get; set; }
+    long _subTotal;
 
     protected override async Task OnInitializedAsync()
     {
@@ -232,7 +232,7 @@
             _productsInCartTemp.Add(addedProduct);
 
             Snackbar.Add("စျေးခြင်းထဲထည့်ပြီးပြီ", Severity.Success);
-            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
+            _subTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
         }
     }
 
@@ -278,7 +278,7 @@
                 Snackbar.Add("စျေးခြင်းထဲ့ထည့်ပြီးပြီ", Severity.Success);
             }
 
-            SubTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
+            _subTotal = _productsInCartTemp.Select(c => c.TotalPrice).Sum();
         }
     }
 
@@ -303,7 +303,7 @@
             { x => x.InvoiceNo, _invoiceNo },
             { x => x.VendorName, _customerVendorName },
             { x => x.VendorExistingCreditDebit, selectedCustomerVendor!.TotalCreditDebitLeft },
-            { x => x.SubTotal, SubTotal }
+            { x => x.SubTotal, _subTotal }
         };
 
         var options = new DialogOptions();
@@ -326,7 +326,7 @@
             );
 
             var invoiceToCreate = new InvoicePurchaseCreateDto(
-                SubTotal,
+                _subTotal,
                 invoiceInfo.Discount,
                 invoiceInfo.DeliveryFees,
                 invoiceInfo.Total,

@@ -8,7 +8,7 @@
     <MudDialog>
         <DialogContent>
             <MudGrid Spacing="2">
-                <MudItem sm="12" md="12" lg="12">
+                <MudItem sm="12" md="12">
                     <ImageHolder ImageSrc="@(Image is not null ? $"data:image/png;base64, {Image!}" : "product_png/placeholder.png")"
                                  ProductName="@Name" ProductCode="@Code" ProductTotalStock="@Stock.ToString()"/>
                 </MudItem>
@@ -16,7 +16,7 @@
             <MudDivider DividerType="DividerType.FullWidth" Class="mb-4"/>
             <MudGrid Spacing="2">
                 <CustomLabelAndInput FirstText="ရောင်းစျေး">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                    <MudItem sm="7" md="7" Class="align-self-center">
                         <MudSelect
                             T="long"
                             @ref="PriceSelect"
@@ -39,7 +39,7 @@
                     </MudItem>
                 </CustomLabelAndInput>
                 <CustomLabelAndInput FirstText="နှုန်း">
-                    <MudItem sm="7" md="7" lg="7" Class="align-self-center">
+                    <MudItem sm="7" md="7" Class="align-self-center">
                         <MudTextField
                             @ref="QuantityTextField"
                             T="int" Required="true"
@@ -52,7 +52,7 @@
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
             <MudGrid Spacing="2">
-                <CustomLabelAndLabel FirstText="စုစုပေါင်း" SecondText="@($"{TotalPrice} mmk")"/>
+                <CustomLabelAndLabel FirstText="စုစုပေါင်း" SecondText="@($"{TotalPrice} ကျပ်")"/>
             </MudGrid>
             <MudDivider DividerType="DividerType.FullWidth" Class="mt-4"/>
         </DialogContent>
