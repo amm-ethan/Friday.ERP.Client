@@ -13,11 +13,11 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
+            <CustomLabelAndLabel FirstText="ပေးငွေစုစုပေါင်း" SecondText="@($"{PaidTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
-            <CustomLabelAndLabel FirstText="ပေးငွေစုစုပေါင်း" SecondText="@($"{PaidTotal.ToString()} ကျပ်")" SecondTextAlign="Align.End"/>
-            <CustomLabelAndLabel FirstText="ကျန်ငွေ/ပိုငွေ စုစုပေါင်း"
+            <CustomLabelAndLabel FirstText="လက်ကျန် အကြွေး/ပိုငွေ"
                                  SecondText="@($"{CreditDebitLeft.ToString()} ကျပ်")" SecondTextAlign="Align.End"
                                  SecondTextColor="@(CreditDebitLeft < 0 ? Color.Error : Color.Info)"/>
         </MudGrid>

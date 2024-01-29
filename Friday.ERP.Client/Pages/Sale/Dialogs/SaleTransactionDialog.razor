@@ -4,13 +4,6 @@
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="ဘောင်ချာနံပါတ်" SecondText="@InvoiceNo"/>
             <CustomLabelAndLabel FirstText="စျေးဝယ်သူ" SecondText="@(CustomerName ?? "Walk-in")"/>
-            @if (CustomerName is not null)
-            {
-                <CustomLabelAndLabel FirstText="အကြွေး/ပိုငွေ"
-                                     SecondTextColor="@(CustomerExistingCreditDebit < 0 ? Color.Error : Color.Info)"
-                                     SecondText="@_customerExistingCreditDebitString"/>
-            }
-
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
@@ -45,6 +38,15 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ" SecondText="@($"{Total.ToString()} ကျပ်")"/>
+            @if (CustomerName is not null)
+            {
+                <CustomLabelAndLabel FirstText="အကြွေး/ပိုငွေ"
+                                     SecondTextColor="@(CustomerExistingCreditDebit < 0 ? Color.Error : Color.Info)"
+                                     SecondText="@_customerExistingCreditDebitString"/>
+            }
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
+        <MudGrid Spacing="2">
             @if (CustomerName is not null)
             {
                 <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} ကျပ်")"/>
@@ -89,7 +91,7 @@
     [Parameter] public string? CustomerName { get; set; }
     [Parameter] public long CustomerExistingCreditDebit { get; set; }
     [Parameter] public long SubTotal { get; set; }
-    
+
     [Parameter] public long Discount { get; set; }
     [Parameter] public long DeliveryFees { get; set; }
     [Parameter] public long Total { get; set; }
@@ -97,13 +99,13 @@
     [Parameter] public long PaidTotal { get; set; }
     [Parameter] public long CreditDebitLeftTransaction { get; set; }
     [Parameter] public string? Remark { get; set; }
-    
+
     string? _customerExistingCreditDebitString;
     string? _totalCreditDebitLeftString = "0 ကျပ်";
     string? _selectedDiscountType = "ကျပ်";
 
     long _discount;
-    
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -115,12 +117,14 @@
         else
             _customerExistingCreditDebitString += " ကျပ် (ပိုငွေ)";
 
-        Total = SubTotal;
-        GrandTotal = Total - CustomerExistingCreditDebit;
+        _discount = Discount;
+
+        Total = Total;
+        GrandTotal = GrandTotal;
 
         if (CustomerName is null)
         {
-            PaidTotal = GrandTotal;
+            PaidTotal = PaidTotal;
         }
 
         CalculateCreditDebit(PaidTotal);

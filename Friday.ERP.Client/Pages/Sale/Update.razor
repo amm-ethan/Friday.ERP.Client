@@ -131,6 +131,8 @@
     string? _searchTerm;
     string? _categoryName;
     string? _customerVendorName;
+    Guid? _customerVendorGuid;
+    long _customerTotalCreditDebitLeft;
 
     readonly List<ProductSaleAddToCartViewDto> _productsInCartTemp = [];
     long _subTotal;
@@ -150,7 +152,11 @@
         {
             _subTotal = result!.invoiceSaleViewDto!.SubTotal;
             _invoiceNo = result!.invoiceSaleViewDto!.InvoiceNo;
+            
             _customerVendorName = result.invoiceSaleViewDto.Customer!.Name;
+            _customerVendorGuid = result.invoiceSaleViewDto.Customer!.Guid;
+            _customerTotalCreditDebitLeft = result.invoiceSaleViewDto.Customer!.TotalCreditDebitLeft;
+            
             _invoiceSalePreCreateDto = new InvoiceSalePreCreateDto(
                 result.invoiceSaleViewDto.Discount,
                 result.invoiceSaleViewDto.DeliveryFees,
@@ -411,12 +417,13 @@
             return;
         }
 
-        var selectedCustomerVendor = _customerVendorList.SingleOrDefault(x => x.Name == _customerVendorName);
+        var existingCreditDebit = _customerTotalCreditDebitLeft - _invoiceSalePreCreateDto!.ExistingCreditDebit;
+        existingCreditDebit = 0;
         var parameters = new DialogParameters<SaleTransactionDialog>
         {
             { x => x.InvoiceNo, _invoiceNo },
             { x => x.CustomerName, _customerVendorName },
-            { x => x.CustomerExistingCreditDebit, _invoiceSalePreCreateDto!.ExistingCreditDebit },
+            { x => x.CustomerExistingCreditDebit, existingCreditDebit },
             { x => x.SubTotal, _subTotal },
             { x => x.Discount, _invoiceSalePreCreateDto!.Discount },
             { x => x.DeliveryFees, _invoiceSalePreCreateDto.DeliveryFees },
@@ -456,7 +463,7 @@
                 invoiceSalePreCreateDto.ExistingCreditDebit,
                 invoiceSalePreCreateDto.CreditDebitLeft,
                 invoiceSalePreCreateDto.Remark,
-                selectedCustomerVendor?.Guid,
+                _customerVendorGuid,
                 productsInCart,
                 _deliveryInfo
             );

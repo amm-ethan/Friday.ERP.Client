@@ -4,9 +4,6 @@
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="ဘောင်ချာနံပါတ်." SecondText="@InvoiceNo"/>
             <CustomLabelAndLabel FirstText="စျေးရောင်းသူ" SecondText="@VendorName"/>
-            <CustomLabelAndLabel FirstText="အကြွေး/ပိုငွေ"
-                                 SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Info)"
-                                 SecondText="@_vendorExistingCreditDebitString"/>
         </MudGrid>
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
@@ -40,6 +37,12 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="စုစုပေါင်းကျငွေ" SecondText="@($"{Total.ToString()} ကျပ်")"/>
+            <CustomLabelAndLabel FirstText="ယခင်ကြွေးကျန်/ပိုငွေ"
+                                 SecondTextColor="@(VendorExistingCreditDebit < 0 ? Color.Error : Color.Info)"
+                                 SecondText="@_vendorExistingCreditDebitString"/>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-4"/>
+         <MudGrid Spacing="2">
             <CustomLabelAndLabel FirstText="ပေးရန်စုစုပေါင်း" SecondText="@($"{GrandTotal.ToString()} ကျပ်")"/>
             <CustomLabelAndLongField FirstText="ပေးငွေစုစုပေါင်း"
                                      BindValue="@PaidTotal" BindValueChanged="@TotalPaidValueChanged" Required="true"/>
