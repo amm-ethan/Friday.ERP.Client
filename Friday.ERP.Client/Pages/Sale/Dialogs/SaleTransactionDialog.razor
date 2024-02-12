@@ -1,4 +1,6 @@
 @using Friday.ERP.Shared.DataTransferObjects
+@inject ISnackbar Snackbar
+
 <MudDialog>
     <DialogContent>
         <MudGrid Spacing="2">
@@ -99,12 +101,14 @@
     [Parameter] public long PaidTotal { get; set; }
     [Parameter] public long CreditDebitLeftTransaction { get; set; }
     [Parameter] public string? Remark { get; set; }
+    [Parameter] public bool IsUpdate { get; set; }
 
     string? _customerExistingCreditDebitString;
     string? _totalCreditDebitLeftString = "0 ကျပ်";
     string? _selectedDiscountType = "ကျပ်";
 
     long _discount;
+    long _originalPaidAmount;
 
     protected override void OnParametersSet()
     {
@@ -119,12 +123,22 @@
 
         _discount = Discount;
 
-        Total = Total;
-        GrandTotal = GrandTotal;
-
-        if (CustomerName is null)
+        if (IsUpdate)
         {
+            Total = Total;
+            GrandTotal = GrandTotal;
             PaidTotal = PaidTotal;
+            _originalPaidAmount = PaidTotal;
+        }
+        else
+        {
+            Total = SubTotal;
+            GrandTotal = Total - CustomerExistingCreditDebit;
+
+            if (CustomerName is null)
+            {
+                PaidTotal = GrandTotal;
+            }
         }
 
         CalculateCreditDebit(PaidTotal);
@@ -204,6 +218,15 @@
 
     void Submit()
     {
+        if (IsUpdate)
+        {
+            if (CreditDebitLeftTransaction < 0)
+            {
+                Snackbar.Add($"ပေးချေပြီး ငွေ {_originalPaidAmount} ကျပ်ထက်လျော့ပေး၍မရပါ", Severity.Error);
+                return;
+            }
+        }
+
         var dataToReturn = new InvoiceSalePreCreateDto(
             Discount,
             DeliveryFees,

@@ -416,14 +416,12 @@
             Snackbar.Add("စျေးဝယ်သူရွေးပါ", Severity.Error);
             return;
         }
-
-        var existingCreditDebit = _customerTotalCreditDebitLeft - _invoiceSalePreCreateDto!.ExistingCreditDebit;
-        existingCreditDebit = 0;
+        
         var parameters = new DialogParameters<SaleTransactionDialog>
         {
             { x => x.InvoiceNo, _invoiceNo },
             { x => x.CustomerName, _customerVendorName },
-            { x => x.CustomerExistingCreditDebit, existingCreditDebit },
+            { x => x.CustomerExistingCreditDebit, _customerTotalCreditDebitLeft },
             { x => x.SubTotal, _subTotal },
             { x => x.Discount, _invoiceSalePreCreateDto!.Discount },
             { x => x.DeliveryFees, _invoiceSalePreCreateDto.DeliveryFees },
@@ -432,6 +430,7 @@
             { x => x.PaidTotal, _invoiceSalePreCreateDto.PaidTotal },
             { x => x.CreditDebitLeftTransaction, _invoiceSalePreCreateDto.CreditDebitLeft },
             { x => x.Remark, _invoiceSalePreCreateDto.Remark },
+            { x => x.IsUpdate, true }
         };
 
         var options = new DialogOptions();
